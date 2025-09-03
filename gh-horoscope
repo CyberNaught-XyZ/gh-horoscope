@@ -1,0 +1,463 @@
+#!/bin/bash
+
+# GitHub CLI Horoscope Extension
+# A mystical journey through your GitHub activity patterns
+# For the Love of Code 2025 - Terminal Talent Category
+
+set -e
+
+# Script directory for relative imports
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Source all library modules
+source "$SCRIPT_DIR/lib/display.sh"
+source "$SCRIPT_DIR/lib/github-analyzer.sh"
+source "$SCRIPT_DIR/lib/fortune-data.sh"
+source "$SCRIPT_DIR/lib/horoscope-generator.sh"
+source "$SCRIPT_DIR/lib/tarot-system.sh"
+source "$SCRIPT_DIR/lib/comedy-generator.sh"
+source "$SCRIPT_DIR/lib/oracle-sessions.sh"
+source "$SCRIPT_DIR/lib/celebrity-comparison.sh"
+source "$SCRIPT_DIR/lib/achievements.sh"
+
+# Default values
+USERNAME=""
+VERBOSE=false
+INTERACTIVE=false
+COMPARE_MODE=false
+EXPORT_FILE=""
+QUICK_MODE=false
+TAROT_MODE=false
+ROAST_MODE=false
+COMPLIMENT_MODE=false
+ORACLE_MODE=false
+ORACLE_TYPE=""
+CELEBRITY_MODE=false
+DOPPELGANGER_MODE=false
+CELEBRITY_NAME=""
+
+# Help function
+show_help() {
+    cat << EOF
+🔮 GitHub CLI Horoscope Extension 🔮
+
+USAGE:
+    gh horoscope [OPTIONS] [USERNAME]
+
+OPTIONS:
+    -h, --help         Show this help message
+    -u, --user         GitHub username (defaults to current authenticated user)
+    -v, --verbose      Show detailed analysis data
+    -i, --interactive  Interactive mode with mystical questions
+    -c, --compare      Compare two users' horoscopes
+    -e, --export FILE  Export horoscope to file
+    -q, --quick        Quick horoscope mode (essential insights only)
+    -t, --tarot        Programming tarot card readings
+    -r, --roast        Roast mode - humorous code analysis
+    --compliment       Compliment mode - celebrate your coding journey
+    -o, --oracle [TYPE] Oracle session - interactive coding wisdom & advice
+                        TYPE can be: career-guidance, debugging-wisdom, 
+                        burnout-check, skill-development, team-collaboration,
+                        project-focus, coding-rhythm, technical-growth,
+                        open-source-path, language-mastery
+    --version          Show version information
+    --doppelganger     Find your celebrity coding doppelganger
+    --list-celebrities List all available celebrity developers
+
+EXAMPLES:
+    gh horoscope                        # Your own mystical horoscope
+    gh horoscope octocat               # Horoscope for user 'octocat'
+    gh horoscope -u torvalds -v        # Verbose horoscope for 'torvalds'
+    gh horoscope -i                    # Interactive mystical session
+    gh horoscope -t                    # Programming tarot card reading
+    gh horoscope -o                    # Oracle wisdom session
+    gh horoscope -r username           # Roast a developer's code (lovingly)
+    gh horoscope --compliment username # Compliment a developer's journey
+    gh horoscope --celebrity torvalds  # Compare with Linus Torvalds
+    gh horoscope --doppelganger user   # Find celebrity coding twin
+    gh horoscope --list-celebrities    # Show all available celebrities
+    gh horoscope -c user1 user2        # Compare two developers
+    gh horoscope -q -e ~/my_fortune.txt # Quick export
+    
+DESCRIPTION:
+    Generates a personalized horoscope based on your GitHub activity patterns.
+    Analyzes your coding habits, commit patterns, repository diversity, and
+    more to divine your coding future! ✨
+
+    ⭐ NEW MYSTICAL FEATURES ⭐
+    • Developer Archetype Analysis 🎭 (35+ unique archetypes)
+    • Programming Tarot Card System 🃏 (complete mystical deck)
+    • Oracle Sessions 🔮 (interactive coding wisdom & advice)
+    • Celebrity Developer Comparison 👑 (compare with coding legends)
+    • Coding Doppelganger Finder 🎭 (find your celebrity twin)
+    • Roast Mode 🔥 (humorous code analysis with love)
+    • Compliment Mode 💝 (celebrate your coding journey)
+    • Commit Message Mystique 📜  
+    • Elemental Coding Nature ⚡
+    • Bug Prophecy & Future Visions 🔮
+    • Time Magic & Coding Rhythms ⏰
+    • Collaboration Constellation 🤝
+    • Repository Zodiac Signs ♈
+
+    Original features include:
+    • Night Owl Detection 🦉
+    • Weekend Warrior Score 💪
+    • Repository Personality Reading 🏛️
+    • GitHub Karma Analysis ⚖️
+    • Lucky Numbers & Coffee Fortunes ☕
+
+EOF
+}
+
+# Interactive mode function
+run_interactive_mode() {
+    # Track interactive mode usage and check achievements
+    track_usage "interactive"
+    
+    display_crystal_ball
+    echo
+    display_mystical_quote "Welcome, seeker, to the interactive realm of code divination..."
+    echo
+    
+    while true; do
+        display_interactive_menu
+        read -p "🔮 Choose your mystical path (1-13): " choice
+        
+        case $choice in
+            1)
+                echo "🎭 The spirits reveal your developer archetype..."
+                # Would call specific archetype analysis
+                echo "⏳ Consulting the ancient scrolls..."
+                sleep 2
+                echo "🧙‍♂️ You are... The Code Whisperer! You speak to bugs in their native tongue."
+                ;;
+            2)
+                echo "🔮 The Bug Oracle awakens..."
+                read -p "🗣️  What question troubles your coding soul? " question
+                echo "⏳ Consulting the ethereal bug database..."
+                sleep 2
+                echo "🪄 The Oracle speaks: '${question}' - The answer lies in the third Stack Overflow result, but only when viewed during a full moon."
+                ;;
+            3)
+                echo "🌟 Today's cosmic coding energy..."
+                get_daily_prediction
+                ;;
+            4)
+                echo "⚡ Revealing your elemental coding nature..."
+                echo "🌊 You are a Water Coder - your code flows gracefully around obstacles."
+                ;;
+            5) 
+                echo "📜 Analyzing your commit message mystique..."
+                echo "🔮 Your messages speak in the ancient tongue of 'fix stuff' and 'it works now'."
+                ;;
+            6)
+                echo "🃏 Drawing programming tarot cards for your destiny..."
+                track_usage "tarot"
+                run_tarot_session
+                ;;
+            7)
+                echo "🔮 Opening portal to the Oracle's chamber..."
+                track_usage "oracle"
+                run_oracle_session
+                ;;
+            8)
+                echo "👑 Finding your celebrity developer twin..."
+                track_usage "celebrity"
+                analyze_github_user "${USERNAME:-demo-user}"
+                display_coding_doppelganger "${USERNAME:-demo-user}"
+                ;;
+            9)
+                echo "🔥 Preparing to roast your code with love..."
+                track_usage "roast"
+                analyze_github_user "${USERNAME:-demo-user}"
+                run_roast_mode "${USERNAME:-demo-user}"
+                ;;
+            10)
+                echo "💝 Celebrating your coding journey..."
+                track_usage "compliment"
+                analyze_github_user "${USERNAME:-demo-user}"
+                run_compliment_mode "${USERNAME:-demo-user}"
+                ;;
+            11)
+                echo "🏛️ Generating your complete mystical profile..."
+                break # Exit interactive mode and run full horoscope
+                ;;
+            12)
+                echo "🏆 Revealing your legendary achievements..."
+                show_achievements
+                ;;
+            13)
+                echo "🚪 The mystical realm bids you farewell..."
+                display_mystical_quote "May your code compile and your bugs be few!"
+                exit 0
+                ;;
+            *)
+                echo "❓ The spirits do not understand. Please choose 1-13."
+                ;;
+        esac
+        echo
+        read -p "Press Enter to continue your mystical journey..." 
+        echo
+    done
+}
+
+# Parse command line arguments
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            -u|--user)
+                USERNAME="$2"
+                shift 2
+                ;;
+            -v|--verbose)
+                VERBOSE=true
+                shift
+                ;;
+            -i|--interactive)
+                INTERACTIVE=true
+                shift
+                ;;
+            -c|--compare)
+                COMPARE_MODE=true
+                shift
+                ;;
+            -e|--export)
+                EXPORT_FILE="$2"
+                shift 2
+                ;;
+            -q|--quick)
+                QUICK_MODE=true
+                shift
+                ;;
+            -t|--tarot)
+                TAROT_MODE=true
+                shift
+                ;;
+            -r|--roast)
+                ROAST_MODE=true
+                shift
+                ;;
+            --compliment)
+                COMPLIMENT_MODE=true
+                shift
+                ;;
+            -o|--oracle)
+                ORACLE_MODE=true
+                # Check if next argument is an oracle type
+                if [[ -n "$2" && ! "$2" =~ ^- ]]; then
+                    ORACLE_TYPE="$2"
+                    shift 2
+                else
+                    shift
+                fi
+                ;;
+            --version)
+                echo "🔮 GitHub CLI Horoscope Extension v2.0.0"
+                echo "For the Love of Code 2025 - Terminal Talent Category"
+                echo "Created by CyberNaught-XyZ"
+                exit 0
+                ;;
+            --celebrity)
+                CELEBRITY_MODE=true
+                CELEBRITY_NAME="$2"
+                shift 2
+                ;;
+            --doppelganger)
+                DOPPELGANGER_MODE=true
+                shift
+                ;;
+            --list-celebrities)
+                list_celebrities
+                exit 0
+                ;;
+            -*)
+                echo "Error: Unknown option $1" >&2
+                show_help
+                exit 1
+                ;;
+            *)
+                if [[ -z "$USERNAME" ]]; then
+                    USERNAME="$1"
+                fi
+                shift
+                ;;
+        esac
+    done
+}
+
+# Main function
+main() {
+    parse_args "$@"
+    
+    # Handle tarot mode
+    if [[ "$TAROT_MODE" == "true" ]]; then
+        run_tarot_session
+        exit 0
+    fi
+    
+    # Handle oracle mode
+    if [[ "$ORACLE_MODE" == "true" ]]; then
+        # Get username if not provided
+        if [[ -z "$USERNAME" ]]; then
+            USERNAME=$(gh api user --jq '.login' 2>/dev/null || echo "")
+            if [[ -z "$USERNAME" ]]; then
+                display_warning "Unable to determine GitHub username automatically."
+                display_info "Using demonstration mode with sample data."
+                USERNAME="demo-user"
+            fi
+        fi
+        
+        # Try to analyze GitHub data first
+        if ! analyze_github_user "$USERNAME" 2>/dev/null; then
+            display_info "Using sample data for oracle consultation..."
+            # Set demo data
+            REPO_COUNT=7
+            TOTAL_COMMITS=156
+            NIGHT_OWL_PERCENTAGE=30
+            WEEKEND_PERCENTAGE=20
+            PRIMARY_LANGUAGES=("JavaScript" "Python")
+            COMMIT_MESSAGES=("fix stuff" "update" "it works now" "refactor code")
+        fi
+        
+        # If specific oracle type was provided, use GitHub-data-driven oracle
+        if [[ -n "$ORACLE_TYPE" ]]; then
+            analyze_github_oracle "$USERNAME" "$ORACLE_TYPE"
+        else
+            # Fall back to interactive oracle session
+            run_oracle_session
+        fi
+        exit 0
+    fi
+    
+    # Handle celebrity comparison modes
+    if [[ "$CELEBRITY_MODE" == "true" || "$DOPPELGANGER_MODE" == "true" ]]; then
+        # Get username if not provided
+        if [[ -z "$USERNAME" ]]; then
+            USERNAME=$(gh api user --jq '.login' 2>/dev/null || echo "")
+            if [[ -z "$USERNAME" ]]; then
+                echo "⚠️ Unable to determine GitHub username automatically."
+                echo "ℹ️ Using demonstration mode with sample data."
+                USERNAME="demo-user"
+            fi
+        fi
+        
+        # Try to analyze GitHub data - if it fails, continue with demo data
+        if ! analyze_github_user "$USERNAME" 2>/dev/null; then
+            echo "ℹ️ Using sample data for analysis..."
+            # Set demo data
+            REPO_COUNT=7
+            TOTAL_COMMITS=156
+            NIGHT_OWL_PERCENTAGE=30
+            WEEKEND_PERCENTAGE=20
+            PRIMARY_LANGUAGES=("JavaScript" "Python")
+            COMMIT_MESSAGES=("fix stuff" "update" "it works now" "refactor code")
+        fi
+        
+        if [[ "$CELEBRITY_MODE" == "true" ]]; then
+            if [[ -n "$CELEBRITY_NAME" ]]; then
+                display_celebrity_comparison "$USERNAME" "$CELEBRITY_NAME"
+            else
+                echo "❗ Please specify a celebrity name: gh horoscope --celebrity [name] [username]"
+                echo "Use --list-celebrities to see available options."
+            fi
+        else
+            display_coding_doppelganger "$USERNAME"
+        fi
+        exit 0
+    fi
+    
+    # Handle roast and compliment modes (need username)
+    if [[ "$ROAST_MODE" == "true" || "$COMPLIMENT_MODE" == "true" ]]; then
+        # Get username if not provided
+        if [[ -z "$USERNAME" ]]; then
+            USERNAME=$(gh api user --jq '.login' 2>/dev/null || echo "")
+            if [[ -z "$USERNAME" ]]; then
+                echo "⚠️ Unable to determine GitHub username automatically."
+                echo "ℹ️ Using demonstration mode with sample data."
+                USERNAME="demo-user"
+            fi
+        fi
+        
+        # Try to analyze GitHub data - if it fails, continue with demo data
+        if ! analyze_github_user "$USERNAME" 2>/dev/null; then
+            echo "ℹ️ Using sample data for analysis..."
+            # Set demo data for roasting/complimenting
+            REPO_COUNT=7
+            TOTAL_COMMITS=156
+            NIGHT_OWL_PERCENTAGE=30
+            WEEKEND_PERCENTAGE=20
+            PRIMARY_LANGUAGES=("JavaScript" "Python")
+            COMMIT_MESSAGES=("fix stuff" "update" "it works now" "refactor code")
+        fi
+        
+        if [[ "$ROAST_MODE" == "true" ]]; then
+            run_roast_mode "$USERNAME"
+        else
+            run_compliment_mode "$USERNAME"
+        fi
+        exit 0
+    fi
+    
+    # Handle interactive mode
+    if [[ "$INTERACTIVE" == "true" ]]; then
+        run_interactive_mode
+    fi
+    
+    # Show header
+    display_header
+    
+    # Get username if not provided
+    if [[ -z "$USERNAME" ]]; then
+        USERNAME=$(gh api user --jq '.login' 2>/dev/null || echo "")
+        if [[ -z "$USERNAME" ]]; then
+            display_warning "Unable to determine GitHub username automatically."
+            display_info "Using demonstration mode with sample data."
+            display_info "For real analysis, provide a username: gh horoscope [username]"
+            display_info "Or authenticate with GitHub: gh auth login"
+            echo
+            USERNAME="demo-user"
+        fi
+    fi
+    
+    display_info "🔍 Analyzing GitHub patterns for user: $USERNAME"
+    echo
+    
+    # Analyze GitHub data
+    if ! analyze_github_user "$USERNAME"; then
+        display_error "Failed to analyze GitHub data for user: $USERNAME"
+        exit 1
+    fi
+    
+    # Generate horoscope
+    if [[ -n "$EXPORT_FILE" ]]; then
+        # Export to file
+        display_info "📜 Exporting horoscope to: $EXPORT_FILE"
+        {
+            echo "🔮 GITHUB HOROSCOPE for $USERNAME 🔮"
+            echo "Generated on: $(date)"
+            echo "═══════════════════════════════════════"
+            echo
+            generate_horoscope "$USERNAME" "$VERBOSE"
+            echo
+            echo "═══════════════════════════════════════"
+            echo "Generated by GitHub CLI Horoscope Extension"
+            echo "https://github.com/CyberNaught-XYZ/Github-CLI-horoscope"
+        } > "$EXPORT_FILE"
+        
+        display_success "✨ Horoscope exported to $EXPORT_FILE"
+        display_mystical_quote "Your digital destiny has been captured in the sacred scrolls!"
+    else
+        # Display horoscope normally
+        generate_horoscope "$USERNAME" "$VERBOSE"
+    fi
+    
+    # Show footer
+    display_footer
+}
+
+# Run main function
+main "$@"
