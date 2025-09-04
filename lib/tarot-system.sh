@@ -3,6 +3,22 @@
 # Tarot System module for GitHub CLI Horoscope Extension
 # Full programming-themed tarot deck with mystical readings
 
+# Wrap text for better terminal display
+wrap_tarot_text() {
+    local text="$1"
+    local indent="    • "
+    local width=75  # Leave some margin for terminal edges
+    
+    # Use fold to wrap text at word boundaries, then add proper indentation
+    echo "$text" | fold -w $((width - ${#indent})) -s | while IFS= read -r line; do
+        if [[ -n "$line" ]]; then
+            echo "$indent$line"
+            indent="      "  # Continuation lines get extra indent
+        fi
+    done
+    echo
+}
+
 # Programming Tarot Deck - Major Arcana
 declare -A PROGRAMMING_TAROT
 
@@ -97,26 +113,20 @@ draw_three_card_spread() {
         future_card=$(draw_single_card)
     done
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                          🕰️ **YOUR CODING PAST** 🕰️                        │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ ${PROGRAMMING_TAROT[$past_card]} │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    🕰️ **YOUR CODING PAST** 🕰️"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_tarot_text "${PROGRAMMING_TAROT[$past_card]}"
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                        ⚡ **YOUR CODING PRESENT** ⚡                       │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ ${PROGRAMMING_TAROT[$present_card]} │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    ⚡ **YOUR CODING PRESENT** ⚡"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_tarot_text "${PROGRAMMING_TAROT[$present_card]}"
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                        🌟 **YOUR CODING FUTURE** 🌟                        │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ ${PROGRAMMING_TAROT[$future_card]} │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    🌟 **YOUR CODING FUTURE** 🌟"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_tarot_text "${PROGRAMMING_TAROT[$future_card]}"
 }
 
 draw_single_daily_card() {
@@ -125,12 +135,10 @@ draw_single_daily_card() {
     
     local daily_card=$(draw_single_card)
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                     ✨ **TODAY'S CODING GUIDANCE** ✨                     │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ ${PROGRAMMING_TAROT[$daily_card]} │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    ✨ **TODAY'S CODING GUIDANCE** ✨"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_tarot_text "${PROGRAMMING_TAROT[$daily_card]}"
 }
 
 draw_career_guidance_spread() {
@@ -155,44 +163,36 @@ draw_career_guidance_spread() {
         advice_card=$(draw_single_card)
     done
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                       💪 **YOUR TECHNICAL STRENGTHS** 💪                    │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ ${PROGRAMMING_TAROT[$skills_card]} │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    💪 **YOUR TECHNICAL STRENGTHS** 💪"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_tarot_text "${PROGRAMMING_TAROT[$skills_card]}"
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                      🚀 **OPPORTUNITIES AHEAD** 🚀                         │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ ${PROGRAMMING_TAROT[$opportunities_card]} │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    🚀 **OPPORTUNITIES AHEAD** 🚀"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_tarot_text "${PROGRAMMING_TAROT[$opportunities_card]}"
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                        ⚠️ **CHALLENGES TO FACE** ⚠️                        │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ ${PROGRAMMING_TAROT[$challenges_card]} │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    ⚠️ **CHALLENGES TO FACE** ⚠️"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_tarot_text "${PROGRAMMING_TAROT[$challenges_card]}"
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                       🧙‍♂️ **THE ORACLE'S ADVICE** 🧙‍♂️                       │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ ${PROGRAMMING_TAROT[$advice_card]} │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    🧙‍♂️ **THE ORACLE'S ADVICE** 🧙‍♂️"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_tarot_text "${PROGRAMMING_TAROT[$advice_card]}"
 }
 
 display_tarot_menu() {
     echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                    🔮 **PROGRAMMING TAROT ORACLE** 🔮                     │"
+    echo "│                    🔮 **PROGRAMMING TAROT ORACLE** 🔮               │"
     echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│  1. 🃏 Draw Single Daily Card                                        │"
-    echo "│  2. 🔮 Three-Card Spread (Past, Present, Future)                   │"
-    echo "│  3. 💼 Career Guidance Spread                                        │"
-    echo "│  4. 🎯 Random Programming Wisdom                                     │"
-    echo "│  5. 🚪 Return to Main Menu                                           │"
+    echo "│  1. 🃏 Draw Single Daily Card                                       │"
+    echo "│  2. 🔮 Three-Card Spread (Past, Present, Future)                    │"
+    echo "│  3. 💼 Career Guidance Spread                                       │"
+    echo "│  4. 🎯 Random Programming Wisdom                                    │"
+    echo "│  5. 🚪 Return to Main Menu                                          │"
     echo "╰─────────────────────────────────────────────────────────────────────╯"
     echo
 }
@@ -221,15 +221,11 @@ run_tarot_session() {
                 draw_career_guidance_spread
                 ;;
             4)
-                echo "🎯 **RANDOM PROGRAMMING WISDOM** 🎯"
+                echo "    🎯 **RANDOM PROGRAMMING WISDOM** 🎯"
+                echo "    ═══════════════════════════════════════════════════════════════"
                 echo
                 local random_card=$(draw_single_card)
-                echo "╭─────────────────────────────────────────────────────────────────────╮"
-                echo "│                      🎲 **THE CARDS SPEAK** 🎲                          │"
-                echo "├─────────────────────────────────────────────────────────────────────┤"
-                echo "│ ${PROGRAMMING_TAROT[$random_card]} │"
-                echo "╰─────────────────────────────────────────────────────────────────────╯"
-                echo
+                wrap_tarot_text "${PROGRAMMING_TAROT[$random_card]}"
                 ;;
             5)
                 echo "🚪 The tarot cards bid you farewell... until next time!"

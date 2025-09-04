@@ -27,6 +27,12 @@ ORACLE_RESPONSES[side_projects]="🚀 **The Side Project Oracle encourages:** Yo
 
 ORACLE_RESPONSES[open_source]="🌟 **The Open Source Oracle enlightens:** Contributing to open source is like leaving flowers on the path for other travelers. Your pull request, no matter how small, makes the developer ecosystem a little bit better for everyone who comes after you."
 
+# Text wrapping function for oracle responses
+wrap_oracle_text() {
+    local text="$1"
+    echo "$text" | fold -s -w 75
+}
+
 # Specific technical advice
 declare -A TECHNICAL_ORACLE
 
@@ -159,25 +165,28 @@ provide_career_guidance() {
     local lang_count=${#PRIMARY_LANGUAGES[@]}
     local repo_diversity=$(get_repo_diversity_score)
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                🔮 **CAREER GUIDANCE ORACLE** 🔮                     │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
+    echo "    🔮 **CAREER GUIDANCE ORACLE** 🔮"
+    echo "    ═══════════════════════════════════════════════════════════════"
+    echo
     
     if [[ $lang_count -gt 5 ]]; then
-        echo "│ 🌟 **The Polyglot Path:** Your mastery of $lang_count languages   │"
-        echo "│ reveals a mind that adapts and evolves. Consider roles in         │"  
-        echo "│ technical leadership, architecture, or developer advocacy.         │"
-        echo "│ Your diversity is your superpower - embrace full-stack roles!     │"
+        echo "    • 🌟 **The Polyglot Path:** Your mastery of $lang_count languages"
+        echo "      reveals a mind that adapts and evolves. Consider roles in"  
+        echo "      technical leadership, architecture, or developer advocacy."
+        echo "      Your diversity is your superpower - embrace full-stack roles!"
+        echo
     elif [[ $lang_count -gt 2 ]]; then
-        echo "│ ⚖️ **The Balanced Developer:** Your comfort with $lang_count        │"
-        echo "│ languages shows thoughtful specialization. Focus on deepening     │"
-        echo "│ expertise while staying curious. Senior individual contributor    │" 
-        echo "│ or team lead roles await your balanced approach.                  │"
+        echo "    • ⚖️ **The Balanced Developer:** Your comfort with $lang_count"
+        echo "      languages shows thoughtful specialization. Focus on deepening"
+        echo "      expertise while staying curious. Senior individual contributor" 
+        echo "      or team lead roles await your balanced approach."
+        echo
     else
-        echo "│ 🎯 **The Specialist's Path:** Your deep focus on $primary_lang     │"
-        echo "│ suggests mastery over breadth. Consider becoming the go-to        │"
-        echo "│ expert in your domain. Staff engineer or principal roles         │"
-        echo "│ reward deep specialization in complex problem spaces.            │"
+        echo "    • 🎯 **The Specialist's Path:** Your deep focus on $primary_lang"
+        echo "      suggests mastery over breadth. Consider becoming the go-to"
+        echo "      expert in your domain. Staff engineer or principal roles"
+        echo "      reward deep specialization in complex problem spaces."
+        echo
     fi
     
     if [[ $REPO_COUNT -gt 20 ]]; then
@@ -187,11 +196,10 @@ provide_career_guidance() {
     elif [[ $ABANDONED_REPOS -gt $((REPO_COUNT / 2)) ]]; then
         echo "│                                                                   │"  
         echo "│ 🔍 Your exploration pattern suggests you thrive on variety.      │"
-        echo "│ Consulting, contracting, or roles with diverse project          │"
-        echo "│ exposure will feed your curiosity and prevent boredom.          │"
+        echo "      Consulting, contracting, or roles with diverse project"
+        echo "      exposure will feed your curiosity and prevent boredom."
+        echo
     fi
-    
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
 }
 
 # Debugging wisdom based on commit patterns and messages
@@ -200,19 +208,21 @@ provide_debugging_wisdom() {
     local night_percentage=$(get_night_owl_score)
     local commit_messages="${COMMIT_MESSAGES[*]}"
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                🐛 **DEBUGGING WISDOM ORACLE** 🐛                    │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
+    echo "    🐛 **DEBUGGING WISDOM ORACLE** 🐛"
+    echo "    ═══════════════════════════════════════════════════════════════"
+    echo
     
     if [[ $night_percentage -gt 40 ]]; then
-        echo "│ 🌙 **Night Owl Debugging Pattern:** $night_percentage% of your commits │"
-        echo "│ happen in darkness. Night debugging is like surgery by candlelight │"
-        echo "│ - you see clearly, but miss the bigger picture. Schedule morning   │"
-        echo "│ review sessions to catch logic errors your tired brain missed.    │"
+        echo "    • 🌙 **Night Owl Debugging Pattern:** $night_percentage% of your commits"
+        echo "      happen in darkness. Night debugging is like surgery by candlelight"
+        echo "      - you see clearly, but miss the bigger picture. Schedule morning"
+        echo "      review sessions to catch logic errors your tired brain missed."
+        echo
     elif [[ $night_percentage -lt 10 ]]; then
-        echo "│ ☀️ **Daylight Developer:** Your $night_percentage% night commits show │"
-        echo "│ discipline! Your fresh morning mind catches bugs before they       │"
-        echo "│ multiply. Trust your instincts during peak mental clarity.        │"
+        echo "    • ☀️ **Daylight Developer:** Your $night_percentage% night commits show"
+        echo "      discipline! Your fresh morning mind catches bugs before they"
+        echo "      multiply. Trust your instincts during peak mental clarity."
+        echo
     fi
     
     if [[ "$commit_messages" =~ (fix|bug|debug|error) ]]; then
@@ -241,36 +251,24 @@ provide_burnout_check() {
     local weekend_percentage=$(get_weekend_warrior_score)
     local commits_per_day=$((TOTAL_COMMITS / 365)) # Rough estimate
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                🔥 **BURNOUT CHECK ORACLE** 🔥                       │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
+    echo
+    printf "%-75s\n" "🔥 BURNOUT CHECK ORACLE 🔥"
+    printf "%-75s\n" "$(printf '═%.0s' {1..75})"
     
     if [[ $weekend_percentage -gt 60 ]]; then
-        echo "│ ⚠️ **Weekend Warrior Warning:** $weekend_percentage% weekend commits │"
-        echo "│ suggest you code more on weekends than weekdays! Your passion is  │"
-        echo "│ admirable, but even magical systems need downtime for updates.    │"
-        echo "│ Schedule deliberate rest - your Monday morning self will thank    │"
-        echo "│ your Sunday evening wisdom. Protect your creative energy!         │"
+        wrap_oracle_text "• ⚠️ Weekend Warrior Warning: $weekend_percentage% weekend commits suggest you code more on weekends than weekdays! Your passion is admirable, but even magical systems need downtime for updates. Schedule deliberate rest - your Monday morning self will thank your Sunday evening wisdom. Protect your creative energy!" | sed 's/^/  /'
     elif [[ $weekend_percentage -gt 30 ]]; then
-        echo "│ ⚖️ **Healthy Balance Detected:** $weekend_percentage% weekend coding │" 
-        echo "│ shows you're engaged without being consumed. You understand that  │"
-        echo "│ sustainable coding is a marathon, not a sprint. Keep this rhythm! │"
+        wrap_oracle_text "• ⚖️ Healthy Balance Detected: $weekend_percentage% weekend coding shows you're engaged without being consumed. You understand that sustainable coding is a marathon, not a sprint. Keep this rhythm!" | sed 's/^/  /'
     else
-        echo "│ 🧘 **Zen Master Mode:** $weekend_percentage% weekend commits show   │"
-        echo "│ excellent work-life boundaries! Your rested mind produces better  │"
-        echo "│ code than your exhausted one. You've mastered the art of          │"
-        echo "│ sustainable development - teach others your wisdom!               │"
+        wrap_oracle_text "• 🧘 Zen Master Mode: $weekend_percentage% weekend commits show excellent work-life boundaries! Your rested mind produces better code than your exhausted one. You've mastered the art of sustainable development - teach others your wisdom!" | sed 's/^/  /'
     fi
     
     if [[ $commits_per_day -gt 5 ]]; then
-        echo "│                                                                   │"
-        echo "│ 🚨 **High Velocity Alert:** ~$commits_per_day commits/day average │"
-        echo "│ suggests intense coding activity. Monitor your energy levels and  │"
-        echo "│ ensure you're solving problems, not just creating activity.       │"
-        echo "│ Quality over quantity - let your code breathe between commits.    │"
+        echo
+        wrap_oracle_text "• 🚨 High Velocity Alert: ~$commits_per_day commits/day average suggests intense coding activity. Monitor your energy levels and ensure you're solving problems, not just creating activity. Quality over quantity - let your code breathe between commits." | sed 's/^/  /'
     fi
     
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo
 }
 
 # Skill development recommendations based on language patterns
@@ -279,54 +277,35 @@ provide_skill_development() {
     local lang_count=${#PRIMARY_LANGUAGES[@]}
     local primary_lang="${PRIMARY_LANGUAGES[0]:-Unknown}"
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│              📚 **SKILL DEVELOPMENT ORACLE** 📚                     │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
+    echo
+    printf "%-75s\n" "📚 SKILL DEVELOPMENT ORACLE 📚"
+    printf "%-75s\n" "$(printf '═%.0s' {1..75})"
     
     if [[ $lang_count -eq 1 ]]; then
-        echo "│ 🎯 **Specialization Path:** Your focus on $primary_lang shows     │"
-        echo "│ commitment to mastery. Consider expanding horizontally:           │"
-        echo "│ • Study $primary_lang's ecosystem deeply (frameworks, tools)     │"
-        echo "│ • Learn a complementary language (different paradigm)            │"
-        echo "│ • Explore architecture patterns specific to your domain          │"
+        wrap_oracle_text "• 🎯 Specialization Path: Your focus on $primary_lang shows commitment to mastery. Consider expanding horizontally: Study $primary_lang's ecosystem deeply (frameworks, tools), learn a complementary language (different paradigm), explore architecture patterns specific to your domain." | sed 's/^/  /'
     elif [[ $lang_count -gt 5 ]]; then
-        echo "│ 🌈 **Polyglot Mastery:** Your $lang_count languages show incredible │"
-        echo "│ adaptability! Focus on deepening rather than widening:           │"
-        echo "│ • Choose 2-3 languages for deep specialization                   │"
-        echo "│ • Study language design principles and paradigms                 │"
-        echo "│ • Become a bridge between different tech stacks in your team     │"
+        wrap_oracle_text "• 🌈 Polyglot Mastery: Your $lang_count languages show incredible adaptability! Focus on deepening rather than widening: Choose 2-3 languages for deep specialization, study language design principles and paradigms, become a bridge between different tech stacks in your team." | sed 's/^/  /'
     else
-        echo "│ ⚖️ **Balanced Growth:** Your $lang_count languages show thoughtful │"
-        echo "│ progression. Your next learning path depends on your goals:      │"
-        echo "│ • For leadership: study system design and architecture           │"
-        echo "│ • For expertise: dive deeper into $primary_lang advanced features │"
-        echo "│ • For versatility: add a language from a different paradigm      │"
+        wrap_oracle_text "• ⚖️ Balanced Growth: Your $lang_count languages show thoughtful progression. Your next learning path depends on your goals: For leadership: study system design and architecture. For expertise: dive deeper into $primary_lang advanced features. For versatility: add a language from a different paradigm." | sed 's/^/  /'
     fi
     
     # Language-specific recommendations
     case $primary_lang in
         "JavaScript"|"TypeScript")
-            echo "│                                                                   │"
-            echo "│ 🟡 **JS/TS Growth Path:** Explore modern frameworks, async       │"
-            echo "│ patterns, and backend Node.js. Consider learning Rust or Go     │"
-            echo "│ for performance-critical thinking, or Python for data work.     │"
+            echo
+            wrap_oracle_text "• 🟡 JS/TS Growth Path: Explore modern frameworks, async patterns, and backend Node.js. Consider learning Rust or Go for performance-critical thinking, or Python for data work." | sed 's/^/  /'
             ;;
         "Python")
-            echo "│                                                                   │"
-            echo "│ 🐍 **Python Mastery Path:** Dive into async/await, data        │"
-            echo "│ science libraries, or web frameworks. Learn Go or Rust for     │"
-            echo "│ systems thinking, or JavaScript for full-stack versatility.    │"
+            echo
+            wrap_oracle_text "• 🐍 Python Mastery Path: Dive into async/await, data science libraries, or web frameworks. Learn Go or Rust for systems thinking, or JavaScript for full-stack versatility." | sed 's/^/  /'
             ;;
         "Go"|"Rust")
-            echo "│                                                                   │"
-            echo "│ ⚡ **Systems Language Mastery:** Your low-level focus is       │"
-            echo "│ excellent! Consider distributed systems, kubernetes, or        │"
-            echo "│ performance optimization. Add a high-level language for        │"
-            echo "│ rapid prototyping (Python, JavaScript).                       │"
+            echo
+            wrap_oracle_text "• ⚡ Systems Language Mastery: Your low-level focus is excellent! Consider distributed systems, kubernetes, or performance optimization. Add a high-level language for rapid prototyping (Python, JavaScript)." | sed 's/^/  /'
             ;;
     esac
     
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo
 }
 
 # Team collaboration insights from commit and PR patterns
@@ -335,45 +314,32 @@ provide_team_collaboration() {
     local commit_messages="${COMMIT_MESSAGES[*]}"
     local emoji_personality=$(get_emoji_personality)
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│              👥 **TEAM COLLABORATION ORACLE** 👥                    │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
+    echo
+    printf "%-75s\n" "👥 TEAM COLLABORATION ORACLE 👥"
+    printf "%-75s\n" "$(printf '═%.0s' {1..75})"
     
     # Analyze commit message style for collaboration insights
     if [[ "$commit_messages" =~ (feat|fix|docs|style|refactor|test|chore) ]]; then
-        echo "│ ✨ **Conventional Commit Master:** Your structured commit messages │"
-        echo "│ show respect for your future self and teammates! This discipline  │"
-        echo "│ makes you a joy to work with. Your git history tells a story     │"
-        echo "│ that others can follow. Consider mentoring others in this art.   │"
+        wrap_oracle_text "• ✨ Conventional Commit Master: Your structured commit messages show respect for your future self and teammates! This discipline makes you a joy to work with. Your git history tells a story that others can follow. Consider mentoring others in this art." | sed 's/^/  /'
     elif [[ "$commit_messages" =~ (WIP|wip|temp|temporary) ]]; then
-        echo "│ 🚧 **Work-in-Progress Communicator:** Your WIP commits show       │"
-        echo "│ transparency about incomplete work. This honesty builds trust!    │"
-        echo "│ Consider using feature branches for experimental work to keep     │"
-        echo "│ main branch clean while maintaining your open communication.     │"
+        wrap_oracle_text "• 🚧 Work-in-Progress Communicator: Your WIP commits show transparency about incomplete work. This honesty builds trust! Consider using feature branches for experimental work to keep main branch clean while maintaining your open communication." | sed 's/^/  /'
     elif [[ "$commit_messages" =~ (stuff|things|changes|update) ]]; then
-        echo "│ 🎭 **Mysterious Committer:** Your cryptic commit messages add     │"
-        echo "│ mystery to your work! While entertaining, consider your team     │"
-        echo "│ members who might need to understand your changes at 3am during │"
-        echo "│ an emergency. Add a bit more context for your future heroes.    │"
+        wrap_oracle_text "• 🎭 Mysterious Committer: Your cryptic commit messages add mystery to your work! While entertaining, consider your team members who might need to understand your changes at 3am during an emergency. Add a bit more context for your future heroes." | sed 's/^/  /'
     fi
     
     # Emoji analysis for team communication
     case $emoji_personality in
         *"Expressive Communicator"*)
-            echo "│                                                                   │"
-            echo "│ 🎭 Your expressive emoji use brings joy to code reviews and     │"
-            echo "│ makes technical communication more human. You're the team       │"
-            echo "│ member who makes everyone smile during stressful deployments!   │"
+            echo
+            wrap_oracle_text "• 🎭 Your expressive emoji use brings joy to code reviews and makes technical communication more human. You're the team member who makes everyone smile during stressful deployments!" | sed 's/^/  /'
             ;;
         *"Minimalist Coder"*)
-            echo "│                                                                   │" 
-            echo "│ 🗿 Your minimalist style focuses on substance over style.       │"
-            echo "│ While your code speaks volumes, don't underestimate the power  │"
-            echo "│ of a well-placed emoji in team chat to build connections.      │"
+            echo
+            wrap_oracle_text "• 🗿 Your minimalist style focuses on substance over style. While your code speaks volumes, don't underestimate the power of a well-placed emoji in team chat to build connections." | sed 's/^/  /'
             ;;
     esac
     
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo
 }
 
 # Project focus advice based on repository patterns

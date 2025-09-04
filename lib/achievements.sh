@@ -236,10 +236,11 @@ display_achievement_celebration() {
 
 # Roast achievement celebration with dynamic centering
 display_roast_celebration() {
-    local roast_celebration="🔥════════════════════════════════════🔥
-║     🌶️  ROAST MASTER LEVEL UP!  🌶️    ║
-║                                    ║  
-║        You can handle the heat!    ║
+    local roast_celebration="
+🔥════════════════════════════════════🔥
+║     🌶️  ROAST MASTER LEVEL UP!  🌶️   ║
+║                                      ║  
+║        You can handle the heat!      ║
 ║      🔥 Your code burns brighter 🔥  ║
 🔥════════════════════════════════════🔥"
 
@@ -253,10 +254,11 @@ display_roast_celebration() {
 
 # Oracle achievement celebration with dynamic centering
 display_oracle_celebration() {
-    local oracle_celebration="👁️✨═══════════════════════════════════✨👁️
-║        🔮 ORACLE WISDOM GAINED! 🔮      ║
-║                                       ║
-║    Your questions unlock the secrets  ║
+    local oracle_celebration="
+👁️✨═══════════════════════════════════✨👁️
+║        🔮 ORACLE WISDOM GAINED! 🔮       ║
+║                                          ║
+║    Your questions unlock the secrets     ║
 ║        👁️ All-Seeing Knowledge 👁️        ║
 👁️✨═══════════════════════════════════✨👁️"
 
@@ -270,11 +272,12 @@ display_oracle_celebration() {
 
 # Tarot achievement celebration with dynamic centering
 display_tarot_celebration() {
-    local tarot_celebration="🃏✨═══════════════════════════════════✨🃏
+    local tarot_celebration="
+🃏✨═══════════════════════════════════✨🃏
 ║      🎴 TAROT MASTER ACHIEVED! 🎴       ║
-║                                       ║
-║     The cards reveal your destiny     ║
-║        🔮 Fortune Favors You 🔮        ║
+║                                         ║
+║     The cards reveal your destiny       ║
+║        🔮 Fortune Favors You 🔮         ║
 🃏✨═══════════════════════════════════✨🃏"
 
     echo -e "${MAGENTA}${BOLD}"
@@ -289,11 +292,12 @@ display_tarot_celebration() {
 
 # Generic achievement celebration with dynamic centering
 display_generic_celebration() {
-    local generic_celebration="🌟✨═══════════════════════════════════✨🌟
-║        🏆 MILESTONE REACHED! 🏆        ║
-║                                       ║
-║       Your legend continues to        ║
-║          ✨ Grow Stronger ✨           ║
+    local generic_celebration="
+🌟✨═══════════════════════════════════✨🌟
+║        🏆 MILESTONE REACHED! 🏆         ║
+║                                         ║
+║       Your legend continues to          ║
+║          ✨ Grow Stronger ✨            ║
 🌟✨═══════════════════════════════════✨🌟"
 
     echo -e "${GREEN}${BOLD}"

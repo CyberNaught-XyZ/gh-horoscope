@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# Wrap text for better terminal display
+wrap_and_indent_text() {
+    local text="$1"
+    local indent="    • "
+    local width=75  # Leave some margin for terminal edges
+    
+    # Use fold to wrap text at word boundaries, then add proper indentation
+    echo "$text" | fold -w $((width - ${#indent})) -s | while IFS= read -r line; do
+        if [[ -n "$line" ]]; then
+            echo "$indent$line"
+            indent="      "  # Continuation lines get extra indent
+        fi
+    done
+    echo
+}
+
 # Comedy Generator module for GitHub CLI Horoscope Extension
 # Handles roasting, compliments, and humorous code analysis
 
@@ -306,7 +322,6 @@ display_roast_header() {
     echo "🔥                                                                🔥"
     echo "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥"
     echo
-    echo "⚠️  **DISCLAIMER**: All roasts are made with love and served with humor!"
     echo "📝 Remember: If you can't laugh at your code, who can? 😄"
     echo
 }
@@ -332,7 +347,8 @@ run_roast_mode() {
     
     echo "🔍 **Analyzing @$username's code for prime roasting material...** 🔍"
     echo
-    sleep 1
+    echo
+    sleep 2
     
     # Analyze user data for roasting (using globals from github-analyzer)
     local commit_msgs="${COMMIT_MESSAGES[*]}"
@@ -345,19 +361,15 @@ run_roast_mode() {
     # Get roast material
     local roast_type=$(analyze_for_roasting "$username" "$commit_msgs" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits")
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                     🎯 **THE MAIN ROAST** 🎯                           │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ $(generate_roast "$roast_type" "$username" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits") │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    🎯 **THE MAIN ROAST** 🎯"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_and_indent_text "$(generate_roast "$roast_type" "$username" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits")"
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                   🗣️ **LANGUAGE CHOICE ROAST** 🗣️                      │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ $(generate_language_roast "$primary_lang") │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    🗣️ **LANGUAGE CHOICE ROAST** 🗣️"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_and_indent_text "$(generate_language_roast "$primary_lang")"
     
     echo "🎭 **But seriously...** You're awesome for letting us roast your code!"
     echo "💻 Keep coding, keep improving, and keep having fun with it!"
@@ -383,12 +395,10 @@ run_compliment_mode() {
     # Get compliment material
     local compliment_type=$(analyze_for_compliments "$username" "$commit_msgs" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits")
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                 🌟 **YOUR CODING SUPERPOWERS** 🌟                      │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ $(generate_compliment "$compliment_type") │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    🌟 **YOUR CODING SUPERPOWERS** 🌟"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
+    wrap_and_indent_text "$(generate_compliment "$compliment_type")"
     
     echo "🎉 **Keep being awesome!** The coding world is better with developers like you!"
     echo "🚀 Your journey and dedication inspire others to keep learning and growing!"

@@ -3,6 +3,22 @@
 # Celebrity Developer Comparison module for GitHub CLI Horoscope Extension
 # Compare your coding patterns with famous developers
 
+# Wrap text for better terminal display
+wrap_celebrity_text() {
+    local text="$1"
+    local indent="    • "
+    local width=75  # Leave some margin for terminal edges
+    
+    # Use fold to wrap text at word boundaries, then add proper indentation
+    echo "$text" | fold -w $((width - ${#indent})) -s | while IFS= read -r line; do
+        if [[ -n "$line" ]]; then
+            echo "$indent$line"
+            indent="      "  # Continuation lines get extra indent
+        fi
+    done
+    echo
+}
+
 # Famous developer profiles for comparison
 declare -A CELEBRITY_DEVELOPERS
 
@@ -15,7 +31,7 @@ Known For: Creating Linux kernel and Git - basically, your computer's deity
 Mystical Trait: Can debug kernel panics through pure willpower and Finnish determination
 Quote: 'Talk is cheap. Show me the code.' ⚡"
 
-CELEBRITY_DEVELOPERS[gvanrossum]="🐍 **Guido van Rossum - The Python BDFL** 
+CELEBRITY_DEVELOPERS[gvanrossum]="🐍**Guido van Rossum - The Python BDFL** 
 Primary Language: Python (obviously)
 Coding Style: Elegant, readable, Pythonic zen
 Archetype: The Language Design Philosopher  
@@ -23,7 +39,7 @@ Known For: Creating Python - making programming accessible to mortals
 Mystical Trait: Can make code so readable that non-programmers think they understand it
 Quote: 'Beautiful is better than ugly. Explicit is better than implicit.' ✨"
 
-CELEBRITY_DEVELOPERS[bradfitz]="⚡ **Brad Fitzpatrick - The Performance Wizard**
+CELEBRITY_DEVELOPERS[bradfitz]="⚡**Brad Fitzpatrick - The Performance Wizard**
 Primary Language: Go (with occasional C magic)
 Coding Style: Performance-obsessed, scalable solutions
 Archetype: The Concurrency Conjurer
@@ -31,7 +47,7 @@ Known For: LiveJournal, memcached, Go contributions
 Mystical Trait: Can optimize code so well it travels backwards in time
 Quote: 'Make it work, make it right, make it fast.' 🚀"
 
-CELEBRITY_DEVELOPERS[dhh]="💎 **David Heinemeier Hansson - The Rails Revolutionary**
+CELEBRITY_DEVELOPERS[dhh]="💎**David Heinemeier Hansson - The Rails Revolutionary**
 Primary Language: Ruby (with strong opinions)
 Coding Style: Convention over configuration, developer happiness
 Archetype: The Framework Freedom Fighter
@@ -39,7 +55,7 @@ Known For: Ruby on Rails, Basecamp, strong developer advocacy
 Mystical Trait: Can create web applications that make developers weep with joy
 Quote: 'Optimize for programmer happiness.' 😊"
 
-CELEBRITY_DEVELOPERS[facebook]="📘 **Meta/Facebook Engineering - The Scale Masters**
+CELEBRITY_DEVELOPERS[facebook]="📘**Meta/Facebook Engineering - The Scale Masters**
 Primary Language: PHP/Hack/React (at massive scale)
 Coding Style: Move fast, scale everything, A/B test reality
 Archetype: The Billion-User Architects
@@ -47,7 +63,7 @@ Known For: Facebook, React, scaling to billions of users
 Mystical Trait: Can handle more simultaneous users than there are thoughts in your head
 Quote: 'Move fast and break things... then fix them at scale.' 📊"
 
-CELEBRITY_DEVELOPERS[google]="🔍 **Google Engineering - The Search Sages**
+CELEBRITY_DEVELOPERS[google]="🔍**Google Engineering - The Search Sages**
 Primary Language: C++/Go/Python/Java (everything)
 Coding Style: Algorithmic excellence, data-driven decisions
 Archetype: The Information Organization Oracle
@@ -55,7 +71,7 @@ Known For: Search, Android, Chrome, making the world's information accessible
 Mystical Trait: Can find any information in nanoseconds, including information you didn't know you needed
 Quote: 'Focus on the user and all else will follow.' 🎯"
 
-CELEBRITY_DEVELOPERS[rsc]="🔧 **Russ Cox - The Go Guru**
+CELEBRITY_DEVELOPERS[rsc]="🔧**Russ Cox - The Go Guru**
 Primary Language: Go (with deep systems knowledge)
 Coding Style: Clear, efficient, well-documented systems code
 Archetype: The Language Evolution Guide
@@ -63,7 +79,7 @@ Known For: Go development, Plan 9, systems programming excellence
 Mystical Trait: Can make complex systems seem simple and elegant
 Quote: 'Simplicity is the ultimate sophistication.' 🌟"
 
-CELEBRITY_DEVELOPERS[antirez]="⚡ **Salvatore Sanfilippo - The Redis Virtuoso**
+CELEBRITY_DEVELOPERS[antirez]="⚡**Salvatore Sanfilippo - The Redis Virtuoso**
 Primary Language: C (with artistic flair)
 Coding Style: Artistic code, performance poetry
 Archetype: The Data Structure Artist
@@ -71,7 +87,7 @@ Known For: Redis, creative problem solving
 Mystical Trait: Can turn data structures into performance art
 Quote: 'Code is poetry written by developers for other developers.' 🎨"
 
-CELEBRITY_DEVELOPERS[acolyer]="📚 **Adrian Colyer - The Paper Prophet**
+CELEBRITY_DEVELOPERS[acolyer]="📚**Adrian Colyer - The Paper Prophet**
 Primary Language: Research (translating papers to practice)
 Coding Style: Research-driven, evidence-based development
 Archetype: The Academic Bridge Builder
@@ -79,7 +95,7 @@ Known For: The Morning Paper, bridging academia and industry
 Mystical Trait: Can distill complex research papers into actionable developer wisdom
 Quote: 'There are no new ideas, just ideas whose time has come.' 🔬"
 
-CELEBRITY_DEVELOPERS[spolsky]="🏢 **Joel Spolsky - The Developer Advocate**
+CELEBRITY_DEVELOPERS[spolsky]="🏢**Joel Spolsky - The Developer Advocate**
 Primary Language: Varies (more about principles than syntax)
 Coding Style: Human-centered, developer-friendly processes
 Archetype: The Developer Experience Prophet
@@ -115,7 +131,7 @@ compare_with_celebrity() {
                 compatibility_score=$((compatibility_score + 15))
                 comparison_text+="💪 **Prolific Coder**: Your commit count rivals the dedication of kernel maintainers. "
             fi
-            comparison_text+="🐧 **Linux Compatibility Score: $compatibility_score/100**"
+            comparison_text+="🐧   **Linux Compatibility Score: $compatibility_score/100**"
             ;;
         "gvanrossum")
             if [[ "$user_primary_lang" =~ (Python) ]]; then
@@ -124,11 +140,11 @@ compare_with_celebrity() {
             fi
             if [[ "$user_archetype" =~ (Perfectionist|Code_Poet|Documentation) ]]; then
                 compatibility_score=$((compatibility_score + 25))
-                comparison_text+="📖 **Readable Code Philosophy**: Like Guido, you believe code should be beautiful. "
+                comparison_text+="📖 **Readable Code Philosophy**: Like Guido, you believe code should be beautiful.   "
             fi
             if [[ $user_weekend_pct -lt 30 && $user_night_pct -lt 40 ]]; then
                 compatibility_score=$((compatibility_score + 20))
-                comparison_text+="⚖️ **Work-Life Balance**: You understand the Dutch approach to sustainable development. "
+                comparison_text+="⚖️ **Work-Life Balance**: You understand the Dutch approach to sustainable development.   "
             fi
             comparison_text+="🐍 **Python BDFL Compatibility Score: $compatibility_score/100**"
             ;;
@@ -215,78 +231,69 @@ find_coding_doppelganger() {
 display_celebrity_comparison() {
     local username="$1"
     local celebrity="$2"
-    
+
     echo
     echo "🌟 ✨ 🌟 ✨ **CELEBRITY DEVELOPER COMPARISON** ✨ 🌟 ✨ 🌟"
     echo
     echo "📊 **Comparing @$username with legendary developer $celebrity**"
     echo
-    
-    # Show celebrity info
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                    👑 **CELEBRITY PROFILE** 👑                         │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "$(get_celebrity_info "$celebrity" | fold -w 65 -s | sed 's/^/│ /' | sed 's/$/                                                    │/' | cut -c1-69)"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+
+    # Show celebrity info with elegant header and bullet points
+    echo "    👑 **CELEBRITY PROFILE** 👑"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
     
-    # Show comparison analysis
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                  🔍 **COMPARISON ANALYSIS** 🔍                         │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
+    # Display celebrity info with bullet points and spacing
+    local celebrity_info=$(get_celebrity_info "$celebrity")
+    echo "$celebrity_info" | while IFS= read -r line; do
+        wrap_celebrity_text "$line"
+    done
+
+    # Show comparison analysis with elegant header and bullet points
+    echo "    🔍 **COMPARISON ANALYSIS** 🔍"
+    echo "    ═══════════════════════════════════════════════════════════════"
+    echo
+
+    # Display comparison with bullet points and spacing
     local comparison=$(compare_with_celebrity "$username" "$celebrity")
-    echo "$(echo "$comparison" | fold -w 65 -s | sed 's/^/│ /' | sed 's/$/                                                    │/' | cut -c1-69)"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "$comparison" | while IFS= read -r line; do
+        wrap_celebrity_text "$line"
+    done
     echo
 }
 
 # Find and display coding doppelganger
 display_coding_doppelganger() {
     local username="$1"
-    
+
     echo "🔍 **Scanning the celebrity developer database...**"
     echo "📡 **Analyzing your coding DNA...**"
     sleep 1
     echo "🧬 **Cross-referencing with legendary patterns...**"
     sleep 1
     echo
-    
+
     local result=$(find_coding_doppelganger "$username")
     local celebrity=$(echo "$result" | cut -d':' -f1)
     local score=$(echo "$result" | cut -d':' -f2)
-    
+
     echo "🎉 **MATCH FOUND!** 🎉"
     echo
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                 🎭 **YOUR CODING DOPPELGANGER** 🎭                     │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ **@$username**, you are ${score}% similar to **$celebrity**! │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo "    🎭 **YOUR CODING DOPPELGANGER** 🎭"
+    echo "    ═══════════════════════════════════════════════════════════════"
     echo
-    
+
+    # Display doppelganger result with bullet point
+    local doppelganger_msg="**@$username**, you are ${score}% similar to **$celebrity**!"
+    echo "    • $doppelganger_msg"
+    echo
+
     display_celebrity_comparison "$username" "$celebrity"
 }
 
-# List available celebrities
-list_celebrities() {
-    echo "🌟 **AVAILABLE CELEBRITY DEVELOPERS FOR COMPARISON** 🌟"
-    echo
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                     👑 **CODING LEGENDS** 👑                          │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│ • torvalds    - Linus Torvalds (Linux Kernel & Git Creator)        │"
-    echo "│ • gvanrossum  - Guido van Rossum (Python Creator)                  │"  
-    echo "│ • dhh         - David Heinemeier Hansson (Ruby on Rails)           │"
-    echo "│ • bradfitz    - Brad Fitzpatrick (Go Performance Expert)           │"
-    echo "│ • rsc         - Russ Cox (Go Language Developer)                   │"
-    echo "│ • facebook    - Meta/Facebook Engineering Team                     │"
-    echo "│ • google      - Google Engineering Team                            │"
-    echo "│ • antirez     - Salvatore Sanfilippo (Redis Creator)               │"
-    echo "│ • acolyer     - Adrian Colyer (The Morning Paper)                  │"
-    echo "│ • spolsky     - Joel Spolsky (Stack Overflow Co-founder)           │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
-    echo
-    echo "💡 **Usage**: gh horoscope --celebrity [celebrity_name] [username]"
-    echo "🎯 **Auto-match**: gh horoscope --doppelganger [username]"
-    echo
+# Calculate visual width of text (accounting for emojis)
+calculate_visual_width() {
+    local text="$1"
+    local emoji_count=$(echo "$text" | grep -o "🔮\|🐧\|🐍\|💎\|⚡\|💼\|🔍\|🔧\|🛠️\|🏛️\|🚀\|🌟\|📚\|🎓\|👥\|🤝\|🔥\|🧘\|👤\|💪\|⚙️\|🗿\|📿\|🕯️\|⚱️\|🌱\|😌\|⚖️\|🌸\|🦋\|🦁\|💎\|⭐\|🔮\|🌙\|💫\|🌠\|☄️\|📊\|📈\|🔍\|🚀\|💻\|🌐\|📡\|🎨\|🧠\|💡\|🔬\|📖\|✨\|🌉\|🤗\|💬\|🎭\|🔄\|😊\|🛤️\|🌺\|🤝\|🌿\|💚\|🕊️\|❄️\|🎯\|🏢\|⏳\|🎯\|📜\|🃏\|👑\|🔥\|💝\|🏛️\|🚪\|🏆\|🌶️\|👁️\|🎴\|👯\|🤝\|🌍\|❄️\|🎯\|📘\|📡\|🎉\|🧬\|🎭\|🔬\|🌟\|✨\|📊\|👑\|🤷‍♂️\|🧘\|🛤️\|🕊️\|❄️\|🎯\|🏢\|⏳\|🎯\|📜\|🃏\|👑\|🔥\|💝\|🏛️\|🚪\|🏆\|🌶️\|👁️\|🎴\|👯\|🤝\|🌍\|❄️\|🎯" | wc -l)
+    echo $(( ${#text} + emoji_count ))
 }
