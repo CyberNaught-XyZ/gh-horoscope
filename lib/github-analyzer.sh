@@ -366,31 +366,44 @@ detect_crisis_patterns() {
     echo $crisis_commits
 }
 
-# Analyze emotional patterns in commit messages
+# Enhanced emotion detection from code analysis
+declare -g EMOTIONAL_STATE=""
+declare -g EMOTION_INTENSITY=0
+declare -g DOMINANT_EMOTIONS=()
+declare -g CODING_MOOD_PATTERN=""
+
+# Analyze emotional patterns in commit messages with enhanced detection
 analyze_emotional_patterns() {
     local -a messages=("$@")
-    local positive_emotions=("awesome" "great" "amazing" "love" "happy" "excited" "perfect" "excellent")
-    local negative_emotions=("hate" "frustrated" "annoying" "stupid" "terrible" "awful" "sucks")
-    local neutral_emotions=("update" "change" "modify" "adjust" "tweak")
+    local positive_emotions=("awesome" "great" "amazing" "love" "happy" "excited" "perfect" "excellent" "fantastic" "wonderful" "brilliant" "success" "achieved" "accomplished" "proud" "satisfied" "delighted")
+    local negative_emotions=("hate" "frustrated" "annoying" "stupid" "terrible" "awful" "sucks" "horrible" "disaster" "nightmare" "broken" "failing" "impossible" "ridiculous" "pathetic" "hopeless")
+    local stressed_emotions=("urgent" "panic" "desperate" "crisis" "emergency" "help" "stuck" "lost" "confused" "overwhelmed" "tired" "exhausted")
+    local neutral_emotions=("update" "change" "modify" "adjust" "tweak" "refactor" "improve" "optimize" "implement" "add" "remove" "fix")
+    local humorous_emotions=("oops" "whoops" "lol" "haha" "silly" "funny" "derp" "facepalm" "wtf" "omg" "yolo")
     
     local positive_count=0
     local negative_count=0
+    local stressed_count=0
     local neutral_count=0
+    local humorous_count=0
     
     for message in "${messages[@]}"; do
         local classified=false
+        local message_lower=$(echo "$message" | tr '[:upper:]' '[:lower:]')
         
+        # Check positive emotions
         for emotion in "${positive_emotions[@]}"; do
-            if [[ "$message" =~ $emotion ]] && [[ $classified == false ]]; then
+            if [[ "$message_lower" =~ $emotion ]] && [[ $classified == false ]]; then
                 ((positive_count++))
                 classified=true
                 break
             fi
         done
         
+        # Check negative emotions
         if [[ $classified == false ]]; then
             for emotion in "${negative_emotions[@]}"; do
-                if [[ "$message" =~ $emotion ]]; then
+                if [[ "$message_lower" =~ $emotion ]]; then
                     ((negative_count++))
                     classified=true
                     break
@@ -398,12 +411,126 @@ analyze_emotional_patterns() {
             done
         fi
         
+        # Check stressed emotions
+        if [[ $classified == false ]]; then
+            for emotion in "${stressed_emotions[@]}"; do
+                if [[ "$message_lower" =~ $emotion ]]; then
+                    ((stressed_count++))
+                    classified=true
+                    break
+                fi
+            done
+        fi
+        
+        # Check humorous emotions
+        if [[ $classified == false ]]; then
+            for emotion in "${humorous_emotions[@]}"; do
+                if [[ "$message_lower" =~ $emotion ]]; then
+                    ((humorous_count++))
+                    classified=true
+                    break
+                fi
+            done
+        fi
+        
+        # Default to neutral
         if [[ $classified == false ]]; then
             ((neutral_count++))
         fi
     done
     
-    echo "positive:$positive_count,negative:$negative_count,neutral:$neutral_count"
+    local total_emotional_commits=$((positive_count + negative_count + stressed_count + humorous_count))
+    local total_commits=${#messages[@]}
+    
+    # Calculate emotion intensity (percentage of emotional vs neutral commits)
+    if [[ $total_commits -gt 0 ]]; then
+        EMOTION_INTENSITY=$((total_emotional_commits * 100 / total_commits))
+    else
+        EMOTION_INTENSITY=0
+    fi
+    
+    # Determine dominant emotional pattern
+    local max_count=0
+    local dominant_emotion="neutral"
+    
+    if [[ $positive_count -gt $max_count ]]; then
+        max_count=$positive_count
+        dominant_emotion="positive"
+    fi
+    
+    if [[ $negative_count -gt $max_count ]]; then
+        max_count=$negative_count
+        dominant_emotion="negative"
+    fi
+    
+    if [[ $stressed_count -gt $max_count ]]; then
+        max_count=$stressed_count
+        dominant_emotion="stressed"
+    fi
+    
+    if [[ $humorous_count -gt $max_count ]]; then
+        max_count=$humorous_count
+        dominant_emotion="humorous"
+    fi
+    
+    # Set global emotional state variables
+    EMOTIONAL_STATE="$dominant_emotion"
+    DOMINANT_EMOTIONS=("positive:$positive_count" "negative:$negative_count" "stressed:$stressed_count" "humorous:$humorous_count" "neutral:$neutral_count")
+    
+    # Determine coding mood pattern based on emotional distribution
+    if [[ $EMOTION_INTENSITY -gt 60 ]]; then
+        if [[ "$dominant_emotion" == "negative" ]] || [[ "$dominant_emotion" == "stressed" ]]; then
+            CODING_MOOD_PATTERN="Turbulent Coder"
+        elif [[ "$dominant_emotion" == "positive" ]]; then
+            CODING_MOOD_PATTERN="Joyful Developer"
+        elif [[ "$dominant_emotion" == "humorous" ]]; then
+            CODING_MOOD_PATTERN="Comedy Programmer"
+        fi
+    elif [[ $EMOTION_INTENSITY -gt 30 ]]; then
+        CODING_MOOD_PATTERN="Emotionally Balanced"
+    else
+        CODING_MOOD_PATTERN="Zen Programmer"
+    fi
+    
+    echo "positive:$positive_count,negative:$negative_count,stressed:$stressed_count,humorous:$humorous_count,neutral:$neutral_count,intensity:$EMOTION_INTENSITY,pattern:$CODING_MOOD_PATTERN"
+}
+
+# Detect frustration patterns in code changes
+detect_frustration_indicators() {
+    local -a messages=("$@")
+    local frustration_indicators=()
+    
+    for message in "${messages[@]}"; do
+        local message_lower=$(echo "$message" | tr '[:upper:]' '[:lower:]')
+        
+        # Multiple question marks indicate confusion/frustration
+        if [[ "$message" =~ \?\?\?+ ]]; then
+            frustration_indicators+=("confusion")
+        fi
+        
+        # Multiple exclamation marks indicate frustration/excitement
+        if [[ "$message" =~ \!\!\!+ ]]; then
+            frustration_indicators+=("intensity")
+        fi
+        
+        # All caps words indicate shouting/frustration
+        local caps_words=$(echo "$message" | grep -o '[A-Z][A-Z][A-Z][A-Z]*' | wc -l)
+        if [[ $caps_words -gt 2 ]]; then
+            frustration_indicators+=("shouting")
+        fi
+        
+        # Time-based frustration indicators
+        if [[ "$message_lower" =~ (why.*work|doesn.*t.*work|not.*working|still.*broken) ]]; then
+            frustration_indicators+=("persistent_issues")
+        fi
+        
+        # Desperation indicators
+        if [[ "$message_lower" =~ (please.*work|i.*give.*up|can.*t.*figure|what.*hell) ]]; then
+            frustration_indicators+=("desperation")
+        fi
+    done
+    
+    echo "${#frustration_indicators[@]}"
 }
 
 # Getter functions for analysis results
@@ -745,20 +872,186 @@ analyze_streak_magic() {
 }
 
 # Enhanced collaboration analysis
+# Enhanced collaboration analysis
+declare -g COLLABORATION_STYLE=""
+declare -g TEAM_INTERACTION_SCORE=0
+declare -g MENTORSHIP_INDICATORS=0
+declare -g CONFLICT_RESOLUTION_STYLE=""
+
 analyze_collaboration_depth() {
     local username="$1"
     
-    # In a real implementation, this would analyze:
-    # - PR review patterns
-    # - Issue participation  
-    # - Collaborative commit patterns
-    # - Organization memberships
+    # Enhanced collaboration analysis with deeper insights
+    local collaboration_indicators=()
+    local mentorship_patterns=()
+    local conflict_resolution_patterns=()
     
-    # Mock data for demo
+    # Analyze commit message patterns for collaboration clues
+    local commit_messages_text="${COMMIT_MESSAGES[*]}"
+    
+    # Team interaction indicators
+    if [[ "$commit_messages_text" =~ (pair.*program|paired.*with|thanks.*to|helped.*by|reviewed.*by) ]]; then
+        collaboration_indicators+=("pair_programming")
+    fi
+    
+    if [[ "$commit_messages_text" =~ (team.*effort|collaborative|together|group.*work) ]]; then
+        collaboration_indicators+=("team_oriented")
+    fi
+    
+    if [[ "$commit_messages_text" =~ (merge.*from|cherry.*pick|backport) ]]; then
+        collaboration_indicators+=("integration_focused")
+    fi
+    
+    # Mentorship indicators
+    if [[ "$commit_messages_text" =~ (teach|explain|document|guide|help.*understand) ]]; then
+        mentorship_patterns+=("teacher")
+    fi
+    
+    if [[ "$commit_messages_text" =~ (learn.*from|inspired.*by|following.*example) ]]; then
+        mentorship_patterns+=("learner")
+    fi
+    
+    if [[ "$commit_messages_text" =~ (onboard|welcome|introduce|first.*time) ]]; then
+        mentorship_patterns+=("welcomer")
+    fi
+    
+    # Conflict resolution patterns
+    if [[ "$commit_messages_text" =~ (resolve.*conflict|fix.*merge|address.*feedback) ]]; then
+        conflict_resolution_patterns+=("diplomatic")
+    fi
+    
+    if [[ "$commit_messages_text" =~ (revert|rollback|undo) ]]; then
+        conflict_resolution_patterns+=("decisive")
+    fi
+    
+    if [[ "$commit_messages_text" =~ (discuss|consensus|agreement|compromise) ]]; then
+        conflict_resolution_patterns+=("consultative")
+    fi
+    
+    # Mock collaboration metrics (in real implementation, would analyze PR/issue interactions)
     local user_hash=$(echo "$username" | cksum | cut -d' ' -f1)
     PR_REVIEW_COUNT=$(($user_hash % 50))
     ISSUE_PARTICIPATION=$(($user_hash % 30))
     COLLAB_PROJECTS=$(($user_hash % 15))
+    
+    # Determine collaboration style
+    local collaboration_indicators_count=${#collaboration_indicators[@]}
+    local mentorship_count=${#mentorship_patterns[@]}
+    local conflict_count=${#conflict_resolution_patterns[@]}
+    
+    TEAM_INTERACTION_SCORE=$((collaboration_indicators_count * 25 + PR_REVIEW_COUNT))
+    MENTORSHIP_INDICATORS=$mentorship_count
+    
+    # Determine collaboration style based on patterns
+    if [[ $collaboration_indicators_count -gt 3 ]]; then
+        COLLABORATION_STYLE="Team Player"
+    elif [[ $collaboration_indicators_count -gt 1 ]]; then
+        COLLABORATION_STYLE="Collaborative Developer"  
+    elif [[ $PR_REVIEW_COUNT -gt 20 ]]; then
+        COLLABORATION_STYLE="Community Contributor"
+    else
+        COLLABORATION_STYLE="Independent Developer"
+    fi
+    
+    # Determine conflict resolution style
+    if [[ " ${conflict_resolution_patterns[*]} " =~ "diplomatic" ]]; then
+        CONFLICT_RESOLUTION_STYLE="Diplomatic Resolver"
+    elif [[ " ${conflict_resolution_patterns[*]} " =~ "decisive" ]]; then
+        CONFLICT_RESOLUTION_STYLE="Decisive Leader"
+    elif [[ " ${conflict_resolution_patterns[*]} " =~ "consultative" ]]; then
+        CONFLICT_RESOLUTION_STYLE="Consensus Builder"
+    else
+        CONFLICT_RESOLUTION_STYLE="Conflict Avoider"
+    fi
+}
+
+# Analyze communication patterns in commits
+analyze_communication_patterns() {
+    local -a messages=("$@")
+    local communication_styles=()
+    
+    for message in "${messages[@]}"; do
+        local message_lower=$(echo "$message" | tr '[:upper:]' '[:lower:]')
+        
+        # Formal communication style
+        if [[ "$message_lower" =~ (implement|refactor|optimize|enhance|address) ]]; then
+            communication_styles+=("formal")
+        fi
+        
+        # Casual communication style  
+        if [[ "$message_lower" =~ (fix.*up|clean.*up|tweak|polish|tidy) ]]; then
+            communication_styles+=("casual")
+        fi
+        
+        # Explanatory style
+        if [[ "$message_lower" =~ (because|since|due.*to|in.*order.*to) ]]; then
+            communication_styles+=("explanatory")
+        fi
+        
+        # Emotional/expressive style
+        if [[ "$message_lower" =~ (finally|awesome|terrible|love|hate) ]]; then
+            communication_styles+=("expressive")
+        fi
+        
+        # Technical precision
+        if [[ "$message" =~ (v[0-9]+\.[0-9]+|bug.*#[0-9]+|issue.*#[0-9]+|pr.*#[0-9]+) ]]; then
+            communication_styles+=("precise")
+        fi
+    done
+    
+    # Count style frequencies
+    declare -A style_counts
+    for style in "${communication_styles[@]}"; do
+        ((style_counts[$style]++))
+    done
+    
+    # Find dominant communication style
+    local max_count=0
+    local dominant_style="balanced"
+    
+    for style in "${!style_counts[@]}"; do
+        if [[ ${style_counts[$style]} -gt $max_count ]]; then
+            max_count=${style_counts[$style]}
+            dominant_style="$style"
+        fi
+    done
+    
+    echo "$dominant_style"
+}
+
+# Analyze leadership and initiative patterns
+analyze_leadership_patterns() {
+    local username="$1"
+    local commit_messages_text="${COMMIT_MESSAGES[*]}"
+    
+    local leadership_indicators=()
+    
+    # Initiative taking
+    if [[ "$commit_messages_text" =~ (initial.*commit|start.*project|create.*repo|bootstrap) ]]; then
+        leadership_indicators+=("initiator")
+    fi
+    
+    # Architecture decisions
+    if [[ "$commit_messages_text" =~ (architecture|design|structure|framework.*choice) ]]; then
+        leadership_indicators+=("architect")
+    fi
+    
+    # Process improvement
+    if [[ "$commit_messages_text" =~ (improve.*process|setup.*ci|add.*linting|standardize) ]]; then
+        leadership_indicators+=("process_improver")
+    fi
+    
+    # Problem solving
+    if [[ "$commit_messages_text" =~ (solve|solution|approach|strategy) ]]; then
+        leadership_indicators+=("problem_solver")
+    fi
+    
+    # Team coordination
+    if [[ "$commit_messages_text" =~ (coordinate|organize|plan|schedule) ]]; then
+        leadership_indicators+=("coordinator")
+    fi
+    
+    echo "${#leadership_indicators[@]}"
 }
 
 # Analyze coding element based on multiple factors

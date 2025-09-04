@@ -46,7 +46,191 @@ TECHNICAL_ORACLE[security]="🔒 **Security Wisdom:** Trust is a vulnerability. 
 
 TECHNICAL_ORACLE[documentation]="📝 **Documentation Wisdom:** Code tells you how, comments tell you why, documentation tells you when to care. Write docs for the developer you were six months ago - confused, eager, and slightly panicked."
 
-TECHNICAL_ORACLE[code_review]="👁️ **Code Review Wisdom:** Review code like you're reviewing a work of art - look for beauty, clarity, and intention. Be firm with standards but gentle with people. Every 'please change this' should come with a 'here's why'."
+# Technical Debt Oracle - Advanced technical debt analysis and advice
+declare -A TECHNICAL_DEBT_ORACLE
+declare -g DEBT_ANALYSIS_RESULTS=()
+declare -g DEBT_SEVERITY_LEVEL=""
+
+# Technical Debt Oracle responses and analysis
+TECHNICAL_DEBT_ORACLE[architecture_debt]="🏗️ **Architecture Debt Oracle:** Your codebase has grown organically, like a city without urban planning. What once was a charming village of functions has become a sprawling metropolis of dependencies. Time to draw some maps, establish some districts, and maybe build a few bridges where there are currently only dark alleys."
+
+TECHNICAL_DEBT_ORACLE[documentation_debt]="📚 **Documentation Debt Oracle:** Your code speaks in ancient tongues that only you can decipher. Future developers will need a Rosetta Stone to understand your intentions. The debt isn't in what you wrote, but in what you forgot to explain. Consider this: if your code is poetry, your comments should be the translation."
+
+TECHNICAL_DEBT_ORACLE[testing_debt]="🧪 **Testing Debt Oracle:** You've built a beautiful glass house but forgotten to install smoke detectors. Your code works today, but will it work tomorrow? Testing debt is like insurance - boring until you need it, essential when disaster strikes. Start small: test the parts that would hurt most if they broke."
+
+TECHNICAL_DEBT_ORACLE[refactoring_debt]="🔄 **Refactoring Debt Oracle:** Your code has accumulated layers like an archaeological site - each commit a new stratum of history. Some functions have grown so complex they deserve their own zip code. The Oracle sees three paths: divide the giants, simplify the tangles, or document the maze so others can navigate it."
+
+TECHNICAL_DEBT_ORACLE[dependency_debt]="📦 **Dependency Debt Oracle:** Your package.json reads like a phone book from the early 2000s. You've collected dependencies like a digital hoarder - some useful, some forgotten, some actively harmful. Time for a Marie Kondo session: does this package spark joy? If not, thank it for its service and delete it."
+
+TECHNICAL_DEBT_ORACLE[performance_debt]="⚡ **Performance Debt Oracle:** Your application runs, but with the grace of a three-legged elephant. Performance debt is often invisible until it becomes unbearable. The Oracle suggests: measure first, optimize second, and remember - the fastest code is the code that doesn't run at all."
+
+TECHNICAL_DEBT_ORACLE[security_debt]="🔒 **Security Debt Oracle:** You've built fortifications from the outside but left the windows unlocked. Security debt compounds faster than credit card interest and can be just as devastating. Every TODO comment about 'fixing this later' is a potential vulnerability. Later is now."
+
+TECHNICAL_DEBT_ORACLE[maintainability_debt]="🛠️ **Maintainability Debt Oracle:** Your code works, but maintaining it requires the skills of an archaeologist, the patience of a saint, and the courage of a debugger. Maintainability debt is the most insidious kind - it doesn't break things, it just makes everything harder. Invest in clarity today, thank yourself tomorrow."
+
+TECHNICAL_DEBT_ORACLE[configuration_debt]="⚙️ **Configuration Debt Oracle:** Your project has more configuration files than a bureaucratic maze. Environment-specific settings are scattered like Easter eggs throughout your codebase. The Oracle sees a path: centralize the chaos, version the variables, and document the decisions."
+
+TECHNICAL_DEBT_ORACLE[error_handling_debt]="🚨 **Error Handling Debt Oracle:** Your code assumes a world where nothing goes wrong - a beautiful but naive perspective. When exceptions happen (and they will), your application throws tantrums like a toddler in a toy store. Graceful failure is an art form worth mastering."
+
+# Analyze technical debt patterns from GitHub data
+analyze_technical_debt() {
+    local username="$1"
+    local commit_messages_text="${COMMIT_MESSAGES[*]}"
+    local repo_count="$REPO_COUNT"
+    local abandoned_repos="$ABANDONED_REPOS"
+    
+    local debt_indicators=()
+    local severity_score=0
+    
+    # Architecture debt indicators
+    if [[ "$commit_messages_text" =~ (refactor|restructure|reorganize|massive.*change|big.*refactor) ]]; then
+        debt_indicators+=("architecture_debt")
+        severity_score=$((severity_score + 15))
+    fi
+    
+    # Documentation debt indicators
+    if [[ "$commit_messages_text" =~ (add.*docs|document|readme|comment|explain) ]]; then
+        debt_indicators+=("documentation_debt")
+        severity_score=$((severity_score + 10))
+    fi
+    
+    # Testing debt indicators
+    if [[ "$commit_messages_text" =~ (add.*test|fix.*test|test.*coverage|testing) ]]; then
+        debt_indicators+=("testing_debt")
+        severity_score=$((severity_score + 20))
+    fi
+    
+    # Dependency debt indicators
+    if [[ "$commit_messages_text" =~ (update.*dep|upgrade|dependency|package|npm.*audit|security.*fix) ]]; then
+        debt_indicators+=("dependency_debt")
+        severity_score=$((severity_score + 12))
+    fi
+    
+    # Performance debt indicators
+    if [[ "$commit_messages_text" =~ (optimize|performance|slow|speed.*up|memory|leak) ]]; then
+        debt_indicators+=("performance_debt")
+        severity_score=$((severity_score + 18))
+    fi
+    
+    # Security debt indicators
+    if [[ "$commit_messages_text" =~ (security|vulnerable|cve|patch|auth.*fix|secure) ]]; then
+        debt_indicators+=("security_debt")
+        severity_score=$((severity_score + 25))
+    fi
+    
+    # Error handling debt indicators
+    if [[ "$commit_messages_text" =~ (catch.*error|handle.*exception|try.*catch|error.*handling) ]]; then
+        debt_indicators+=("error_handling_debt")
+        severity_score=$((severity_score + 8))
+    fi
+    
+    # Configuration debt indicators
+    if [[ "$commit_messages_text" =~ (config|environment|env.*var|settings) ]]; then
+        debt_indicators+=("configuration_debt")
+        severity_score=$((severity_score + 6))
+    fi
+    
+    # Repository abandonment as debt indicator
+    if [[ $repo_count -gt 0 ]] && [[ $abandoned_repos -gt 0 ]]; then
+        local abandonment_ratio=$((abandoned_repos * 100 / repo_count))
+        if [[ $abandonment_ratio -gt 50 ]]; then
+            debt_indicators+=("maintainability_debt")
+            severity_score=$((severity_score + abandonment_ratio / 5))
+        fi
+    fi
+    
+    # Determine debt severity level
+    if [[ $severity_score -gt 80 ]]; then
+        DEBT_SEVERITY_LEVEL="Critical"
+    elif [[ $severity_score -gt 50 ]]; then
+        DEBT_SEVERITY_LEVEL="High"
+    elif [[ $severity_score -gt 25 ]]; then
+        DEBT_SEVERITY_LEVEL="Moderate"
+    else
+        DEBT_SEVERITY_LEVEL="Low"
+    fi
+    
+    # Store analysis results
+    DEBT_ANALYSIS_RESULTS=("${debt_indicators[@]}")
+    
+    return ${#debt_indicators[@]}
+}
+
+# Generate technical debt oracle consultation
+provide_technical_debt_consultation() {
+    local username="$1"
+    
+    display_section_header "🏗️ TECHNICAL DEBT ORACLE CONSULTATION"
+    
+    # Perform debt analysis
+    analyze_technical_debt "$username"
+    local debt_count=$?
+    
+    if [[ $debt_count -eq 0 ]]; then
+        echo
+        wrap_oracle_text "🌟 **Clean Code Oracle:** Your repositories show remarkable discipline! The technical debt spirits find little to criticize. Either you're a master of preventive programming, or you're very good at hiding your chaos. Keep up the excellent work, but remember - a little debt isn't always bad if it helps you ship faster." | sed 's/^/    /'
+        echo
+        return 0
+    fi
+    
+    echo
+    printf "    %-70s\n" "🎯 DEBT ANALYSIS SUMMARY"
+    printf "    %-70s\n" "$(printf '═%.0s' {1..70})"
+    echo
+    printf "    • Debt Severity Level: %s\n" "$DEBT_SEVERITY_LEVEL"
+    printf "    • Debt Categories Detected: %d\n" "$debt_count"
+    echo
+    
+    # Provide specific oracle advice for detected debt types
+    for debt_type in "${DEBT_ANALYSIS_RESULTS[@]}"; do
+        echo
+        wrap_oracle_text "${TECHNICAL_DEBT_ORACLE[$debt_type]}" | sed 's/^/    /'
+        echo
+        
+        # Provide actionable advice based on debt type
+        case $debt_type in
+            "architecture_debt")
+                wrap_oracle_text "📋 **Immediate Actions:** 1) Identify the largest source file 2) Extract reusable components 3) Define clear module boundaries 4) Create a refactoring roadmap" | sed 's/^/      /'
+                ;;
+            "documentation_debt")
+                wrap_oracle_text "📋 **Immediate Actions:** 1) Document the most confusing function 2) Add a proper README 3) Comment any 'clever' code 4) Explain your architectural decisions" | sed 's/^/      /'
+                ;;
+            "testing_debt")
+                wrap_oracle_text "📋 **Immediate Actions:** 1) Test your most critical function 2) Add integration tests for user flows 3) Set up continuous testing 4) Aim for 80% coverage, not 100%" | sed 's/^/      /'
+                ;;
+            "dependency_debt")
+                wrap_oracle_text "📋 **Immediate Actions:** 1) Audit unused dependencies 2) Update security-critical packages 3) Pin versions for stability 4) Consider alternatives to large dependencies" | sed 's/^/      /'
+                ;;
+            "security_debt")
+                wrap_oracle_text "📋 **Immediate Actions:** 1) Run security audit tools 2) Update vulnerable dependencies 3) Review authentication logic 4) Validate all user inputs" | sed 's/^/      /'
+                ;;
+        esac
+        echo
+    done
+    
+    # Overall debt management strategy
+    echo
+    printf "    %-70s\n" "🗺️ DEBT MANAGEMENT STRATEGY"
+    printf "    %-70s\n" "$(printf '─%.0s' {1..70})"
+    echo
+    
+    case $DEBT_SEVERITY_LEVEL in
+        "Critical")
+            wrap_oracle_text "🚨 **Crisis Mode:** Your technical debt has reached critical mass. Consider declaring a 'tech debt sprint' - dedicate 25% of your development time to addressing the most severe issues. Create a debt register and tackle items systematically." | sed 's/^/    /'
+            ;;
+        "High")
+            wrap_oracle_text "⚠️ **Action Required:** Your technical debt is accumulating faster than you can pay it down. Implement the 'Scout Rule' - leave the code better than you found it. Address one debt item per feature development cycle." | sed 's/^/    /'
+            ;;
+        "Moderate")
+            wrap_oracle_text "📊 **Manageable:** Your technical debt is at normal levels for active development. Monitor it regularly and address items before they become blocking issues. Consider monthly 'debt cleanup' sessions." | sed 's/^/    /'
+            ;;
+        "Low")
+            wrap_oracle_text "✅ **Well Managed:** Your technical debt is minimal and well-controlled. Continue your current practices and be vigilant about preventing new debt from accumulating." | sed 's/^/    /'
+            ;;
+    esac
+    
+    echo
+}
 
 # Fortune cookie style quick advice
 QUICK_ORACLE_WISDOM=(
@@ -142,6 +326,9 @@ analyze_github_oracle() {
             ;;
         "technical-growth")
             provide_technical_growth "$username"
+            ;;
+        "technical-debt")
+            provide_technical_debt_consultation "$username"
             ;;
         "open-source-path")
             provide_open_source_path "$username"

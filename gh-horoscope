@@ -12,6 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Source all library modules
 source "$SCRIPT_DIR/lib/display.sh"
 source "$SCRIPT_DIR/lib/github-analyzer.sh"
+source "$SCRIPT_DIR/lib/advanced_github_analyzer.sh"
 source "$SCRIPT_DIR/lib/fortune-data.sh"
 source "$SCRIPT_DIR/lib/horoscope-generator.sh"
 source "$SCRIPT_DIR/lib/tarot-system.sh"
@@ -59,7 +60,7 @@ OPTIONS:
                         TYPE can be: career-guidance, debugging-wisdom, 
                         burnout-check, skill-development, team-collaboration,
                         project-focus, coding-rhythm, technical-growth,
-                        open-source-path, language-mastery
+                        technical-debt, open-source-path, language-mastery
     --version          Show version information
     --doppelganger     Find your celebrity coding doppelganger
     --list-celebrities List all available celebrity developers
