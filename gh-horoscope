@@ -12,7 +12,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Source all library modules
 source "$SCRIPT_DIR/lib/display.sh"
 source "$SCRIPT_DIR/lib/github-analyzer.sh"
-source "$SCRIPT_DIR/lib/advanced_github_analyzer.sh"
 source "$SCRIPT_DIR/lib/fortune-data.sh"
 source "$SCRIPT_DIR/lib/horoscope-generator.sh"
 source "$SCRIPT_DIR/lib/tarot-system.sh"
