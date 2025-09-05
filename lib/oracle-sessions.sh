@@ -900,9 +900,20 @@ ask_technical_question() {
 run_oracle_session() {
     display_oracle_header
     
+    # Check if running in interactive mode
+    if [[ ! -t 0 ]]; then
+        echo "⚠️  Non-interactive mode detected. Providing random oracle wisdom..."
+        echo
+        local random_wisdom=${QUICK_ORACLE_WISDOM[$RANDOM % ${#QUICK_ORACLE_WISDOM[@]}]}
+        display_oracle_art "default"
+        display_mystical_insight "🥠 Oracle Wisdom" "$random_wisdom"
+        return 0
+    fi
+    
     while true; do
         display_oracle_menu
-        read -p "🔮 Choose your question for the Oracle (1-15): " choice
+        echo -n "🔮 Choose your question for the Oracle (1-15): "
+        read choice
         echo
         
         case $choice in
@@ -987,7 +998,8 @@ run_oracle_session() {
                 ;;
         esac
         echo
-        read -p "Press Enter to continue your consultation..." 
+        echo -n "Press Enter to continue your consultation..."
+        read
         echo
     done
 }

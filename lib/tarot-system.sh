@@ -205,9 +205,18 @@ run_tarot_session() {
     echo "the hidden patterns of your coding journey and illuminate the path ahead."
     echo
     
+    # Check if running in interactive mode
+    if [[ ! -t 0 ]]; then
+        echo "⚠️  Non-interactive mode detected. Drawing a single card for you..."
+        echo
+        draw_single_daily_card
+        return 0
+    fi
+    
     while true; do
         display_tarot_menu
-        read -p "🔮 Choose your tarot experience (1-5): " choice
+        echo -n "🔮 Choose your tarot experience (1-5): "
+        read choice
         echo
         
         case $choice in
@@ -236,7 +245,8 @@ run_tarot_session() {
                 ;;
         esac
         echo
-        read -p "Press Enter to continue your tarot journey..." 
+        echo -n "Press Enter to continue your tarot journey..."
+        read
         echo
     done
 }
