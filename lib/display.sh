@@ -74,9 +74,14 @@ get_content_width() {
 # Enhanced visual width calculation accounting for emojis and special characters
 calculate_visual_width() {
     local text="$1"
-    # Remove color codes first
-    local clean_text="${text//\\033\[[0-9;]*m/}"
+    # Remove ANSI color codes first - handle both escape sequence styles
+    local clean_text="$text"
+    # Remove \033[...m sequences
+    clean_text="${clean_text//\\033\[[0-9;]*m/}"
+    # Remove \e[...m sequences  
     clean_text="${clean_text//\\e\[[0-9;]*m/}"
+    # Remove actual escape sequences (when variables are expanded)
+    clean_text=$(echo "$clean_text" | sed 's/\x1b\[[0-9;]*m//g')
     
     # Count common emojis that appear in our text (they display as 2 chars but count as 1)
     local emoji_count=0
@@ -159,8 +164,10 @@ center_text() {
 # Responsive box border functions
 draw_box_top() {
     local box_width=$(get_box_width)
+    # Adjust for UTF-8 box characters that display as 2 columns
+    local dash_count=$(((box_width - 2) / 2))
     echo -n "    ╭"
-    for ((i=0; i<box_width-2; i++)); do
+    for ((i=0; i<dash_count; i++)); do
         echo -n "─"
     done
     echo "╮"
@@ -168,8 +175,10 @@ draw_box_top() {
 
 draw_box_middle() {
     local box_width=$(get_box_width)
+    # Adjust for UTF-8 box characters that display as 2 columns
+    local dash_count=$(((box_width - 2) / 2))
     echo -n "    ├"
-    for ((i=0; i<box_width-2; i++)); do
+    for ((i=0; i<dash_count; i++)); do
         echo -n "─"
     done
     echo "┤"
@@ -177,8 +186,10 @@ draw_box_middle() {
 
 draw_box_bottom() {
     local box_width=$(get_box_width)
+    # Adjust for UTF-8 box characters that display as 2 columns
+    local dash_count=$(((box_width - 2) / 2))
     echo -n "    ╰"
-    for ((i=0; i<box_width-2; i++)); do
+    for ((i=0; i<dash_count; i++)); do
         echo -n "─"
     done
     echo "╯"
@@ -195,8 +206,9 @@ draw_box_content() {
     local visual_width=$(get_visual_text_width "$text")
     
     if [[ $visual_width -gt $content_width ]]; then
-        # Text too long, wrap it
-        echo "$text" | fold -s -w "$content_width" | while IFS= read -r line; do
+        # Text too long, wrap it - need to handle colors properly
+        local clean_text=$(echo -e "$text" | sed 's/\x1b\[[0-9;]*m//g')
+        echo "$clean_text" | fold -s -w "$content_width" | while IFS= read -r line; do
             printf "    │ %-${content_width}s │\n" "$line"
         done
     else
@@ -205,15 +217,27 @@ draw_box_content() {
                 local padding=$(((content_width - visual_width) / 2))
                 # Ensure padding is not negative
                 if [[ $padding -lt 0 ]]; then padding=0; fi
-                printf "    │%*s%s%*s│\n" $padding "" "$text" $((content_width - visual_width - padding)) ""
+                printf "    │%*s" $padding ""
+                printf "%b" "$text"
+                printf "%*s│\n" $((content_width - visual_width - padding)) ""
                 ;;
             right)
                 local right_padding=$((content_width - visual_width - 1))
                 if [[ $right_padding -lt 0 ]]; then right_padding=0; fi
-                printf "    │%*s%s │\n" $right_padding "" "$text"
+                printf "    │%*s" $right_padding ""
+                printf "%b" "$text"
+                printf " │\n"
                 ;;
             *)
-                printf "    │ %-${content_width}s │\n" "$text"
+                printf "    │ "
+                printf "%b" "$text"
+                # Calculate proper padding - get clean text length for padding
+                local clean_text=$(echo -e "$text" | sed 's/\x1b\[[0-9;]*m//g')
+                local clean_width=${#clean_text}
+                # Adjust emoji width
+                local emoji_count=$(echo "$clean_text" | grep -o '[🔮🎭🌟⭐🎪🎉✨💫🌙☀️⚡📜🃏👑🔥💝🏛️🚪🏆]' | wc -l)
+                clean_width=$((clean_width + emoji_count))
+                printf "%*s │\n" $((content_width - clean_width - 1)) ""
                 ;;
         esac
     fi

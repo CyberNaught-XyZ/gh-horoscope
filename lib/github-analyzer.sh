@@ -1526,33 +1526,33 @@ generate_advanced_insights_summary() {
     local account_age=$(echo "${ADVANCED_USER_PROFILE[*]}" | grep -o "account_age_years:[0-9]*" | cut -d: -f2)
     if [[ $account_age -gt 0 ]]; then
         if [[ $account_age -gt 10 ]]; then
-            display_mystical_insight "🏛️ Ancient Developer: With $account_age years on GitHub, you've witnessed the evolution of code itself!"
+            display_simple_insight "🏛️ Ancient Developer: With $account_age years on GitHub, you've witnessed the evolution of code itself!"
         elif [[ $account_age -gt 5 ]]; then
-            display_mystical_insight "🎓 Seasoned Practitioner: $account_age years of digital wisdom flows through your repositories."
+            display_simple_insight "🎓 Seasoned Practitioner: $account_age years of digital wisdom flows through your repositories."
         else
-            display_mystical_insight "🌱 Growing Developer: $account_age years into your coding journey, your potential is still unfolding."
+            display_simple_insight "🌱 Growing Developer: $account_age years into your coding journey, your potential is still unfolding."
         fi
     fi
     
     # Social influence insights
     local influence_ratio=$(echo "${SOCIAL_METRICS[*]}" | grep -o "influence_ratio:[0-9]*" | cut -d: -f2)
     if [[ $influence_ratio -gt 200 ]]; then
-        display_mystical_insight "⭐ Coding Influencer: Your influence ratio suggests you're a beacon in the developer community!"
+        display_simple_insight "⭐ Coding Influencer: Your influence ratio suggests you're a beacon in the developer community!"
     elif [[ $influence_ratio -gt 100 ]]; then
-        display_mystical_insight "🌟 Community Presence: You have a positive influence in the coding sphere."
+        display_simple_insight "🌟 Community Presence: You have a positive influence in the coding sphere."
     fi
     
     # Collaboration style insights
     local collab_style=$(echo "${COLLABORATION_NETWORK[*]}" | grep -o "collaboration_style:[^:]*" | cut -d: -f2)
     if [[ -n "$collab_style" ]]; then
-        display_mystical_insight "🤝 Collaboration Oracle: You are a $collab_style, bringing unique energy to team dynamics."
+        display_simple_insight "🤝 Collaboration Oracle: You are a $collab_style, bringing unique energy to team dynamics."
     fi
     
     # Productivity rhythm insights
     local productivity_rhythm=$(echo "${COMMIT_TIME_ANALYSIS[*]}" | grep -o "productivity_rhythm:[^:]*" | cut -d: -f2)
     local peak_period=$(echo "${COMMIT_TIME_ANALYSIS[*]}" | grep -o "peak_period:[^:]*" | cut -d: -f2)
     if [[ -n "$productivity_rhythm" ]] && [[ -n "$peak_period" ]]; then
-        display_mystical_insight "⏰ Temporal Wisdom: Your $productivity_rhythm coding rhythm peaks in the $peak_period - the stars align with your natural cycles!"
+        display_simple_insight "⏰ Temporal Wisdom: Your $productivity_rhythm coding rhythm peaks in the $peak_period - the stars align with your natural cycles!"
     fi
     
     # Language evolution insights
@@ -1560,13 +1560,13 @@ generate_advanced_insights_summary() {
     if [[ -n "$evolution_pattern" ]]; then
         case "$evolution_pattern" in
             "Expanding")
-                display_mystical_insight "🚀 Technology Explorer: You're expanding your language horizons - the universe rewards the curious!"
+                display_simple_insight "🚀 Technology Explorer: You're expanding your language horizons - the universe rewards the curious!"
                 ;;
             "Focusing")
-                display_mystical_insight "🎯 Specialization Seeker: You're focusing your energies - mastery comes through dedicated practice!"
+                display_simple_insight "🎯 Specialization Seeker: You're focusing your energies - mastery comes through dedicated practice!"
                 ;;
             "Stable")
-                display_mystical_insight "⚖️ Balanced Technologist: You've found your technological equilibrium - wisdom in stability!"
+                display_simple_insight "⚖️ Balanced Technologist: You've found your technological equilibrium - wisdom in stability!"
                 ;;
         esac
     fi
@@ -1574,8 +1574,8 @@ generate_advanced_insights_summary() {
     echo
 }
 
-# Display a mystical insight with proper formatting
-display_mystical_insight() {
+# Display a simple mystical insight with proper formatting
+display_simple_insight() {
     local insight="$1"
     echo
     echo "    ✨ $insight"
