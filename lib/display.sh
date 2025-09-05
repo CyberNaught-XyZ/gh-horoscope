@@ -918,6 +918,20 @@ display_enhanced_crystal_ball() {
     echo -e "${RESET}"
 }
 
+# Simple section separator function for comedy generator
+display_comedy_section() {
+    local title="$1"
+    local separator_length=63  # Standard length for consistency
+    
+    echo "    $title"
+    printf "    "
+    for ((i=0; i<separator_length; i++)); do
+        printf "═"
+    done
+    echo
+    echo
+}
+
 # Animated mystical loading
 display_mystical_loading() {
     local message="$1"

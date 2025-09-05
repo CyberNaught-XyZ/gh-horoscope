@@ -6,6 +6,13 @@ wrap_and_indent_text() {
     local indent="    • "
     local width=75  # Leave some margin for terminal edges
     
+    # Return early if content is empty or only whitespace
+    if [[ -z "$text" || -z "${text//[[:space:]]/}" ]]; then
+        echo "    • No content available."
+        echo
+        return
+    fi
+    
     # Use fold to wrap text at word boundaries, then add proper indentation
     echo "$text" | fold -w $((width - ${#indent})) -s | while IFS= read -r line; do
         if [[ -n "$line" ]]; then
@@ -369,30 +376,76 @@ analyze_for_roasting() {
 }
 
 generate_roast() {
-    local roast_type="$1"
+    local roast_type_full="$1"
     local username="$2" 
     local night_percentage="$3"
     local weekend_percentage="$4"
     local repo_count="$5"
     local total_commits="$6"
     
-    case $roast_type in
-        "fix_stuff"|"wip"|"it_works"|"various_changes"|"update"|"typo"|"emotional"|"timestamps"|"novel_length"|"cryptic_codes"|"profanity")
-            printf "${COMMIT_MESSAGE_ROASTS[$roast_type]}\n"
-            ;;
-        "too_many_repos"|"empty_repos"|"abandoned_projects"|"forked_everything"|"single_commit_repos"|"README_collector"|"todo_app_creator"|"unfinished_masterpieces"|"branch_hoarder"|"commit_message_novelist"|"framework_collector"|"dependency_nightmare"|"commit_timestamp_confessor")
-            printf "${REPOSITORY_ROASTS[$roast_type]}\n" "$repo_count"
-            ;;
-        "night_owl_extreme"|"weekend_warrior"|"sporadic_coder"|"perfectionist_paralysis"|"documentation_avoider"|"refactoring_perfectionist"|"feature_branch_abandoner"|"merge_conflict_warrior"|"copy_paste_artist")
-            printf "${CODING_PATTERN_ROASTS[$roast_type]}\n" "$night_percentage"
-            ;;
-        "commit_spammer")
+    # Extract base roast type (remove :modifier if present)
+    local roast_type="${roast_type_full%%:*}"
+    
+    # Check COMMIT_MESSAGE_ROASTS first
+    if [[ -n "${COMMIT_MESSAGE_ROASTS[$roast_type]}" ]]; then
+        printf "%s\n" "${COMMIT_MESSAGE_ROASTS[$roast_type]}"
+        return
+    fi
+    
+    # Check REPOSITORY_ROASTS
+    if [[ -n "${REPOSITORY_ROASTS[$roast_type]}" ]]; then
+        printf "${REPOSITORY_ROASTS[$roast_type]}\n" "$repo_count"
+        return
+    fi
+    
+    # Check CODING_PATTERN_ROASTS  
+    if [[ -n "${CODING_PATTERN_ROASTS[$roast_type]}" ]]; then
+        if [[ "$roast_type" == "commit_spammer" ]]; then
             printf "${CODING_PATTERN_ROASTS[$roast_type]}\n" "$total_commits"
+        else
+            printf "${CODING_PATTERN_ROASTS[$roast_type]}\n" "$night_percentage"
+        fi
+        return
+    fi
+    
+    # Check for dynamic variants (fix_stuff_v2, fix_stuff_v3, etc.)
+    case $roast_type in
+        fix_stuff*|wip*|it_works*|various_changes*|update*|typo*|emotional*|timestamps*|novel_length*|cryptic_codes*|profanity*)
+            # Map variants back to base types for commit message roasts
+            local base_type=""
+            case $roast_type in
+                fix_stuff*) base_type="fix_stuff" ;;
+                wip*) base_type="wip" ;;
+                it_works*) base_type="it_works" ;;
+                various_changes*) base_type="various_changes" ;;
+                update*) base_type="update" ;;
+                typo*) base_type="typo" ;;
+                emotional*) base_type="emotional" ;;
+                timestamps*) base_type="timestamps" ;;
+                novel_length*) base_type="novel_length" ;;
+                cryptic_codes*) base_type="cryptic_codes" ;;
+                profanity*) base_type="profanity" ;;
+            esac
+            if [[ -n "$base_type" && -n "${COMMIT_MESSAGE_ROASTS[$base_type]}" ]]; then
+                printf "%s\n" "${COMMIT_MESSAGE_ROASTS[$base_type]}"
+                return
+            fi
             ;;
-        *)
-            echo "🎭 **You're Actually Pretty Great!** - We searched high and low for roast material, but your coding patterns are frustratingly reasonable. Your commit messages make sense, your repositories are well-maintained, and your coding habits are admirably balanced. How dare you be this competent! We'll have to roast you for being too good at this. The audacity!"
+        night_owl*|coding_vampire*|midnight_warrior*)
+            # Map night owl variants
+            if [[ -n "${CODING_PATTERN_ROASTS[night_owl_extreme]}" ]]; then
+                printf "${CODING_PATTERN_ROASTS[night_owl_extreme]}\n" "$night_percentage"
+                return
+            fi
+            ;;
+        JavaScript*|Python*|too_many_repos*|repository_collector*|repo_hoarder*)
+            # Handle language and repo variants - these might not have specific roasts yet
+            # so fall through to default for now
             ;;
     esac
+    
+    # Fallback for unmatched roast types
+    echo "🎭 **You're Actually Pretty Great!** - We searched high and low for roast material, but your coding patterns are frustratingly reasonable. Your commit messages make sense, your repositories are well-maintained, and your coding habits are admirably balanced. How dare you be this competent! We'll have to roast you for being too good at this. The audacity!"
 }
 
 generate_language_roast() {
@@ -443,7 +496,14 @@ analyze_for_compliments() {
 
 generate_compliment() {
     local compliment_type="$1"
-    echo "${COMPLIMENTS[$compliment_type]}"
+    
+    # Return the compliment if it exists
+    if [[ -n "${COMPLIMENTS[$compliment_type]}" ]]; then
+        echo "${COMPLIMENTS[$compliment_type]}"
+    else
+        # Fallback compliment for missing types
+        echo "🌟 **The Unique Developer** - Your coding style and patterns are distinctively yours! You bring a fresh perspective to development that makes the tech community more diverse and interesting. Keep coding with your unique approach - it's what makes you valuable!"
+    fi
 }
 
 display_roast_header() {
@@ -495,14 +555,10 @@ run_roast_mode() {
     # Get roast material
     local roast_type=$(analyze_for_roasting "$username" "$commit_msgs" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits")
     
-    echo "    🎯 **THE MAIN ROAST** 🎯"
-    echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    display_comedy_section "🎯 **THE MAIN ROAST** 🎯"
     wrap_and_indent_text "$(generate_roast "$roast_type" "$username" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits")"
     
-    echo "    🗣️ **LANGUAGE CHOICE ROAST** 🗣️"
-    echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    display_comedy_section "🗣️ **LANGUAGE CHOICE ROAST** 🗣️"
     wrap_and_indent_text "$(generate_language_roast "$primary_lang")"
     
     echo "🎭 **But seriously...** You're awesome for letting us roast your code!"
@@ -529,9 +585,7 @@ run_compliment_mode() {
     # Get compliment material
     local compliment_type=$(analyze_for_compliments "$username" "$commit_msgs" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits")
     
-    echo "    🌟 **YOUR CODING SUPERPOWERS** 🌟"
-    echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    display_comedy_section "🌟 **YOUR CODING SUPERPOWERS** 🌟"
     wrap_and_indent_text "$(generate_compliment "$compliment_type")"
     
     echo "🎉 **Keep being awesome!** The coding world is better with developers like you!"

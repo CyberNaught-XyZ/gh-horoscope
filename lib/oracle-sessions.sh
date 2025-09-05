@@ -367,9 +367,7 @@ provide_career_guidance() {
     local lang_count=${#PRIMARY_LANGUAGES[@]}
     local repo_diversity=$(get_repo_diversity_score)
     
-    echo "    🔮 **CAREER GUIDANCE ORACLE** 🔮"
-    echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    display_comedy_section "🔮 **CAREER GUIDANCE ORACLE** 🔮"
     
     if [[ $lang_count -gt 5 ]]; then
         echo "    • 🌟 **The Polyglot Path:** Your mastery of $lang_count languages"
@@ -410,9 +408,7 @@ provide_debugging_wisdom() {
     local night_percentage=$(get_night_owl_score)
     local commit_messages="${COMMIT_MESSAGES[*]}"
     
-    echo "    🐛 **DEBUGGING WISDOM ORACLE** 🐛"
-    echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    display_comedy_section "🐛 **DEBUGGING WISDOM ORACLE** 🐛"
     
     if [[ $night_percentage -gt 40 ]]; then
         echo "    • 🌙 **Night Owl Debugging Pattern:** $night_percentage% of your commits"
