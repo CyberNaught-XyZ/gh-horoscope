@@ -59,7 +59,7 @@ OPTIONS:
                         TYPE can be: career-guidance, debugging-wisdom, 
                         burnout-check, skill-development, team-collaboration,
                         project-focus, coding-rhythm, technical-growth,
-                        open-source-path, language-mastery
+                        technical-debt, open-source-path, language-mastery
     --version          Show version information
     --doppelganger     Find your celebrity coding doppelganger
     --list-celebrities List all available celebrity developers
