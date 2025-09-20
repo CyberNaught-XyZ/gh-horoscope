@@ -2,7 +2,10 @@
 
 # Wrap text for better terminal display
 wrap_and_indent_text() {
-    local text="$1"
+    echo "$text" | fold -w $((width - ${#indent})) -s | while IFS= read -r line; do
+        if [[ -n "$line" ]]; then
+            echo "$indent$line"
+            indent="      "  # Continuation lines get extra indent
     local indent="    • "
     local width=75  # Leave some margin for terminal edges
     
@@ -15,7 +18,10 @@ wrap_and_indent_text() {
     
     # Use fold to wrap text at word boundaries, then add proper indentation
     echo "$text" | fold -w $((width - ${#indent})) -s | while IFS= read -r line; do
-        if [[ -n "$line" ]]; then
+    if [[ -n "${CODING_PATTERN_ROASTS[$roast_type]:-}" ]]; then
+        if [[ "$roast_type" == "commit_spammer" ]]; then
+            printf "${CODING_PATTERN_ROASTS[$roast_type]:-}\n" "$total_commits"
+        else
             echo "$indent$line"
             indent="      "  # Continuation lines get extra indent
         fi
@@ -24,7 +30,9 @@ wrap_and_indent_text() {
 }
 
 # Comedy Generator module for GitHub CLI Horoscope Extension
-# Handles roasting, compliments, and humorous code analysis
+    if [[ $night_percentage -gt 70 ]]; then
+        roasts+=("$(select_dynamic_roast "night_owl")")
+    fi
 
 # Roast categories and jokes
 declare -A COMMIT_MESSAGE_ROASTS
@@ -93,7 +101,7 @@ REPOSITORY_ROASTS[version_tag_avoider]="🏷️ **Version Tag Allergist** - What
 REPOSITORY_ROASTS[issue_template_ignorant]="📋 **Issue Template Rebel** - Bug reports? Feature requests? Templates are for the weak! Your issues section is a lawless wasteland where 'it doesn't work' is considered sufficient detail. You're pioneering a new form of minimalist project management!"
 
 # Coding Pattern Roasts  
-CODING_PATTERN_ROASTS[night_owl_extreme]="🦉 **The 4AM Code Vampire** - %d%% of your commits happen after midnight! You code like a vampire who's allergic to sunlight and productivity tools. Your circadian rhythm is more broken than Internet Explorer. But hey, bugs are easier to catch when they're also tired!"
+CODING_PATTERN_ROASTS[night_owl_extreme]="🦉 **The 4AM Code Vampire** - %d%% of your commits are nocturnal blood donations to the repo. You code in the dark, refactor in whispers, and swear by the power of duct-taped cron jobs. Your sleep schedule is a broken promise; your logs are a late-night confessional. At least your bugs are too tired to fight back."
 
 CODING_PATTERN_ROASTS[weekend_warrior]="⚔️ **Weekend Code Warrior** - %d%% weekend commits! While others are out touching grass, you're touching keyboards. Your social life has fewer commits than your repos. Dating apps must love your 'always available except during deployments' energy!"
 
@@ -110,7 +118,25 @@ LANGUAGE_ROASTS[JavaScript_framework_junkie]="🎪 **Framework Circus Master** -
 
 LANGUAGE_ROASTS[JavaScript_npm_addict]="📦 **NPM Dependency Dealer** - Why write 3 lines of code when you can install 47 packages? Your node_modules folder is so large it appears on satellite imagery. You've never met a left-pad utility you didn't like. Your computer's hard drive is 73% node_modules and 27% everything else. You're the reason JavaScript is the most bloated ecosystem - and somehow proud of it!"
 
-LANGUAGE_ROASTS[Python]="🐍 **Python Zen Master** - You've achieved enlightenment through readable code, but you still rage-quit when you mix tabs and spaces. You think list comprehensions are poetry, and you're not wrong. Your code is so clean it could be used in a medical facility, but your deployment process involves more virtual environments than a VR arcade. Import this, import that - your solution to everything is 'there's a library for that!'"
+LANGUAGE_ROASTS[Python]="🐍 **Python Snake Charmer** - You wield 'import' like a wizard with a plugin addiction. Your scripts run perfectly on your machine and nowhere else; virtualenvs multiply like rabbits and requirements.txt is your altarpiece. You write one-liners that read like arcane poems and then cry when whitespace betrays you. Elegance? Yes. Predictability? Not unless you pin the versions."
+
+# Sharpen the Python roasts to be nastier and intrusive
+LANGUAGE_ROASTS[Python_insult_1]="🗡️ **Python Gremlin** - Your repo is a time capsule of brittle scripts and abandoned notebooks. You commit 'fix' at 3AM and then wonder why production exploded. Someone will find your forgotten prints and laugh at your career choices."
+LANGUAGE_ROASTS[Python_insult_2]="💥 **Whitespace Cultist** - You worship indentation so hard you sacrificed readability for ritual. One stray tab and the whole system cries. Your CI hates you and your colleagues schedule therapy after reviewing your diffs."
+LANGUAGE_ROASTS[Python_insult_3]="🔪 **Pipocalypse Survivor** - Your dependency tree is a minefield of version conflicts and cursed transitive packages. You solve one pip hell and spawn three spawn-of-pip hells. Deployments fear your name."
+
+# Make fallback roast explicitly nasty when no targeted roast found
+
+# Nastier additions per language (more biting, as requested)
+LANGUAGE_ROASTS[Ruby]="💎 **Ruby Romantic** - You code like poetry, but your performance is a tragic sonnet. Gems? More like paperweights. You make beautiful things that scale about as well as a paper umbrella in a hurricane. Charming, but inadvisable for production."
+
+LANGUAGE_ROASTS[PHP_modernist]="🐘 **PHP Survivor** - You keep legacy systems alive with duct tape and prayers. Your stack traces read like horror stories with timestamps. You maintain production servers that other devs fear to SSH into. Respect, fear, and a little pity."
+
+LANGUAGE_ROASTS[JavaScript_toxic]="🟡 **JS Juggler** - Your codebase contains sacred relics of callbacks, global state, and abandoned polyfills. You npm install optimism and hope it compiles. You treat semver like a suggestion, not a rule. The browser console fears you."
+
+LANGUAGE_ROASTS[Go_stoic]="🔵 **Go Stoic** - Your programs are efficient and boring. Error handling everywhere, enthusiasm nowhere. You make reliable services that put grandma's knitting to shame. Emotion is optional; uptime is mandatory."
+
+LANGUAGE_ROASTS[Rust_grim]="🦀 **Rust Saint** - You sacrifice developer time to appease the borrow checker. Your compile times are pilgrimages; your runtime is a cathedral. You live in a world where safety trumps happiness. Everyone respects you, but none of them want to pair program with you."
 
 LANGUAGE_ROASTS[Python_data_scientist]="📊 **Data Whisperer** - You speak fluent Pandas, NumPy, and matplotlib, but your production code looks like a Jupyter notebook that escaped into the wild. You can predict the future with machine learning models but can't predict when your script will finish running. Your computer has more virtual environments than a Hollywood studio. 'It works on my machine' - where 'machine' is a very specific combination of Anaconda, pip, and prayer!"
 
@@ -184,17 +210,17 @@ LANGUAGE_ROASTS[CSS]="🎨 **CSS Wizard** - You make pixels dance with magic spe
 # Compliment system (for balance)
 declare -A COMPLIMENTS
 
-COMPLIMENTS[consistent_coder]="🌟 **The Consistency Champion** - Your commit pattern shows the discipline of a Zen master! Regular commits, steady progress, and reliable contribution patterns. You're the developer equivalent of a Swiss watch - precise, dependable, and quietly impressive."
+COMPLIMENTS[consistent_coder]="🌟 **Consistency, Not Coincidence** - Your commit cadence reads like a choreographed release schedule. Small, regular, and test-backed commits: that is professional craftsmanship. Future maintainers will thank you in issues and stars."
 
-COMPLIMENTS[helpful_contributor]="🤝 **The Community Hero** - Your repositories and contributions show genuine care for helping others. You write documentation like love letters to future developers. The open source community is better because developers like you exist!"
+COMPLIMENTS[helpful_contributor]="🤝 **Doc & Dev Guardian** - Your READMEs, examples, and clear issue reports turn strangers into contributors. You make it trivially easy for others to onboard and help. That's rare and wildly valuable."
 
-COMPLIMENTS[polyglot_programmer]="🗣️ **The Code Polyglot** - You speak multiple programming languages with fluency that would make United Nations translators jealous! Your ability to adapt between different paradigms and ecosystems is genuinely impressive. You're a Swiss Army knife of software development!"
+COMPLIMENTS[polyglot_programmer]="🗣️ **Polyglot Pragmatist** - You choose the right tool for the job and switch contexts without dropping the ball. Your repos show pragmatic language choices, pragmatic tests, and pragmatic engineering. That's elegance in motion."
 
-COMPLIMENTS[learning_journey]="📚 **The Eternal Student** - Your repository diversity shows a beautiful learning journey. You're not afraid to try new technologies, make mistakes, and grow from them. This curiosity and growth mindset is what separates good developers from great ones."
+COMPLIMENTS[learning_journey]="📚 **Curiosity in Code** - Your repo history is a clear learning log: experiments that turned into features, failed attempts that taught wisdom, and a visible trajectory of growth. That's how mastery is built."
 
-COMPLIMENTS[problem_solver]="🧩 **The Problem Solving Virtuoso** - Your commit messages and code patterns reveal someone who thinks deeply about problems before coding solutions. You're the developer who actually reads documentation and considers edge cases. The world needs more thoughtful coders like you!"
+COMPLIMENTS[problem_solver]="🧩 **Edge-Case Hunter** - Your code anticipates failure modes and documents trade-offs. You don't just make things work; you make them resilient. That's the mark of an engineer who thinks like the system."
 
-COMPLIMENTS[maintainer_dedication]="🛠️ **The Maintainer Marvel** - You don't just create code - you nurture it. Your long-term commitment to projects shows the kind of dedication that makes open source possible. You're building digital infrastructure that others can depend on."
+COMPLIMENTS[maintainer_dedication]="🛠️ **Infrastructure Steward** - You tidy issues, curate changelogs, and respect semver. Your attention to maintenance prevents debt from becoming disaster. Leaders build teams; maintainers build legacies."
 
 # Dynamic result generation to eliminate repetition
 declare -A ROAST_VARIATIONS
@@ -212,6 +238,37 @@ init_dynamic_roasting() {
     ROAST_VARIATIONS[python]="Python Python_data_scientist Python_web_developer"
     ROAST_VARIATIONS[too_many_repos]="too_many_repos repository_collector repo_hoarder"
     ROAST_VARIATIONS[night_owl]="night_owl_extreme coding_vampire midnight_warrior"
+
+    # Expanded roast variations and many Python-specific variants to reduce repetition
+    ROAST_VARIATIONS[python]="Python Python_data_scientist Python_web_developer Python_script_kitchen Python_whitespace_warrior Python_notebook_hoarder Python_dep_therapist Python_late_night_debugger Python_pip_poltergeist"
+    ROAST_VARIATIONS[rust]="Rust Rust_grim Rust_borrow_checker Rust_compile_monk"
+    ROAST_VARIATIONS[java]="Java Java_verbose_scribe Java_enterprise_architect"
+    ROAST_VARIATIONS[javascript]="JavaScript JavaScript_framework_junkie JavaScript_npm_addict JavaScript_callback_ghost JavaScript_frontend_demigod"
+    ROAST_VARIATIONS[go]="Go Go_stoic Go_err_handler Go_goroutine_guru"
+    ROAST_VARIATIONS[php]="PHP PHP_modernist PHP_legacy_whisperer PHP_array_of_doom"
+    ROAST_VARIATIONS[cpp]="CPlusPlus CPlusPlus_gladiator CPlusPlus_template_sorcerer"
+    ROAST_VARIATIONS[c]="C C_minimalist C_memory_juggler"
+    ROAST_VARIATIONS[typescript]="TypeScript TypeScript_perfectionist TypeScript_any_trafficker"
+
+    # Add many more Python-specific roast lines
+    LANGUAGE_ROASTS[Python_script_kitchen]="🥣 **Python Script Kitchen** - Your repo is a potluck of scripts named 'script1.py', 'do_it_again.py', and 'final_final_v2.py'. Each one solves the same problem in a new, imaginative way. Containerize this chaos before it tries to import your soul."
+    LANGUAGE_ROASTS[Python_whitespace_warrior]="↔️ **Whitespace Warrior** - You became a monk to worship whitespace. A missing space is existential betrayal and an extra tab is warcrime. Your code formatter files are your sacred texts."
+    LANGUAGE_ROASTS[Python_notebook_hoarder]="📓 **Notebook Hoarder** - Your Jupyter notebooks are beautiful messes with embedded outputs, random experiment results, and the occasional half-baked model. You commit output cells and wonder why PRs are 10MB. Teach the humans to gitignore the outputs!"
+    LANGUAGE_ROASTS[Python_dep_therapist]="🩺 **Dependency Therapist** - You maintain a web of pinned versions that could be used as a psychological case study. 'It worked before, why not now?' is your daily mantra. May your virtualenvs be resurrected."
+    LANGUAGE_ROASTS[Python_late_night_debugger]="🌙 **Late Night Debugger** - Your commits at 3AM are brave confessions. You fix one bug and invent three new ones while sleep-deprived. Your coffee consumption is a public health concern and your git timestamps are proof."
+    LANGUAGE_ROASTS[Python_pip_poltergeist]="👻 **PIP Poltergeist** - You've got a ghost dependency that shows up when least expected and breaks production on Thursdays. 'pip install' is your exorcism ritual. Good luck explaining the stack trace."
+
+    # Additional nasty variants for other languages
+    LANGUAGE_ROASTS[Java_verbose_scribe]="📚 **Java Verbose Scribe** - Your code reads like a legal contract for a bureaucracy run by design patterns. If verbosity were a crime, you'd be serving a life sentence."
+    LANGUAGE_ROASTS[Java_enterprise_architect]="🏢 **Enterprise Architect** - Your projects ship with more XML than features. You've architected a microservice so micro only ancient servers can run it."
+    LANGUAGE_ROASTS[CPlusPlus_gladiator]="🛡️ **C++ Gladiator** - You wield templates like enchanted swords that summon compiler error dragons. Your code works until it doesn't in mysterious and terrifying ways."
+    LANGUAGE_ROASTS[TypeScript_perfectionist]="🔷 **TypeScript Perfectionist** - Your types are so strict that runtime feels like a distant memory. You have a type for feelings and one for 'I regret this decision.'"
+
+    # Make sure ROAST_VARIATIONS contains these new keys too
+    ROAST_VARIATIONS[Ruby]="Ruby Ruby_romantic Ruby_gem_collector"
+    ROAST_VARIATIONS[PHP]="PHP PHP_modernist PHP_survivor"
+    ROAST_VARIATIONS[Go]="Go Go_stoic Go_err_handler"
+
 }
 
 # Enhanced roast selection with dynamic variations
@@ -223,7 +280,7 @@ select_dynamic_roast() {
     # Filter out already used roasts in this session
     local available_variations=()
     for variation in "${variation_array[@]}"; do
-        if [[ -z "${USED_ROASTS[$variation]}" ]]; then
+    if [[ -z "${USED_ROASTS[$variation]:-}" ]]; then
             available_variations+=("$variation")
         fi
     done
@@ -283,6 +340,35 @@ analyze_for_roasting() {
     
     # Initialize dynamic roasting system
     init_dynamic_roasting
+
+    # Ensure artifact flags are up-to-date for this analysis
+    # commit_messages may be a single string; pass to artifact detector
+    find_embarrassing_artifacts "$commit_messages"
+
+    # Immediate preference: if we found critical artifacts, return them directly
+    if [[ "${FOUND_SECRET_LIKE:-0}" -eq 1 ]]; then
+        echo "gitignore_anarchist:exposed"
+        return
+    fi
+    if [[ "${FOUND_DEBUG_PRINTS:-0}" -eq 1 ]]; then
+        echo "copy_paste_artist:exposed"
+        return
+    fi
+    if [[ "${FOUND_TODO:-0}" -eq 1 ]]; then
+        echo "documentation_avoider:exposed"
+        return
+    fi
+
+    # If analyzer found embarrassing artifacts, prefer those roasts up-front
+    if [[ "${FOUND_SECRET_LIKE:-0}" -eq 1 ]]; then
+        roasts+=("gitignore_anarchist")
+    fi
+    if [[ "${FOUND_DEBUG_PRINTS:-0}" -eq 1 ]]; then
+        roasts+=("copy_paste_artist")
+    fi
+    if [[ "${FOUND_TODO:-0}" -eq 1 ]]; then
+        roasts+=("documentation_avoider")
+    fi
     
     # Enhanced commit message pattern analysis with better detection
     if [[ "$commit_messages" =~ (fix.*stuff|fix.*things|stuff.*fixed|things.*updated) ]]; then
@@ -361,6 +447,23 @@ analyze_for_roasting() {
             fi
             ;;
     esac
+
+    # Heuristics to find things people hoped wouldn't be seen
+    # Look for TODO/FIXME left in commit messages or code
+    if echo "$commit_messages" | grep -qiE "\b(TODO|FIXME|HACK|XXX)\b"; then
+        roasts+=("documentation_avoider")
+    fi
+
+    # Detect common debug prints left in code or commit messages
+    if echo "$commit_messages" | grep -qiE "\b(console\.log|printf\(|print\(|logger\.debug|dbg\(|pprint\()"; then
+        roasts+=("copy_paste_artist")
+    fi
+
+    # Heuristic for exposed-secret-like patterns (conservative, non-exfiltrating)
+    if echo "$commit_messages" | grep -qiE "(AKIA|BEGIN RSA PRIVATE KEY|-----BEGIN PRIVATE KEY-----|api[_-]?key|secret[_-]?key|password=|passwd=)"; then
+        # Use a stern roast but avoid printing the secret
+        roasts+=("gitignore_anarchist")
+    fi
     
     # Return contextually appropriate roast with user-specific variation
     if [[ ${#roasts[@]} -gt 0 ]]; then
@@ -371,7 +474,22 @@ analyze_for_roasting() {
         local modifier=$(generate_contextual_variations "$username" "$selected_roast" "$commit_messages")
         echo "${selected_roast}:${modifier}"
     else
-        echo "general_roast:balanced"
+        # If artifact flags exist, prefer an intrusive fallback
+        if [[ "${FOUND_SECRET_LIKE:-0}" -eq 1 ]]; then
+            echo "gitignore_anarchist:exposed"
+            return
+        fi
+        if [[ "${FOUND_DEBUG_PRINTS:-0}" -eq 1 ]]; then
+            echo "copy_paste_artist:exposed"
+            return
+        fi
+        if [[ "${FOUND_TODO:-0}" -eq 1 ]]; then
+            echo "documentation_avoider:exposed"
+            return
+        fi
+
+        # Default nasty fallback
+        echo "general_roast:merciless"
     fi
 }
 
@@ -387,23 +505,23 @@ generate_roast() {
     local roast_type="${roast_type_full%%:*}"
     
     # Check COMMIT_MESSAGE_ROASTS first
-    if [[ -n "${COMMIT_MESSAGE_ROASTS[$roast_type]}" ]]; then
-        printf "%s\n" "${COMMIT_MESSAGE_ROASTS[$roast_type]}"
+    if [[ -n "${COMMIT_MESSAGE_ROASTS[$roast_type]:-}" ]]; then
+        printf "%s\n" "${COMMIT_MESSAGE_ROASTS[$roast_type]:-}"
         return
     fi
     
     # Check REPOSITORY_ROASTS
-    if [[ -n "${REPOSITORY_ROASTS[$roast_type]}" ]]; then
-        printf "${REPOSITORY_ROASTS[$roast_type]}\n" "$repo_count"
+    if [[ -n "${REPOSITORY_ROASTS[$roast_type]:-}" ]]; then
+        printf "${REPOSITORY_ROASTS[$roast_type]:-}\n" "$repo_count"
         return
     fi
     
     # Check CODING_PATTERN_ROASTS  
-    if [[ -n "${CODING_PATTERN_ROASTS[$roast_type]}" ]]; then
+    if [[ -n "${CODING_PATTERN_ROASTS[$roast_type]:-}" ]]; then
         if [[ "$roast_type" == "commit_spammer" ]]; then
-            printf "${CODING_PATTERN_ROASTS[$roast_type]}\n" "$total_commits"
+            printf "${CODING_PATTERN_ROASTS[$roast_type]:-}\n" "$total_commits"
         else
-            printf "${CODING_PATTERN_ROASTS[$roast_type]}\n" "$night_percentage"
+            printf "${CODING_PATTERN_ROASTS[$roast_type]:-}\n" "$night_percentage"
         fi
         return
     fi
@@ -444,17 +562,60 @@ generate_roast() {
             ;;
     esac
     
-    # Fallback for unmatched roast types
-    echo "🎭 **You're Actually Pretty Great!** - We searched high and low for roast material, but your coding patterns are frustratingly reasonable. Your commit messages make sense, your repositories are well-maintained, and your coding habits are admirably balanced. How dare you be this competent! We'll have to roast you for being too good at this. The audacity!"
+    # Fallback for unmatched roast types (merciless)
+    if [[ "$roast_type" == "general_roast" && "${roast_type_full#*:}" == "merciless" ]]; then
+        echo "💀 **The Executioner** - No crumbs of decency here: your repo reeks of optimism and abandoned TODOs. Secrets lurk where you least expect them, debug prints are your legacy, and your README lies on a bed of broken promises. We're not being nice about it. Rotate keys, remove prints, and maybe — just maybe — write a real commit message."
+        return
+    fi
+
+    # If a flagged exposure variant requested, produce a sterner roast
+    if [[ "$roast_type" == "gitignore_anarchist" ]]; then
+        echo "🙈 **Gitignore Graveyard** - You're committing secrets like souvenirs. We won't echo them, but imagine every API key you've ever used in plaintext. Now rotate them. Immediately."
+        return
+    fi
+
+    if [[ "$roast_type" == "copy_paste_artist" ]]; then
+        echo "🎭 **Debug Log Casualty** - You left console.logs and prints like breadcrumbs for the unsuspecting. Your production logs will be the Twitter thread people use to roast you at conferences. Clean up your act."
+        return
+    fi
+
+    if [[ "$roast_type" == "documentation_avoider" ]]; then
+        echo "🗑️ **TODO Tomb** - TODOs and FIXMEs litter your code like landmines. You're basically shipping post-it notes inside tarballs. Finish your tickets or accept eternal shame."
+        return
+    fi
 }
 
 generate_language_roast() {
     local primary_language="$1"
-    
-    if [[ -n "${LANGUAGE_ROASTS[$primary_language]}" ]]; then
+    # If we detected embarrassing artifacts, prefer harsher variants for this language
+    if [[ "${FOUND_TODO:-0}" -eq 1 || "${FOUND_DEBUG_PRINTS:-0}" -eq 1 || "${FOUND_SECRET_LIKE:-0}" -eq 1 ]]; then
+        local candidates=()
+        for k in "${!LANGUAGE_ROASTS[@]}"; do
+            # Prefer explicit insult/grim/toxic variants or keys starting with the language name
+            if [[ "$k" == "${primary_language}_insult_"* || "$k" == *"insult"* || "$k" == *"grim"* || "$k" == *"toxic"* || "$k" == *"gremlin"* || "$k" == *"whitespace"* || "$k" == *"pip"* || "$k" == *"poltergeist"* ]]; then
+                # Also ensure it's related to the target language where possible
+                if [[ "$k" == "${primary_language}"* || "$k" == *"${primary_language}"* ]]; then
+                    candidates+=("$k")
+                else
+                    # keep as secondary candidate
+                    candidates+=("$k")
+                fi
+            fi
+        done
+
+        if [[ ${#candidates[@]} -gt 0 ]]; then
+            local sel_index=$((RANDOM % ${#candidates[@]}))
+            local sel_key="${candidates[$sel_index]}"
+            echo "${LANGUAGE_ROASTS[$sel_key]}"
+            return
+        fi
+    fi
+
+    # Default behavior: return the canonical roast or a generic jab
+    if [[ -n "${LANGUAGE_ROASTS[$primary_language]:-}" ]]; then
         echo "${LANGUAGE_ROASTS[$primary_language]}"
     else
-        echo "🤖 **Language Hipster** - You code in $primary_language, which is either so cutting-edge it hasn't been invented yet, or so obscure that only 12 people on Earth understand it. Either way, you're definitely more interesting at programming meetups than the rest of us vanilla developers!"
+        echo "🤖 **Language Hipster** - You code in $primary_language, which is either so cutting-edge it hasn't been invented yet, or so obscure that only a handful of people on Earth understand it. Either way, you're definitely more interesting at programming meetups than the rest of us vanilla developers!"
     fi
 }
 
@@ -502,35 +663,43 @@ generate_compliment() {
         echo "${COMPLIMENTS[$compliment_type]}"
     else
         # Fallback compliment for missing types
-        echo "🌟 **The Unique Developer** - Your coding style and patterns are distinctively yours! You bring a fresh perspective to development that makes the tech community more diverse and interesting. Keep coding with your unique approach - it's what makes you valuable!"
+        echo "    🌟 **The Unique Developer** - Your coding style and patterns are distinctively yours! You bring a fresh perspective to development that makes the tech community more diverse and interesting. Keep coding with your unique approach - it's what makes you valuable!"
     fi
 }
 
 display_roast_header() {
     echo
-    echo "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥"
-    echo "🔥                                                                🔥"
-    echo "🔥           💀 ROAST MODE ACTIVATED 💀                          🔥" 
-    echo "🔥                                                                🔥"
-    echo "🔥     \"Where code meets comedy and feelings get compiled away\"    🔥"
-    echo "🔥                                                                🔥"
-    echo "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥"
+    echo -e "${RED}${BOLD}"
+    echo "                   🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥"
+    echo "                      🔥                                                               🔥"
+    echo "                    🔥                   💀 ROAST MODE ACTIVATED 💀                     🔥" 
+    echo "                     🔥                                                                🔥"
+    echo "                  🔥      \"Where code meets comedy and feelings get compiled away\"    🔥"
+    echo "                    🔥                                                                🔥"
+    echo "                  🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥"
+    echo -e "${RESET}"
     echo
-    echo "📝 Remember: If you can't laugh at your code, who can? 😄"
+    echo -e "${YELLOW}${BOLD}"
+    echo "                         📝 Remember: If you can't laugh at your code, who can? 😄"
+    echo -e "${RESET}"
     echo
 }
 
 display_compliment_header() {
     echo
-    echo "✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨"
-    echo "✨                                                                ✨"
-    echo "✨           💝 COMPLIMENT MODE ACTIVATED 💝                      ✨" 
-    echo "✨                                                                ✨"
-    echo "✨     \"Celebrating the beautiful chaos that is your code\"        ✨"
-    echo "✨                                                                ✨"
-    echo "✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨"
+    echo -e "${MAGENTA}${BOLD}"
+    echo "                   ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨"
+    echo "                       ✨                                                              ✨"
+    echo "                       ✨                💝 COMPLIMENT MODE ACTIVATED 💝               ✨" 
+    echo "                       ✨                                                              ✨"
+    echo "                     ✨        \"Celebrating the beautiful chaos that is your code\"     ✨"
+    echo "                       ✨                                                              ✨"
+    echo "                   ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨"
+    echo -e "${RESET}"
     echo
-    echo "🌟 **Because every developer deserves recognition for their journey!** 🌟"
+    echo -e "${YELLOW}${BOLD}"
+    echo "                   🌟 **Because every developer deserves recognition for their journey!** 🌟"
+    echo -e "${RESET}"
     echo
 }
 
@@ -539,7 +708,9 @@ run_roast_mode() {
     
     display_roast_header
     
-    echo "🔍 **Analyzing @$username's code for prime roasting material...** 🔍"
+    echo -e "${CYAN}${BOLD}"
+    echo "                🔍 **Analyzing @$username's code for prime roasting material...** 🔍"
+    echo -e "${RESET}"
     echo
     echo
     sleep 2
@@ -556,13 +727,19 @@ run_roast_mode() {
     local roast_type=$(analyze_for_roasting "$username" "$commit_msgs" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits")
     
     display_comedy_section "🎯 **THE MAIN ROAST** 🎯"
+    echo -e "${WHITE}"
     wrap_and_indent_text "$(generate_roast "$roast_type" "$username" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits")"
+    echo -e "${RESET}"
     
     display_comedy_section "🗣️ **LANGUAGE CHOICE ROAST** 🗣️"
+    echo -e "${WHITE}"
     wrap_and_indent_text "$(generate_language_roast "$primary_lang")"
+    echo -e "${RESET}"
     
-    echo "🎭 **But seriously...** You're awesome for letting us roast your code!"
-    echo "💻 Keep coding, keep improving, and keep having fun with it!"
+    echo -e "${CYAN}${BOLD}"
+    echo "                  🎭 **But seriously...** You're awesome for letting us roast your code!"
+    echo "                      💻 Keep coding, keep improving, and keep having fun with it!"
+    echo -e "${RESET}"
     echo
 }
 
@@ -570,8 +747,10 @@ run_compliment_mode() {
     local username="$1"
     
     display_compliment_header
-    
-    echo "🔍 **Analyzing @$username's code for amazing qualities...** 🔍"
+
+    echo -e "${CYAN}${BOLD}"
+    echo "                     🔍 **Analyzing @$username's code for amazing qualities...** 🔍"
+    echo -e "${RESET}"
     echo
     sleep 1
     
@@ -586,9 +765,13 @@ run_compliment_mode() {
     local compliment_type=$(analyze_for_compliments "$username" "$commit_msgs" "$night_pct" "$weekend_pct" "$repo_cnt" "$total_commits")
     
     display_comedy_section "🌟 **YOUR CODING SUPERPOWERS** 🌟"
+    echo -e "${WHITE}"
     wrap_and_indent_text "$(generate_compliment "$compliment_type")"
-    
-    echo "🎉 **Keep being awesome!** The coding world is better with developers like you!"
-    echo "🚀 Your journey and dedication inspire others to keep learning and growing!"
+    echo -e "${RESET}"
+
+    echo -e "${CYAN}${BOLD}"
+    echo "                   🎉 **Keep being awesome!** The coding world is better with developers like you!"
+    echo "                   🚀 Your journey and dedication inspire others to keep learning and growing!"
+    echo -e "${RESET}"
     echo
 }

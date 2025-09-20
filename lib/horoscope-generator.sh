@@ -164,6 +164,11 @@ generate_horoscope() {
     local username="$1"
     local verbose="$2"
     
+    # Clear the screen but preserve header by redisplaying it
+    clear
+    display_header
+    echo
+    
     # Get current date and time for mystical calculations
     local current_date=$(date '+%B %d, %Y')
     local current_time=$(date '+%H:%M')
@@ -184,15 +189,15 @@ generate_horoscope() {
     if [[ "$user_name" != "N/A" && "$user_name" != "$username" ]]; then
         echo "    ✨ Known in the mortal realm as: $user_name"
     fi
-    echo "    🏷️  GitHub handle: @$username"
+    echo -e "    🏷️  GitHub handle: ${YELLOW}@$username${RESET}"
     if [[ "$user_location" != "N/A" ]]; then
         echo "    🌍 Coding from: $user_location"
     fi
     if [[ "$user_bio" != "N/A" ]]; then
         echo "    📜 Spiritual motto: \"$user_bio\""
     fi
-    echo "    👥 $followers souls follow your journey, you follow $following paths"
-    echo "    🏛️  $public_repos repositories hold your digital legacy"
+    echo -e "    👥 ${BLUE}$followers${RESET} souls follow your journey, you follow ${BLUE}$following${RESET} paths"
+    echo -e "    🏛️  ${GREEN}$public_repos repositories${RESET} hold your digital legacy"
     echo
     
     # Language-based horoscope
@@ -232,7 +237,7 @@ generate_horoscope() {
     display_horoscope_section "Communication Style" "$emoji_personality - Your emoji usage reveals the windows to your coding soul." "🎭"
     
     # GitHub karma
-    display_section_header "⚖️ GITHUB KARMA BALANCE" "🌟"
+    display_section_header "⚖️  GITHUB KARMA BALANCE" "🌟"
     local total_karma=$((ISSUE_KARMA + PR_KARMA))
     display_horoscope_section "Cosmic Contribution Score: $total_karma" "$(get_karma_wisdom $total_karma)" "✨"
     
@@ -349,5 +354,5 @@ generate_horoscope() {
     echo
     display_constellation
     echo
-    display_mystical_quote "Go forth and commit with purpose, for the universe compiles your destiny!"
+    display_mystical_quote         "Go forth and commit with purpose, for the universe compiles your destiny!"
 }

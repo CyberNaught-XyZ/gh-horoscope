@@ -46,6 +46,14 @@ TECHNICAL_ORACLE[security]="🔒 **Security Wisdom:** Trust is a vulnerability. 
 
 TECHNICAL_ORACLE[documentation]="📝 **Documentation Wisdom:** Code tells you how, comments tell you why, documentation tells you when to care. Write docs for the developer you were six months ago - confused, eager, and slightly panicked."
 
+TECHNICAL_ORACLE[debugging]="🐛 **Debugging Wisdom:** Your bug is not your enemy, but your teacher. Listen to its whispers in the console logs. The answer lies not in the code you wrote, but in the code you didn't write. Check your assumptions like you check your syntax - carefully and often."
+
+TECHNICAL_ORACLE[code_review]="👀 **Code Review Wisdom:** Review code as if you're mentoring your past self. Be kind but thorough, specific but not pedantic. The best reviews teach principles, not just point out problems. Remember: you're reviewing code, not critiquing the coder."
+
+TECHNICAL_ORACLE[learning]="📚 **Learning Wisdom:** Every expert was once a beginner who refused to give up. Start small, build consistently, and embrace the confusion - it means you're growing. The path from 'I have no idea' to 'I got this' is shorter than you think."
+
+TECHNICAL_ORACLE[career_start]="🌱 **Career Starting Wisdom:** Your first job won't be your last, your first language won't be your only one, and your first mistake won't define you. Focus on learning, asking good questions, and building things. The rest will follow."
+
 # Technical Debt Oracle - Advanced technical debt analysis and advice
 declare -A TECHNICAL_DEBT_ORACLE
 declare -g DEBT_ANALYSIS_RESULTS=()
@@ -248,21 +256,24 @@ provide_technical_debt_consultation() {
 
 # Fortune cookie style quick advice
 QUICK_ORACLE_WISDOM=(
-    "🥠 The bug you fear to face is exactly the bug you need to conquer for growth."
-    "🥠 Your best code will be written after your worst mistakes."
-    "🥠 The framework that confuses you today will make perfect sense tomorrow."
-    "🥠 Every senior developer was once a junior who refused to give up."
-    "🥠 Your code doesn't have to be perfect to be valuable."
-    "🥠 The best time to learn a new technology was yesterday. The second best time is now."
-    "🥠 Collaboration is not about writing code together, it's about solving problems together."
-    "🥠 Your commit message is a letter to future developers - make it worth reading."
-    "🥠 The scariest refactor is often the most necessary one."
-    "🥠 Documentation is code for humans - make it beautiful."
-    "🥠 Every bug is a mystery waiting to teach you something about your assumptions."
-    "🥠 The code that works is less important than the code that can be understood."
-    "🥠 Your greatest debugging tool is not your IDE - it's your ability to step away and think."
-    "🥠 Tests are not about finding bugs - they're about preventing regret."
-    "🥠 The best developers are not the ones who never break things - they're the ones who break things elegantly."
+    "🥠 The bug you fear to face is the breadcrumb to your best architecture. Follow it with curiosity, not fury."
+    "🥠 Your finest code often grows from yesterday's tragic merge. Treat failures like compost for brilliance."
+    "🥠 The framework that confuses you today will feel like home after one patient weekend. Bring snacks."
+    "🥠 Every senior developer was once a junior who shipped something imperfect and learned from it. Ship and learn."
+    "🥠 Code needn't be flawless to be useful; it must be readable, testable, and deployed. Prioritize the triad."
+    "🥠 The best time to learn a technology was yesterday. The second best time is while the CI runs."
+    "🥠 Collaboration isn't simultaneous typing—it's shared ownership over the same problems. Pair, then document."
+    "🥠 Your commit message is a time capsule. Leave breadcrumbs future-you can follow without a map."
+    "🥠 The riskiest refactor is the one left untested. Back it with small, safe experiments."
+    "🥠 Documentation is empathy in plain text. Write it for the sleep-deprived future reader."
+    "🥠 A mystery log line is a riddle from the system. Read between timestamps and you'll find the solution."
+    "🥠 Working code is useful; understandable code scales. Choose the latter when you can."
+    "🥠 Your best debugging tool is a coherent process: reproduce, hypothesize, test, verify, then sleep."
+    "🥠 Tests prevent regret; they are a promise to future-you that you cared enough to protect them."
+    "🥠 The best engineers fail fast, learn faster, and remember to apologize to their console history."
+    "🥠 A mysterious 500 error at 2AM is often just a missing environment variable and excessive confidence."
+    "🥠 Semver arguments are inevitable; document the decision and move on."
+    "🥠 The smallest entropy you remove today saves hours of grief tomorrow. Start with the smallest friction." 
 )
 
 # Daily coding mantras
@@ -300,6 +311,44 @@ give_project_guidance() {
             echo "🔮 **General Project Oracle:** Every great project starts with a problem worth solving and ends with a solution worth maintaining. Focus on the problem first, the technology second."
             ;;
     esac
+}
+
+# Interactive project guidance session with multiple queries
+run_project_guidance_session() {
+    while true; do
+        clear
+        echo -e "                         ${CYAN}${BOLD}🎯 **Project Guidance Oracle:**${RESET}"
+        echo
+        echo -e "  ${CYAN}What type of guidance do you seek?${RESET}"
+        echo -e "      ${BOLD}[new]${RESET} ${CYAN}- Starting a new project${RESET}"
+        echo -e "      ${BOLD}[stuck]${RESET} ${CYAN}- Stuck on current project${RESET}"  
+        echo -e "      ${BOLD}[scaling]${RESET} ${CYAN}- Scaling/performance issues${RESET}"
+        echo -e "      ${BOLD}[choosing_tech]${RESET} ${CYAN}- Technology decisions${RESET}"
+        echo
+        echo -ne "${CYAN}Enter guidance type: ${RESET}"
+        read guidance_type
+        echo
+        
+        # Get project guidance response and display with modern formatting
+        local project_response=$(give_project_guidance "$guidance_type")
+        display_mystical_insight "🎯 Project Guidance Oracle" "$project_response"
+        
+        echo
+        echo -ne "${CYAN}Would you like guidance on another project type? ${BOLD}[y/n]${RESET}${CYAN}: ${RESET}"
+        read continue_choice
+        
+        case $continue_choice in
+            [yY]|[yY][eE][sS])
+                continue
+                ;;
+            *)
+                clear
+                echo -e "\n${CYAN}${BOLD}              🎯 **The Project Oracle's guidance session concludes...**${RESET}\n"
+                echo -e "${GREEN}\"May your projects flourish and your code be ever clean!\"${RESET}"
+                break
+                ;;
+        esac
+    done
 }
 
 # GitHub Data-Driven Oracle Analysis
@@ -834,63 +883,70 @@ provide_language_mastery() {
 # Interactive oracle session
 display_oracle_header() {
     clear
-    echo "🔮 ✨ 🔮 ✨ 🔮 ✨ **THE CODING ORACLE AWAKENS** ✨ 🔮 ✨ 🔮 ✨ 🔮"
+    # Use sparkly title format like other modules
+    echo -e "${MAGENTA}${BOLD}"
+    echo "                                👥 🤝 👥 🤝 👥"
+    echo "                       🌟 🤝 TEAMWORK ORACLE WISDOM 🤝 🌟"
+    echo "                                👥 🤝 👥 🤝 👥"
     echo
-    echo "                       🏛️"
-    echo "                      ╭─────╮"
-    echo "                      │ 👁️‍🗨️ │"
-    echo "                      │ ☯️  │"
-    echo "                      │ 🔮  │"
-    echo "                      ╰─────╯"
-    echo "                    ╭───────────╮"
-    echo "                    │  ORACLE   │"
-    echo "                    ╰───────────╯"
-    echo
-    echo "\"Seeker of code wisdom, I have been expecting you...\""
-    echo "\"Your questions shall be answered, your path illuminated.\""
-    echo
+    echo "                      🔮 Ancient Coding Wisdom Revealed 🔮"
+    echo -e "${RESET}"
 }
 
 # Oracle menu display is now handled by display.sh
 
 ask_technical_question() {
-    echo "🔮 **The Oracle listens to your technical question...**"
+    clear
+    echo -e "${CYAN}${BOLD}🔮 **The Oracle listens to your technical question...**${RESET}"
     echo
-    read -p "🗣️ What technical challenge troubles your code-spirit? " question
+    echo -ne "${CYAN}🗣️ What technical challenge troubles your code-spirit? ${RESET}"
+    read question
     echo
-    echo "⏳ The Oracle communes with the ancient servers..."
+    echo -e "${CYAN}⏳ The Oracle communes with the ancient servers...${RESET}"
     sleep 2
     echo
     
     # Show Oracle consultation loading
     display_oracle_loading "Consulting the ancient coding wisdom" 2
     
+    # Clear screen after loading, like other Oracle options
+    clear
+    
     # Analyze question and provide contextual response
     local response=""
-    if [[ "$question" =~ (git|merge|conflict|branch) ]]; then
+    # Convert question to lowercase for better matching
+    local lower_question=$(echo "$question" | tr '[:upper:]' '[:lower:]')
+    
+    if [[ "$lower_question" =~ (git|merge|conflict|branch|pull|push|commit|rebase) ]]; then
         response="${TECHNICAL_ORACLE[git_conflicts]}"
-    elif [[ "$question" =~ (test|testing|unit|integration) ]]; then
+    elif [[ "$lower_question" =~ (test|testing|unit|integration|spec|tdd|coverage) ]]; then
         response="${TECHNICAL_ORACLE[testing]}"
-    elif [[ "$question" =~ (performance|slow|speed|optimize) ]]; then
+    elif [[ "$lower_question" =~ (debug|debugging|bug|error|issue|problem|broken|fix|troubleshoot) ]]; then
+        response="${TECHNICAL_ORACLE[debugging]}"
+    elif [[ "$lower_question" =~ (performance|slow|speed|optimize|fast|memory|cpu|lag) ]]; then
         response="${TECHNICAL_ORACLE[performance]}"
-    elif [[ "$question" =~ (security|auth|vulnerability|encrypt) ]]; then
+    elif [[ "$lower_question" =~ (security|auth|vulnerability|encrypt|secure|hack|safe) ]]; then
         response="${TECHNICAL_ORACLE[security]}"
-    elif [[ "$question" =~ (documentation|docs|comment|readme) ]]; then
+    elif [[ "$lower_question" =~ (documentation|docs|comment|readme|document|explain) ]]; then
         response="${TECHNICAL_ORACLE[documentation]}"
-    elif [[ "$question" =~ (review|pr|pull.*request) ]]; then
+    elif [[ "$lower_question" =~ (review|pr|pull.*request|code.*review|feedback) ]]; then
         response="${TECHNICAL_ORACLE[code_review]}"
+    elif [[ "$lower_question" =~ (learn|learning|start|starting|begin|beginning|new|beginner|first) ]]; then
+        response="${TECHNICAL_ORACLE[learning]}"
+    elif [[ "$lower_question" =~ (career|job|work|professional|interview|resume|junior|senior) ]]; then
+        response="${TECHNICAL_ORACLE[career_start]}"
     else
         # Generic wisdom based on question sentiment
-        if [[ "$question" =~ (help|stuck|confused|lost|don.*know) ]]; then
+        if [[ "$lower_question" =~ (help|stuck|confused|lost|don.*know|struggling|difficult) ]]; then
             response="🔮 **The Oracle sees your confusion:** When lost in the forest of code, climb the tallest tree of understanding. Sometimes the path forward requires stepping back to see the bigger picture. Your confusion is not weakness - it's the beginning of clarity."
-        elif [[ "$question" =~ (best.*practice|should|how.*to) ]]; then
+        elif [[ "$lower_question" =~ (best.*practice|should|how.*to|recommend|advice|suggest) ]]; then
             response="🔮 **The Oracle shares ancient wisdom:** The best practice is the one your team can consistently follow. Code for humans first, computers second. When in doubt, choose the solution that will be most understandable at 3 AM six months from now."
         else
             response="🔮 **The Oracle reflects:** '${question}' - A worthy question that shows wisdom in the asking. The answer you seek lies not just in knowing the 'what', but understanding the 'why'. Research deeply, experiment safely, and trust your growing intuition."
         fi
     fi
     
-    display_mystical_insight "🧙‍♂️ The Oracle Responds" "$response"
+    display_mystical_insight "🧙‍♂️  The Oracle Responds" "$response"
 }
 
 run_oracle_session() {
@@ -914,51 +970,63 @@ run_oracle_session() {
         
         case $choice in
             1)
+                clear
                 display_oracle_art "debugging"
                 display_mystical_insight "🐛 Oracle of Debugging" "${ORACLE_RESPONSES[debugging]}"
                 ;;
             2)
+                clear
                 display_oracle_art "career"
                 display_mystical_insight "💼 Career Oracle" "${ORACLE_RESPONSES[career]}"
                 ;;
             3)
+                clear
                 display_oracle_art "learning"
                 display_mystical_insight "📚 Learning Oracle" "${ORACLE_RESPONSES[learning]}"
                 ;;
             4)
+                clear
                 display_oracle_art "teamwork"
                 display_mystical_insight "👥 Teamwork Oracle" "${ORACLE_RESPONSES[teamwork]}"
                 ;;
             5)
+                clear
                 display_oracle_art "burnout"
                 display_mystical_insight "🔥 Burnout Oracle" "${ORACLE_RESPONSES[burnout]}"
                 ;;
             6)
+                clear
                 display_oracle_art "confidence"
                 display_mystical_insight "👤 Confidence Oracle" "${ORACLE_RESPONSES[imposter_syndrome]}"
                 ;;
             7)
+                clear
                 display_oracle_art "technology"
                 display_mystical_insight "🛠️ Technology Oracle" "${ORACLE_RESPONSES[technology_choice]}"
                 ;;
             8)
+                clear
                 display_oracle_art "legacy"
                 display_mystical_insight "🏛️ Legacy Code Oracle" "${ORACLE_RESPONSES[legacy_code]}"
                 ;;
             9)
+                clear
                 display_oracle_art "projects"
                 display_mystical_insight "🚀 Side Project Oracle" "${ORACLE_RESPONSES[side_projects]}"
                 ;;
             10)
+                clear
                 display_oracle_art "opensource"
                 display_mystical_insight "🌟 Open Source Oracle" "${ORACLE_RESPONSES[open_source]}"
                 ;;
             11)
+                clear
                 local random_wisdom=${QUICK_ORACLE_WISDOM[$RANDOM % ${#QUICK_ORACLE_WISDOM[@]}]}
                 display_oracle_art "default"
                 display_mystical_insight "🥠 Quick Oracle Wisdom" "$random_wisdom"
                 ;;
             12)
+                clear
                 local random_mantra=${CODING_MANTRAS[$RANDOM % ${#CODING_MANTRAS[@]}]}
                 display_oracle_art "default"
                 display_mystical_insight "🧘 Today's Coding Mantra" "$random_mantra"
@@ -967,26 +1035,16 @@ run_oracle_session() {
                 ask_technical_question
                 ;;
             14)
-                echo "🎯 **Project Guidance Oracle:**"
-                echo "What type of guidance do you seek?"
-                echo "  [new] - Starting a new project"
-                echo "  [stuck] - Stuck on current project"  
-                echo "  [scaling] - Scaling/performance issues"
-                echo "  [choosing_tech] - Technology decisions"
-                echo
-                read -p "Enter guidance type: " guidance_type
-                echo
-                echo "╭─────────────────────────────────────────────────────────────────────╮"
-                echo "│ $(give_project_guidance "$guidance_type") │"
-                echo "╰─────────────────────────────────────────────────────────────────────╯"
+                run_project_guidance_session
                 ;;
             15)
-                echo "🚪 **The Oracle fades into the digital mist...**"
+                clear
+                echo -e "${CYAN}${BOLD}        🚪 **The Oracle fades into the digital mist...**${RESET}"
                 echo
-                echo "\"Remember, seeker: The wisdom was within you all along.\""
-                echo "\"I merely helped you find the words for what you already knew.\""
+                echo -e "${MAGENTA}${BOLD}\"Remember, seeker: The wisdom was within you all along.\"${RESET}"
+                echo -e "${MAGENTA}${BOLD}\"I merely helped you find the words for what you already knew.\"${RESET}"
                 echo
-                echo "✨ May your code compile and your logic flow true! ✨"
+                echo -e "${CYAN}${BOLD}       ✨ May your code compile and your logic flow true! ✨${RESET}"
                 return 0
                 ;;
             *)
@@ -996,6 +1054,7 @@ run_oracle_session() {
         echo
         echo -n "Press Enter to continue your consultation..."
         read
+        clear
         echo
     done
 }

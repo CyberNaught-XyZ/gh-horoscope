@@ -46,30 +46,7 @@ get_terminal_width() {
     echo "$width"
 }
 
-# Get optimal box width based on terminal size
-get_box_width() {
-    local terminal_width=$(get_terminal_width)
-    local box_width
-    
-    # Leave 8 characters margin (4 on each side)
-    box_width=$((terminal_width - 8))
-    
-    # Ensure minimum and maximum box widths
-    if [[ $box_width -lt 60 ]]; then
-        box_width=60
-    elif [[ $box_width -gt 120 ]]; then
-        box_width=120
-    fi
-    
-    echo "$box_width"
-}
 
-# Get content width for text wrapping
-get_content_width() {
-    local box_width=$(get_box_width)
-    # Subtract 6 characters for borders and padding (│ + 2 spaces on each side + │)
-    echo $((box_width - 6))
-}
 
 # Enhanced visual width calculation accounting for emojis and special characters
 calculate_visual_width() {
@@ -108,6 +85,17 @@ calculate_visual_width() {
     emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "👁️" | wc -l)))
     emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "🎴" | wc -l)))
     emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "👯" | wc -l)))
+    # Add menu emojis
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "🐛" | wc -l)))
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "💼" | wc -l)))
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "📚" | wc -l)))
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "👥" | wc -l)))
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "👤" | wc -l)))
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "🛠️" | wc -l)))
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "🚀" | wc -l)))
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "🥠" | wc -l)))
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "🧘" | wc -l)))
+    emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "🎯" | wc -l)))
     emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "🤝" | wc -l)))
     emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "🌍" | wc -l)))
     emoji_count=$((emoji_count + $(echo "$clean_text" | grep -o "❄️" | wc -l)))
@@ -161,87 +149,7 @@ center_text() {
     printf "%*s%s\n" $padding "" "$text"
 }
 
-# Responsive box border functions
-draw_box_top() {
-    local box_width=$(get_box_width)
-    # Adjust for UTF-8 box characters that display as 2 columns
-    local dash_count=$(((box_width - 2) / 2))
-    echo -n "    ╭"
-    for ((i=0; i<dash_count; i++)); do
-        echo -n "─"
-    done
-    echo "╮"
-}
 
-draw_box_middle() {
-    local box_width=$(get_box_width)
-    # Adjust for UTF-8 box characters that display as 2 columns
-    local dash_count=$(((box_width - 2) / 2))
-    echo -n "    ├"
-    for ((i=0; i<dash_count; i++)); do
-        echo -n "─"
-    done
-    echo "┤"
-}
-
-draw_box_bottom() {
-    local box_width=$(get_box_width)
-    # Adjust for UTF-8 box characters that display as 2 columns
-    local dash_count=$(((box_width - 2) / 2))
-    echo -n "    ╰"
-    for ((i=0; i<dash_count; i++)); do
-        echo -n "─"
-    done
-    echo "╯"
-}
-
-# Responsive text content with proper padding
-draw_box_content() {
-    local text="$1"
-    local align="${2:-left}"  # left, center, right
-    local box_width=$(get_box_width)
-    local content_width=$((box_width - 4))  # Account for borders and spaces
-    
-    # Use improved visual width calculation for emojis
-    local visual_width=$(get_visual_text_width "$text")
-    
-    if [[ $visual_width -gt $content_width ]]; then
-        # Text too long, wrap it - need to handle colors properly
-        local clean_text=$(echo -e "$text" | sed 's/\x1b\[[0-9;]*m//g')
-        echo "$clean_text" | fold -s -w "$content_width" | while IFS= read -r line; do
-            printf "    │ %-${content_width}s │\n" "$line"
-        done
-    else
-        case $align in
-            center)
-                local padding=$(((content_width - visual_width) / 2))
-                # Ensure padding is not negative
-                if [[ $padding -lt 0 ]]; then padding=0; fi
-                printf "    │%*s" $padding ""
-                printf "%b" "$text"
-                printf "%*s│\n" $((content_width - visual_width - padding)) ""
-                ;;
-            right)
-                local right_padding=$((content_width - visual_width - 1))
-                if [[ $right_padding -lt 0 ]]; then right_padding=0; fi
-                printf "    │%*s" $right_padding ""
-                printf "%b" "$text"
-                printf " │\n"
-                ;;
-            *)
-                printf "    │ "
-                printf "%b" "$text"
-                # Calculate proper padding - get clean text length for padding
-                local clean_text=$(echo -e "$text" | sed 's/\x1b\[[0-9;]*m//g')
-                local clean_width=${#clean_text}
-                # Adjust emoji width
-                local emoji_count=$(echo "$clean_text" | grep -o '[🔮🎭🌟⭐🎪🎉✨💫🌙☀️⚡📜🃏👑🔥💝🏛️🚪🏆]' | wc -l)
-                clean_width=$((clean_width + emoji_count))
-                printf "%*s │\n" $((content_width - clean_width - 1)) ""
-                ;;
-        esac
-    fi
-}
 
 # Display functions
 display_header() {
@@ -263,26 +171,29 @@ EOF
     echo -e "${RESET}"
     echo
 }
-
 # Crystal ball for interactive mode
 display_crystal_ball() {
     echo -e "${MAGENTA}${BOLD}"
     local crystal_art=(
-        "         🔮 ✨ 🔮 ✨ 🔮 ✨ CRYSTAL BALL ✨ 🔮 ✨ 🔮 ✨ 🔮"
+        "           🔮 ✨ 🔮 ✨ 🔮 ✨ CRYSTAL BALL ✨ 🔮 ✨ 🔮 ✨ 🔮"
         ""
-        "                           ⭐"
-        "                        ╭───────╮"
-        "                       ╱         ╲"
-        "                      ╱  ░ 🔮 ░   ╲"
-        "                     ╱     ✨      ╲"
-        "                    ╱_______________╲"
-        "                   ╱                 ╲"
-        "                   ╲_________________╱"
-        "                         │     │"
-        "                         │     │"
-        "                        ╱───────╲"
-        "                       ╱  ░░░░░  ╲"
-        "                      ╱___________╲"
+        "                    🌟"
+        "                 ✨ 💫 ✨"
+        "               💫 ✨ 🔮 ✨ 💫"
+        "             ✨ 🌟 💫 🔮 💫 🌟 ✨"
+        "           💫 ✨ 🔮 ✨ 🌟 ✨ 🔮 ✨ 💫"
+        "         ✨ 🌟 💫 🔮 ✨ 🔮 ✨ 🔮 💫 🌟 ✨"
+        "       🌟 ✨ 💫 🔮 ✨ 🌟 💫 🌟 ✨ � �💫 ✨ 🌟"
+        "     💫 ✨ 🌟 💫 🔮 ✨ 🔮 🌟 🔮 ✨ 🔮 💫 🌟 ✨ 💫"
+        "       🌟 ✨ 💫 🔮 ✨ 🌟 💫 🌟 ✨ 🔮 💫 ✨ 🌟"
+        "         ✨ 🌟 💫 🔮 ✨ 🔮 ✨ 🔮 💫 🌟 ✨"
+        "           💫 ✨ 🔮 ✨ 🌟 ✨ 🔮 ✨ 💫"
+        "             ✨ 🌟 💫 🔮 💫 🌟 ✨"
+        "               💫 ✨ 🔮 ✨ 💫"
+        "                 ✨ 💫 ✨"
+        "                     🌟"
+        ""
+        "        💫 The sphere of infinite possibilities 💫"
         ""
     )
     
@@ -292,7 +203,6 @@ display_crystal_ball() {
     done
     echo -e "${RESET}"
 }
-
 # Display magical divider
 display_mystical_divider() {
     echo -e "${CYAN}"
@@ -300,31 +210,11 @@ display_mystical_divider() {
     echo -e "${RESET}"
 }
 
-# Display constellation divider
-display_constellation() {
-    echo -e "${BLUE}"
-    local constellation_art=(
-        "         *   .  *       .             *"
-        "    .        *   .        .    *"
-        "        .     ✨        .        .  *"
-        "    *     .     *     .     *     ."
-        "        .   *     .     .    ."
-        "    .     *   .   *   .      .   *"
-        "         .     *     .   *    ."
-        "    *   .   *    .     *    .   *"
-    )
-    
-    for line in "${constellation_art[@]}"; do
-        center_text "$line"
-    done
-    echo -e "${RESET}"
-}
-
 # Display coding magic portal
 display_magic_portal() {
     echo -e "${MAGENTA}"
     local portal_art=(
-        "                    ╭───────╮"
+        "                   ╭───────╮"
         "                  ╭─┤ ◇ ◇ ◇ ├─╮"
         "                ╭─┤   ◆ ◆ ◆   ├─╮"
         "              ╭─┤     ◈ ◈ ◈     ├─╮"
@@ -332,11 +222,11 @@ display_magic_portal() {
         "          ╭─┤         ◉ ◉ ◉         ├─╮"
         "          │           PORTAL          │"
         "          ╰─┤         ◉ ◉ ◉         ├─╯"
-        "            ╰─┤       ♦ ♦ ♦       ├─╯"
-        "              ╰─┤     ◈ ◈ ◈     ├─╯"
-        "                ╰─┤   ◆ ◆ ◆   ├─╯"
-        "                  ╰─┤ ◇ ◇ ◇ ├─╯"
-        "                    ╰───────╯"
+        "           ╰─┤       ♦ ♦ ♦       ├─╯"
+        "            ╰─┤     ◈ ◈ ◈     ├─╯"
+        "              ╰─┤   ◆ ◆ ◆   ├─╯"
+        "                ╰─┤ ◇ ◇ ◇ ├─╯"
+        "                  ╰───────╯"
     )
     
     for line in "${portal_art[@]}"; do
@@ -351,7 +241,7 @@ display_code_matrix() {
     local matrix_art=(
         "    01001000 01100101 01101100 01101100 01101111"
         "    01010111 01101111 01110010 01101100 01100100"
-        "    ░▒▓█ DECODING YOUR PATTERNS █▓▒░"
+        "         ░▒▓█ DECODING YOUR PATTERNS █▓▒░"
         "    01000011 01001111 01000100 01000101 01010010"
         "    01001101 01000001 01000111 01001001 01000011"
     )
@@ -366,10 +256,10 @@ display_code_matrix() {
 display_mystical_gears() {
     echo -e "${YELLOW}"
     local gears_art=(
-        "           ⚙️      ⚙️       ⚙️"
-        "         ⚙️ ⚙️   ⚙️ ⚙️   ⚙️ ⚙️"
-        "           ⚙️      ⚙️       ⚙️"
-        "      \"The gears of code destiny turn...\""
+         "           ⚙️      ⚙️       ⚙️"
+          "         ⚙️ ⚙️   ⚙️ ⚙️   ⚙️ ⚙️"
+         "           ⚙️      ⚙️       ⚙️"
+        "\"The gears of code destiny turn...\""
     )
     
     for line in "${gears_art[@]}"; do
@@ -383,9 +273,9 @@ display_footer() {
     echo -e "${GRAY}${DIM}"
     local footer_art=(
         "────────────────────────────────────────────────────────────────────────"
-        "🌟 May your builds be green and your merge conflicts be few 🌟"
+        "   🌟 May your builds be green and your merge conflicts be few 🌟"
         ""
-        "Created for \"For the Love of Code 2025\" - Terminal Talent Category"
+        "   Created for \"For the Love of Code 2025\" - Terminal Talent Category"
         "────────────────────────────────────────────────────────────────────────"
     )
     
@@ -399,9 +289,9 @@ display_section_header() {
     local title="$1"
     local icon="$2"
     echo -e "${CYAN}${BOLD}"
-    echo "    ┌─────────────────────────────────────────────────────────────────────┐"
-    echo "    │ $icon  $title"                                                      |
-    echo "    └─────────────────────────────────────────────────────────────────────┘"
+    echo "    ┌─────────────────────────────────────────────────────────────────┐"
+    echo "    │                                   $icon  $title                 |"
+    echo "    └─────────────────────────────────────────────────────────────────┘"
     echo -e "${RESET}"
 }
 
@@ -423,40 +313,33 @@ display_error() {
 
 display_mystical_quote() {
     local quote="$1"
-    echo -e "${MAGENTA}${BOLD}\"$quote\"${RESET}"
-    echo
-}
-
-display_crystal_ball_border() {
-    echo -e "${CYAN}"
-    draw_box_top
-    echo -e "${RESET}"
-}
-
-display_crystal_ball_bottom() {
-    echo -e "${CYAN}"
-    draw_box_bottom
+    echo -e "${MAGENTA}${BOLD}"
+    
+    # Wrap and center the quote properly
+    local wrapped_quote="\"$(echo "$quote" | fold -s -w 73)\""
+    center_text "$wrapped_quote"
     echo -e "${RESET}"
     echo
 }
+
+
 
 display_horoscope_section() {
     local title="$1"
     local content="$2"
     local icon="$3"
-    local content_width=$(get_content_width)
     
-    display_crystal_ball_border
-    draw_box_content "${WHITE}${BOLD}$icon  $title${RESET}"
+    # Use the clean header + separator format with cyan color
+    echo -e "${CYAN}${BOLD}"
+    display_mystical_section "$icon  $title"
+    echo -e "${WHITE}"
+    
+    # Process content with proper wrapping and single bullet point
+    echo -n "    • "
+    wrap_mystical_text "$content" | sed '1!s/^/      /'
+    echo -e "${RESET}"
+    
     echo
-    
-    # Process content with proper wrapping
-    echo -e "$content" | fold -s -w "$content_width" | while IFS= read -r line; do
-        draw_box_content "${WHITE}$line${RESET}"
-    done
-    
-    echo
-    display_crystal_ball_bottom
 }
 
 display_stats_line() {
@@ -539,10 +422,10 @@ display_moon_phase() {
 display_coffee_cup() {
     echo -e "${YELLOW}"
     local coffee_art=(
-        "           ☕"
-        "         c[_]"
-        "           |"
-        "      _____|_____"
+        "                ☕"
+        "              c[_]"
+        "                |"
+        "           _____|_____"
     )
     
     for line in "${coffee_art[@]}"; do
@@ -559,30 +442,30 @@ display_loading_animation() {
     
     echo -n "    "
     for ((t=0; t<duration*10; t++)); do
-        echo -ne "\r    ${CYAN}${spinner[i]} $message${RESET}"
+        echo -ne "\r${CYAN}${spinner[i]} $message${RESET}"
         i=$(((i+1) % ${#spinner[@]}))
         sleep 0.1
     done
-    echo -ne "\r    ${GREEN}✓ $message${RESET}\n"
+    echo -ne "\r${GREEN}✓ $message${RESET}\n"
 }
 
 # Enhanced mystical loading with different themes
 display_oracle_loading() {
     local message="$1"
     local duration="${2:-3}"
-    
-    echo -e "\n    ${MAGENTA}   🌟 Consulting the Oracle... 🌟${RESET}"
-    echo -e "    ${CYAN}              ✨ ••• ✨ ••• ✨${RESET}"
-    echo -e "    ${YELLOW}   🔮 Analyzing your GitHub soul... 🔮${RESET}\n"
-    
+
+    echo -e "\n ${YELLOW}🌟 Consulting the Oracle... 🌟${RESET}"
+    echo -e "         ${MAGENTA}✨ ••• ✨ ••• ✨${RESET}"
+    echo -e "${CYAN}🔮 Analyzing your GitHub soul... 🔮${RESET}\n"
+
     local symbols=("🔮" "✨" "🌟" "🌙" "⭐" "💫" "🌠" "☄️")
     
     for ((i=0; i<duration*4; i++)); do
         local symbol_index=$((i % ${#symbols[@]}))
-        echo -ne "\r    ${YELLOW}${symbols[$symbol_index]} $message${RESET}"
+        echo -ne "\r${YELLOW}${symbols[$symbol_index]} $message${RESET}"
         sleep 0.25
     done
-    echo -ne "\r    ${GREEN}🌟 $message - The Oracle has spoken!${RESET}\n"
+    echo -ne "\r${GREEN}🌟 $message - The Oracle has spoken!${RESET}\n"
 }
 
 # Crystal ball consultation loading
@@ -590,22 +473,22 @@ display_crystal_ball_loading() {
     local message="$1"
     local duration="${2:-4}"
     
-    echo -e "\n    ${CYAN}     ✧･ﾟ: *✧･ﾟ:* The Crystal Ball Awakens *:･ﾟ✧*:･ﾟ✧${RESET}"
+    echo -e "\n${MAGENTA}✧･ﾟ: *✧･ﾟ:* The Crystal Ball Awakens *:･ﾟ✧*:･ﾟ✧${RESET}"
     
     local frames=(
-        "    ${CYAN}        .:･ﾟ✧ 🔮 ✧ﾟ･:.        ${RESET}"
-        "    ${MAGENTA}        .:･ﾟ✧ 🔮 ✧ﾟ･:.        ${RESET}"
-        "    ${YELLOW}        .:･ﾟ✧ 🔮 ✧ﾟ･:.        ${RESET}"
-        "    ${BLUE}        .:･ﾟ✧ 🔮 ✧ﾟ･:.        ${RESET}"
+        "           ${CYAN}.:･ﾟ✧ 🔮 ✧ﾟ･:.${RESET}"
+        "           ${MAGENTA}.:･ﾟ✧ 🔮 ✧ﾟ･:.${RESET}"
+        "           ${YELLOW}.:･ﾟ✧ 🔮 ✧ﾟ･:.${RESET}"
+        "           ${BLUE}.:･ﾟ✧ 🔮 ✧ﾟ･:.${RESET}"
     )
     
     for ((i=0; i<duration*2; i++)); do
         local frame_index=$((i % ${#frames[@]}))
-        echo -ne "\r${frames[$frame_index]}"
+        echo -ne "\r       ${frames[$frame_index]}"
         sleep 0.5
     done
-    echo -e "\r    ${GREEN}        .:･ﾟ✧ ✅ ✧ﾟ･:.        ${RESET}"
-    echo -e "    ${GREEN}$message - Complete!${RESET}\n"
+    echo -e "\r                     ${GREEN}.:･ﾟ✧ ✅ ✧ﾟ･:.${RESET}"
+    echo -e "${GREEN}$message - Complete!${RESET}\n"
 }
 
 # GitHub API loading animation
@@ -613,7 +496,7 @@ display_github_loading() {
     local message="$1"
     local duration="${2:-3}"
     
-    echo -e "\n    ${BLUE}🐙 Summoning GitHub's ancient spirits... 🐙${RESET}"
+    echo -e "\n${CYAN}🐙 Summoning GitHub's ancient spirits... 🐙${RESET}"
     
     local github_symbols=("📊" "📈" "🔍" "⚡" "🚀" "💻" "🌐" "📡")
     local dots=""
@@ -624,10 +507,10 @@ display_github_loading() {
         if [[ ${#dots} -gt 3 ]]; then
             dots="."
         fi
-        echo -ne "\r    ${BLUE}${github_symbols[$symbol_index]} $message$dots${RESET}"
+        echo -ne "\r${BLUE}${github_symbols[$symbol_index]} $message$dots${RESET}"
         sleep 0.33
     done
-    echo -ne "\r    ${GREEN}✅ $message - Data retrieved!${RESET}\n"
+    echo -ne "\r${GREEN}✅ $message - Data retrieved!${RESET}\n"
 }
 
 # Unique ASCII art for different Oracle types
@@ -637,146 +520,91 @@ display_oracle_art() {
     case "$oracle_type" in
         "debugging")
             echo -e "${RED}"
-            local debugging_art=(
-                "                    🐛 ═══ 🔍 ═══ 🐛"
-                "                   ╔═══════════════════╗"
-                "                   ║  DEBUGGING ORACLE ║"
-                "                   ╚═══════════════════╝"
-                "                     🔧 🛠️  🔨 ⚙️  🔧"
-            )
-            for line in "${debugging_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                            🐛 ═══ 🔍 ═══ 🐛"
+            echo "                          ╔══════════════════╗"
+            echo "                          ║ DEBUGGING ORACLE ║"
+            echo "                          ╚══════════════════╝"
+            echo "                             🔧 🛠️  🔨 ⚙️  🔧"
             ;;
         "career")
             echo -e "${BLUE}"
-            local career_art=(
-                "                    💼 ═══ 📈 ═══ 💼"
-                "                   ╔═══════════════════╗"
-                "                   ║   CAREER ORACLE   ║"
-                "                   ╚═══════════════════╝"
-                "                     👑 💪 🚀 🌟 💎"
-            )
-            for line in "${career_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                             💼 ═══ 📈 ═══ 💼"
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║   CAREER ORACLE   ║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             👑 💪 🚀 🌟 💎"
             ;;
         "learning")
             echo -e "${GREEN}"
-            local learning_art=(
-                "                    📚 ═══ 🎓 ═══ 📚"
-                "                   ╔═══════════════════╗"
-                "                   ║  LEARNING ORACLE  ║"
-                "                   ╚═══════════════════╝"
-                "                     🧠 💡 🔬 📖 ✨"
-            )
-            for line in "${learning_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                            📚 ═══ 🎓 ═══ 📚"
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║  LEARNING ORACLE  ║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             🧠 💡 🔬 📖 ✨"
             ;;
         "teamwork")
             echo -e "${YELLOW}"
-            local teamwork_art=(
-                "                    👥 ═══ 🤝 ═══ 👥"
-                "                   ╔═══════════════════╗"
-                "                   ║  TEAMWORK ORACLE  ║"
-                "                   ╚═══════════════════╝"
-                "                     🌉 🤗 💬 🎭 🔄"
-            )
-            for line in "${teamwork_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                            👥 ═══ 🤝 ═══ 👥"
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║  TEAMWORK ORACLE  ║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             🌉 🤗 💬 🎭 🔄"
             ;;
         "burnout")
             echo -e "${MAGENTA}"
-            local burnout_art=(
-                "                    🔥 ═══ 🧘 ═══ 🔥"
-                "                   ╔═══════════════════╗"
-                "                   ║  WELLNESS ORACLE  ║"
-                "                   ╚═══════════════════╝"
-                "                     🌱 😌 ⚖️  🌸 🦋"
-            )
-            for line in "${burnout_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                            🔥 ═══ 🧘 ═══ 🔥"
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║  WELLNESS ORACLE  ║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             🌱 😌 ⚖️  🌸 🦋"
             ;;
         "confidence")
             echo -e "${CYAN}"
-            local confidence_art=(
-                "                    👤 ═══ 💪 ═══ 👤"
-                "                   ╔═══════════════════╗"
-                "                   ║ CONFIDENCE ORACLE ║"
-                "                   ╚═══════════════════╝"
-                "                     🦁 💎 🌟 ⭐ 🔮"
-            )
-            for line in "${confidence_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                            👤 ═══ 💪 ═══ 👤" 
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║ CONFIDENCE ORACLE ║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             🦁 💎 🌟 ⭐ 🔮"
             ;;
         "technology")
             echo -e "${WHITE}"
-            local technology_art=(
-                "                    🛠️  ═══ ⚡ ═══ 🛠️ "
-                "                   ╔═══════════════════╗"
-                "                   ║ TECHNOLOGY ORACLE ║"
-                "                   ╚═══════════════════╝"
-                "                     💻 🔧 ⚙️  🖥️  📱"
-            )
-            for line in "${technology_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                            🛠️  ═══ ⚡ ═══ 🛠️ "
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║ TECHNOLOGY ORACLE ║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             💻 🔧 ⚙️  🖥️ 📱"
             ;;
         "legacy")
             echo -e "${GRAY}"
-            local legacy_art=(
-                "                    🏛️  ═══ 📜 ═══ 🏛️ "
-                "                   ╔═══════════════════╗"
-                "                   ║ LEGACY CODE ORACLE║"
-                "                   ╚═══════════════════╝"
-                "                     ⚰️  🗿 📿 🕯️  ⚱️"
-            )
-            for line in "${legacy_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                           🏛️  ═══ 📜 ═══ 🏛️ "
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║ LEGACY CODE ORACLE║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             ⚰️ 🗿 📿 🕯️ ⚱️"
             ;;
         "projects")
             echo -e "${GREEN}"
-            local projects_art=(
-                "                    🚀 ═══ 💡 ═══ 🚀"
-                "                   ╔═══════════════════╗"
-                "                   ║SIDE PROJECT ORACLE║"
-                "                   ╚═══════════════════╝"
-                "                     🌱 🎨 🛸 ✨ 🎯"
-            )
-            for line in "${projects_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                            🚀 ═══ 💡 ═══ 🚀"
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║SIDE PROJECT ORACLE║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             🌱 🎨 🛸 ✨ 🎯"
             ;;
         "opensource")
             echo -e "${BLUE}"
-            local opensource_art=(
-                "                    🌟 ═══ 🌍 ═══ 🌟"
-                "                   ╔═══════════════════╗"
-                "                   ║ OPEN SOURCE ORACLE║"
-                "                   ╚═══════════════════╝"
-                "                     🌺 🤝 🌿 💚 🕊️"
-            )
-            for line in "${opensource_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                            🌟 ═══ 🌍 ═══ 🌟"
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║ OPEN SOURCE ORACLE║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             🌺 🤝 🌿 💚 🕊️"
             ;;
         *)
             echo -e "${MAGENTA}"
-            local mystical_art=(
-                "                    🔮 ═══ ✨ ═══ 🔮"
-                "                   ╔═══════════════════╗"
-                "                   ║  MYSTICAL ORACLE  ║"
-                "                   ╚═══════════════════╝"
-                "                     🌙 ⭐ 💫 🌟 ✨"
-            )
-            for line in "${mystical_art[@]}"; do
-                center_text "$line"
-            done
+            echo "                            🔮 ═══ ✨ ═══ 🔮"
+            echo "                          ╔═══════════════════╗"
+            echo "                          ║  MYSTICAL ORACLE  ║"
+            echo "                          ╚═══════════════════╝"
+            echo "                             🌙 ⭐ 💫 🌟 ✨"
             ;;
     esac
     echo -e "${RESET}"
@@ -879,7 +707,7 @@ display_deluxe_crystal_ball() {
         "                       '*･ﾟ✧*:･ﾟ✧:..:･ﾟ✧*:･ﾟ✧*'"
         "                           '*･ﾟ✧*:･ﾟ✧*'"
         "                             '*･ﾟ*'"
-        "            🌟✨ ═══ THE COSMIC CODE DIVINATION CHAMBER ═══ ✨🌟"
+        "          🌟✨ ═══ THE COSMIC CODE DIVINATION CHAMBER ═══ ✨🌟"
     )
     
     for line in "${deluxe_art[@]}"; do
@@ -888,10 +716,8 @@ display_deluxe_crystal_ball() {
     echo -e "${RESET}"
 }
 
-# Original crystal ball function - now calls responsive version
-display_crystal_ball() {
-    display_crystal_ball_responsive
-}
+# Original crystal ball function uses the hardcoded ASCII art
+# The main display_crystal_ball() function is defined earlier in the file
 
 # Enhanced crystal ball display
 display_enhanced_crystal_ball() {
@@ -919,9 +745,10 @@ display_enhanced_crystal_ball() {
 }
 
 # Simple section separator function for comedy generator
-display_comedy_section() {
+# Simple section separator function for mystical content - like comedy generator  
+display_mystical_section() {
     local title="$1"
-    local separator_length=63  # Standard length for consistency
+    local separator_length=75  # Standard length for consistency
     
     echo "    $title"
     printf "    "
@@ -929,6 +756,28 @@ display_comedy_section() {
         printf "═"
     done
     echo
+    echo
+}
+
+# Text wrapping function for mystical content
+wrap_mystical_text() {
+    local text="$1"
+    echo "$text" | fold -s -w 75
+}
+
+# Simple section separator function for comedy generator
+display_comedy_section() {
+    local title="$1"
+    local separator_length=63  # Standard length for consistency
+    
+    echo -e "${CYAN}${BOLD}"
+    echo "    $title"
+    printf "    "
+    for ((i=0; i<separator_length; i++)); do
+        printf "═"
+    done
+    echo
+    echo -e "${RESET}"
     echo
 }
 
@@ -950,104 +799,76 @@ display_mystical_loading() {
 display_mystical_insight() {
     local title="$1"
     local content="$2"
-    local content_width=$(get_content_width)
     
-    echo
-    draw_box_top
-    echo
-    draw_box_content "$title" "center"
-    echo
+    # Use the clean header + separator format with cyan color
+    echo -e "${CYAN}${BOLD}"
+    display_mystical_section "$title"
+    echo -e "${WHITE}"
     
-    # Process content with proper wrapping
-    echo -e "$content" | fold -s -w "$content_width" | while IFS= read -r line; do
-        draw_box_content "$line"
-    done
+    # Process content with proper wrapping and single bullet point
+    echo -n "    • "
+    wrap_mystical_text "$content" | sed '1!s/^/      /'
+    echo -e "${RESET}"
     
-    echo
-    draw_box_bottom
     echo
 }
 
-# Display responsive interactive menu
+# Display responsive interactive menu/don't know why 2 pipes in each menu has to be on a space out.
+# But it does, or it won't align properly on output, weird, but dont question it.
 display_interactive_menu() {
-    draw_box_top
-    draw_box_content "🔮 MYSTICAL MENU 🔮" "center"
-    draw_box_middle
-    draw_box_content " 1. 🎭 Discover Your Developer Archetype"
-    draw_box_content " 2. 🔮 Ask the Bug Oracle a Question"
-    draw_box_content " 3. 🌟 Get Your Daily Coding Prediction"
-    draw_box_content " 4. ⚡ Reveal Your Coding Element"
-    draw_box_content " 5. 📜 Analyze Your Commit Message Patterns"
-    draw_box_content " 6. 🃏 Programming Tarot Card Reading"
-    draw_box_content " 7. 🔮 Oracle Wisdom Session"
-    draw_box_content " 8. 👑 Find Your Celebrity Developer Twin"
-    draw_box_content " 9. 🔥 Roast My Code (Humorous Analysis)"
-    draw_box_content "10. 💝 Compliment My Journey"
-    draw_box_content "11. 🏛️  Generate Full Horoscope"
-    draw_box_content "12. 🏆 View Achievement Gallery"
-    draw_box_content "13. 🚪 Exit the Mystical Realm"
-    draw_box_bottom
+    echo -e "${CYAN}${BOLD}"
+    cat << 'EOF'
+                           ╔══════════════════════════════════════════════════════════════════════╗
+                           ║                         🔮 MYSTICAL MENU 🔮                          ║
+                           ╠══════════════════════════════════════════════════════════════════════╣
+                           ║  1. 🎭 Discover Your Developer Archetype                             ║
+                           ║  2. 🔮 Ask the Bug Oracle a Question                                 ║
+                           ║  3. 🌟 Get Your Daily Coding Prediction                              ║
+                           ║  4. ⚡ Reveal Your Coding Element                                    ║
+                           ║  5. 📜 Analyze Your Commit Message Patterns                          ║
+                           ║  6. 🃏 Programming Tarot Card Reading                                ║
+                           ║  7. 🔮 Oracle Wisdom Session                                         ║
+                           ║  8. 👑 Find Your Celebrity Developer Twin                            ║
+                           ║  9. 🔥 Roast My Code (Humorous Analysis)                             ║
+                           ║ 10. 💝 Compliment My Journey                                         ║
+                           ║ 11. 🏛️  Generate Full Horoscope                                       ║
+                           ║ 12. 🏆 View Achievement Gallery                                      ║
+                           ║ 13. 🚪 Exit the Mystical Realm                                       ║
+                           ╚══════════════════════════════════════════════════════════════════════╝
+EOF
+    echo -e "${RESET}"
     echo
 }
 
 # Display responsive oracle consultation menu  
 display_oracle_menu() {
-    draw_box_top
-    draw_box_content "🔮 **ORACLE CONSULTATION** 🔮" "center"
-    draw_box_middle
-    draw_box_content " 1. 🐛 Ask about debugging and problem-solving"
-    draw_box_content " 2. 💼 Seek career and professional guidance"
-    draw_box_content " 3. 📚 Learn about learning and skill development"
-    draw_box_content " 4. 👥 Inquire about teamwork and collaboration"
-    draw_box_content " 5. 🔥 Address burnout and work-life balance"
-    draw_box_content " 6. 👤 Overcome imposter syndrome"
-    draw_box_content " 7. 🛠️ Get help choosing technologies"
-    draw_box_content " 8. 🏛️ Deal with legacy code"
-    draw_box_content " 9. 🚀 Get guidance on side projects"
-    draw_box_content "10. 🌟 Learn about open source contribution"
-    draw_box_content "11. 🥠 Receive quick wisdom (fortune cookie style)"
-    draw_box_content "12. 🧘 Daily coding mantra for mindfulness"
-    draw_box_content "13. 🔮 Ask a specific technical question"
-    draw_box_content "14. 🎯 Get project-specific guidance"
-    draw_box_content "15. 🚪 Exit the Oracle's chamber"
-    draw_box_bottom
+    echo -e "${MAGENTA}${BOLD}"
+    cat << 'EOF'
+    ╔══════════════════════════════════════════════════════════════════════╗
+    ║                      🔮 ORACLE CONSULTATION 🔮                       ║
+    ╠══════════════════════════════════════════════════════════════════════╣
+    ║  1. 🐛 Ask about debugging and problem-solving                       ║
+    ║  2. 💼 Seek career and professional guidance                         ║
+    ║  3. 📚 Learn about learning and skill development                    ║
+    ║  4. 👥 Inquire about teamwork and collaboration                      ║
+    ║  5. 🔥 Address burnout and work-life balance                         ║
+    ║  6. 👤 Overcome imposter syndrome                                    ║
+    ║  7. 🛠️  Get help choosing technologies                                ║
+    ║  8. 🏛️  Deal with legacy code                                         ║
+    ║  9. 🚀 Get guidance on side projects                                 ║
+    ║ 10. 🌟 Learn about open source contribution                          ║
+    ║ 11. 🥠 Receive quick wisdom (fortune cookie style)                   ║
+    ║ 12. 🧘 Daily coding mantra for mindfulness                           ║
+    ║ 13. 🔮 Ask a specific technical question                             ║
+    ║ 14. 🎯 Get project-specific guidance                                 ║
+    ║ 15. 🚪 Exit the Oracle's chamber                                     ║
+    ╚══════════════════════════════════════════════════════════════════════╝
+EOF
+    echo -e "${RESET}"
     echo
 }
 
-# Cryptic border display (responsive)
-display_cryptic_border() {
-    local box_width=$(get_box_width)
-    echo -e "${MAGENTA}"
-    echo -n "    ╭"
-    for ((i=0; i<box_width-2; i++)); do
-        echo -n "─"
-    done
-    echo "╮"
-    
-    # Center the mystical text
-    local mystical_text="🜁 𝐓𝐡𝐞 𝐀𝐧𝐜𝐢𝐞𝐧𝐭 𝐒𝐜𝐫𝐢𝐩𝐭𝐬 𝐑𝐞𝐯𝐞𝐚𝐥 𝐀𝐥𝐥 🜁"
-    local content_width=$((box_width - 4))
-    local text_len=${#mystical_text}
-    
-    if [[ $text_len -le $content_width ]]; then
-        local padding=$(((content_width - text_len) / 2))
-        printf "    │$(tput setaf 5)%*s%s%*s$(tput sgr0)${MAGENTA}│\n" \
-               $padding "" "$mystical_text" $((content_width - text_len - padding)) ""
-    else
-        # If text is too long, truncate or use a shorter version
-        local short_text="🜁 The Ancient Scripts Reveal All 🜁"
-        local padding=$(((content_width - ${#short_text}) / 2))
-        printf "    │$(tput setaf 5)%*s%s%*s$(tput sgr0)${MAGENTA}│\n" \
-               $padding "" "$short_text" $((content_width - ${#short_text} - padding)) ""
-    fi
-    
-    echo -n "    ╰"
-    for ((i=0; i<box_width-2; i++)); do
-        echo -n "─"
-    done
-    echo "╯"
-    echo -e "${RESET}"
-}
+
 
 # Responsive fireworks animation that adapts to terminal width
 animate_responsive_fireworks() {
@@ -1057,27 +878,27 @@ animate_responsive_fireworks() {
     if [[ $terminal_width -lt 80 ]]; then
         # Compact fireworks for narrow terminals
         fireworks_content="        
-         ✨ * ✨ * ✨ * ✨
-     ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
-        * ✦ CELEBRATION! ✦ *
-     ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
-        ✨ * ✨ * ✨ * ✨"
+  ✨ * ✨ * ✨ * ✨
+✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
+  * ✦ CELEBRATION! ✦ *
+✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
+  ✨ * ✨ * ✨ * ✨"
     elif [[ $terminal_width -lt 120 ]]; then
         # Standard fireworks
         fireworks_content="
-          ✨   💫   ✨   💫   ✨   💫   ✨
-        ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
-          * ✦ ✨ EPIC CELEBRATION! ✨ ✦ *
-        ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
-          ✨   💫   ✨   💫   ✨   💫   ✨"
+  ✨   💫   ✨   💫   ✨   💫   ✨
+✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
+   * ✦ ✨ EPIC CELEBRATION! ✨ ✦ *
+✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
+  ✨   💫   ✨   💫   ✨   💫   ✨"
     else
         # Deluxe fireworks for wide terminals
         fireworks_content="        
-              ✨   💫   ⭐   💫   ✨   💫   ⭐   💫   ✨
-            ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
-               * ✦ ✨ 🎉 LEGENDARY CELEBRATION! 🎉 ✨ ✦ *
-            ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
-              ✨   💫   ⭐   💫   ✨   💫   ⭐   💫   ✨"
+    ✨   💫   ⭐   💫   ✨   💫   ⭐   💫   ✨
+  ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
+     * ✦ ✨ 🎉 LEGENDARY CELEBRATION! 🎉 ✨ ✦ *
+  ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨ ･ﾟ✧*:･ﾟ✧ ✨
+    ✨   💫   ⭐   💫   ✨   💫   ⭐   💫   ✨"
     fi
     
     echo -e "${YELLOW}${BOLD}"
@@ -1153,17 +974,338 @@ display_crystal_ball_enhanced() {
     display_crystal_ball_responsive
 }
 
-# Apply enhanced centering to ALL celebration animations and crystal balls
-fix_all_ascii_centering() {
-    # This function serves as the master function to apply centering fixes
-    # All individual functions have been updated to use center_ascii_block and center_text
+# Beautiful archetype reveal display
+display_archetype_reveal() {
+    local archetype_name="$1"
+    local archetype_description="$2"
     
-    # Enhanced crystal ball displays already use center_text
-    display_crystal_ball_enhanced
+    clear
+    echo -e "${MAGENTA}${BOLD}"
     
-    # Achievement celebrations now use center_ascii_block
-    # Fireworks are responsive via animate_responsive_fireworks
-    # Matrix rain respects terminal boundaries via animate_matrix_rain
+    # Theatrical archetype announcement - aligned more to the left
+    echo "                                        ✨ 🎭 ✨ 🎭 ✨"
+    echo "                                🌟 The Ancient Codex Speaks 🌟"
+    echo "                                        ✨ 🎭 ✨ 🎭 ✨"
+    echo
+    echo "                               🔮 Your True Coding Identity: 🔮"
+    echo
     
-    echo "🎯 All ASCII centering fixes have been applied!"
+    # Display the archetype name prominently - aligned more to the left
+    echo -e "${YELLOW}${BOLD}"
+    echo "                          🧙‍♂️ ═══════════════════════════════════ 🧙‍♂️"
+    echo
+    echo "                                    ✨ $archetype_name ✨"
+    echo
+    echo "                          🧙‍♂️ ═══════════════════════════════════ 🧙‍♂️"
+    echo -e "${RESET}"
+    echo
+    
+    # Display the description with mystical formatting
+    echo -e "${CYAN}${BOLD}"
+    display_mystical_section "🌟 Your Mystical Coding Essence"
+    echo -e "${WHITE}"
+    echo -n "    • 🎭 "
+    wrap_mystical_text "$archetype_description" | sed '1!s/^/      /'
+    echo -e "${RESET}"
+    echo
+    
+    # Add some mystical sparkles - aligned to the left
+    echo -e "${MAGENTA}"
+    echo "                     ✨ ･ﾟ✧*:･ﾟ✧ ✦ The spirits have spoken ✦ ･ﾟ✧*:･ﾟ✧ ✨"
+    echo -e "${RESET}"
+    echo
 }
+
+# Mystical archetype analysis loading animation
+display_archetype_loading() {
+    clear
+    echo -e "${MAGENTA}${BOLD}"
+    
+    # Title
+    echo "                     🎭 THE SPIRITS REVEAL YOUR DEVELOPER ARCHETYPE 🎭"
+    echo
+    
+    # Ancient scroll animation - aligned to the left
+    echo "                                    📜 ✨ 📜 ✨ 📜"
+    echo "                             Consulting the Ancient Scrolls"
+    echo "                                    📜 ✨ 📜 ✨ 📜"
+    echo
+    
+    # Loading animation with mystical symbols - aligned to the left
+    local mystical_symbols=("🔮" "🎭" "🧙‍♂️" "📜" "✨" "🌟" "💫" "🎪")
+    echo -e "${CYAN}"
+    
+    for ((i=0; i<20; i++)); do
+        local symbol_index=$((i % ${#mystical_symbols[@]}))
+        echo -ne "\r                          ${mystical_symbols[$symbol_index]} Analyzing your coding soul... ${mystical_symbols[$symbol_index]}"
+        sleep 0.2
+    done
+    
+    echo -e "\n"
+    echo -e "${GREEN}"
+    echo "                    🌟 ✨ The ancient wisdom has been deciphered! ✨ 🌟"
+    echo -e "${RESET}"
+    sleep 1
+}
+
+# Bug Oracle awakening display
+display_bug_oracle_awakening() {
+    clear
+    echo -e "${CYAN}${BOLD}"
+    
+    # Oracle awakening art
+    echo "                                🔮 THE BUG ORACLE AWAKENS 🔮"
+    echo
+    echo "                                     ✨ 🐛 ✨ 🐛 ✨"
+    echo "                              🌟 Ancient Debug Wisdom Stirs 🌟"
+    echo "                                     ✨ 🐛 ✨ 🐛 ✨"
+    echo
+    echo "                              🔮 Speak Your Coding Troubles 🔮"
+    echo
+    echo -e "${MAGENTA}"
+    echo "                      ✨ ･ﾟ✧*:･ﾟ✧ ✦ The Oracle Listens ✦ ･ﾟ✧*:･ﾟ✧ ✨"
+    echo -e "${RESET}"
+    echo
+}
+
+# Bug Oracle consultation loading
+display_bug_oracle_loading() {
+    local question="$1"
+    
+    clear
+    echo -e "${CYAN}${BOLD}"
+    
+    # Show the question prominently/ size depends on question entered - aligned more to the right to "align small questions"
+    echo "                                 🔮 YOUR CODING QUERY 🔮"
+    echo
+    echo "                                     💭 \"$question\""
+    echo
+    
+    # Oracle consultation animation
+    echo "                                    📚 ✨ 📚 ✨ 📚"
+    echo "                          Consulting the Ethereal Bug Database"
+    echo "                                    📚 ✨ 📚 ✨ 📚"
+    echo 
+    
+    # Loading animation
+    local oracle_symbols=("🔮" "🐛" "💻" "📚" "✨" "🌟" "⚡" "🔍")
+    echo -e "${YELLOW}"
+    
+    for ((i=0; i<15; i++)); do
+        local symbol_index=$((i % ${#oracle_symbols[@]}))
+        echo -ne "\r                   ${oracle_symbols[$symbol_index]} The Oracle peers through the digital veil... ${oracle_symbols[$symbol_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    echo -e "${GREEN}"
+    echo "                    🌟 ✨ The ancient debugging wisdom emerges! ✨ 🌟"
+    echo -e "${RESET}"
+    sleep 1
+}
+
+# Bug Oracle response display
+display_bug_oracle_response() {
+    local question="$1"
+    local response="$2"
+    
+    clear
+    echo -e "${MAGENTA}${BOLD}"
+    
+    # Oracle speaks header
+    echo "                                         ✨ 🔮 ✨ 🔮 ✨"
+    echo "                                   🌟 The Bug Oracle Speaks 🌟"
+    echo "                                         ✨ 🔮 ✨ 🔮 ✨"
+    echo
+    echo "                                  🪄 Ancient Debugging Wisdom 🪄"
+    echo
+    
+    # Display the mystical response
+    echo -e "${YELLOW}${BOLD}"
+    echo "                          🧙‍♂️ ═══════════════════════════════════ 🧙‍♂️"
+    echo
+    echo "                                    ✨ Oracle's Prophecy ✨"
+    echo
+    echo "                          🧙‍♂️ ═══════════════════════════════════ 🧙‍♂️"
+    echo -e "${RESET}"
+    echo
+    
+    # Display the response with mystical formatting
+    echo -e "${CYAN}${BOLD}"
+    echo "   🌟 The Sacred Debug Revelation"
+    printf "   "
+    for ((i=0; i<75; i++)); do
+        printf "═"
+    done
+    echo
+    echo
+    echo -e "${WHITE}"
+    echo -n "    • "
+    echo "$response" | fold -s -w 75 | sed '1!s/^/      /'
+    echo -e "${RESET}"
+    echo
+    
+    # Mystical closing
+    echo -e "${MAGENTA}"
+    echo "             ✨ ･ﾟ✧*:･ﾟ✧ ✦ May your bugs be few and your fixes swift ✦ ･ﾟ✧*:･ﾟ✧ ✨"
+    echo -e "${RESET}"
+    echo
+}
+
+# Beautiful emoji-decorated titles like the archetype reveal
+display_sparkle_title() {
+    local title="$1"
+    local emoji="${2:-✨}"
+    local color="${3:-${CYAN}}"
+    
+    echo -e "${color}${BOLD}"
+    
+    # Create thematic decoration based on the emoji provided
+    local decoration_line
+    if [[ "$emoji" == "👤" ]]; then
+        decoration_line="👤 🎭 👤 🎭 👤"  # Identity theme
+    elif [[ "$emoji" == "🗣️" ]]; then
+        decoration_line="💻 🗣️ 💻 🗣️ 💻"  # Language theme
+    elif [[ "$emoji" == "🕐" ]]; then
+        decoration_line="⏰ 🕐 ⏰ 🕐 ⏰"  # Time theme
+    elif [[ "$emoji" == "✍️" ]]; then
+        decoration_line="📝 ✍️ 📝 ✍️ 📝"  # Writing theme
+    elif [[ "$emoji" == "📚" ]]; then
+        decoration_line="📚 🏛️ 📚 🏛️ 📚"  # Repository theme
+    elif [[ "$emoji" == "🌟" ]]; then
+        decoration_line="⚖️ 🌟 ⚖️ 🌟 ⚖️"  # Karma theme
+    elif [[ "$emoji" == "🌙" ]]; then
+        decoration_line="🔮 🌙 🔮 🌙 🔮"  # Mystical theme
+    elif [[ "$emoji" == "🔢" ]]; then
+        decoration_line="🎰 🔢 🎰 🔢 🎰"  # Numbers theme
+    elif [[ "$emoji" == "☯️" ]]; then
+        decoration_line="🧘 ☯️ 🧘 ☯️ 🧘"  # Zen theme
+    elif [[ "$emoji" == "�" ]]; then
+        decoration_line="�🎭 🎪 🎭 🎪 🎭"  # Archetype theme
+    elif [[ "$emoji" == "♈" ]]; then
+        decoration_line="✨ ♈ ✨ ♈ ✨"  # Astrological theme
+    elif [[ "$emoji" == "🔮" ]]; then
+        decoration_line="📜 🔮 📜 🔮 📜"  # Mystique theme
+    elif [[ "$emoji" == "�" ]]; then
+        decoration_line="🔥 🌊 🔥 🌊 🔥"  # Elemental theme
+    elif [[ "$emoji" == "🔬" ]]; then
+        decoration_line="🧠 🔬 🧠 🔬 🧠"  # Analysis theme
+    elif [[ "$emoji" == "⚡" ]]; then
+        decoration_line="🔮 ⚡ 🔮 ⚡ 🔮"  # Prophecy theme
+    elif [[ "$emoji" == "🌀" ]]; then
+        decoration_line="⏰ 🌀 ⏰ 🌀 ⏰"  # Time magic theme
+    else
+        decoration_line="$emoji ✨ $emoji ✨ $emoji"  # Generic sparkle theme
+    fi
+    
+    # Hardcoded centered spacing instead of center_text for perfect alignment
+    if [[ "$emoji" == "👤" ]]; then
+        echo "                                              👤 🎭 👤 🎭 👤"
+        echo "                                    🌟 $title 🌟"
+        echo "                                              👤 🎭 👤 🎭 👤"
+    elif [[ "$emoji" == "🗣️" ]]; then
+        echo "                                               💻 🗣️ 💻 🗣️ 💻"
+        echo "                                     🌟 $title 🌟"
+        echo "                                               💻 🗣️ 💻 🗣️ 💻"
+    elif [[ "$emoji" == "🕐" ]]; then
+        echo "                                              ⏰ 🕐 ⏰ 🕐 ⏰"
+        echo "                                    🌟 $title 🌟"
+        echo "                                              ⏰ 🕐 ⏰ 🕐 ⏰"
+    elif [[ "$emoji" == "✍️" ]]; then
+        echo "                                                📝 ✍️ 📝 ✍️ 📝"
+        echo "                                    🌟 $title 🌟"
+        echo "                                                📝 ✍️ 📝 ✍️ 📝"
+    elif [[ "$emoji" == "📚" ]]; then
+        echo "                                               📚 🏛️ 📚 🏛️ 📚"
+        echo "                                    🌟 $title 🌟"
+        echo "                                               📚 🏛️ 📚 🏛️ 📚"
+    elif [[ "$emoji" == "🌟" ]]; then
+        echo "                                                 ⚖️  🌟 ⚖️ 🌟 ⚖️"
+        echo "                                      🌟 $title 🌟"
+        echo "                                                 ⚖️  🌟 ⚖️ 🌟 ⚖️"
+    elif [[ "$emoji" == "🌙" ]]; then
+        echo "                                              🔮 🌙 🔮 🌙 🔮"
+        echo "                                      🌟 $title 🌟"
+        echo "                                              🔮 🌙 🔮 🌙 🔮"
+    elif [[ "$emoji" == "🔢" ]]; then
+        echo "                                                  🎰 🔢 🎰 🔢 🎰"
+        echo "                                           🌟 $title 🌟"
+        echo "                                                  🎰 🔢 🎰 🔢 🎰"
+    elif [[ "$emoji" == "☯️" ]]; then
+        echo "                                                 🧘 ☯️ 🧘 ☯️ 🧘"
+        echo "                                     🌟 $title 🌟"
+        echo "                                                 🧘 ☯️ 🧘 ☯️ 🧘"
+    elif [[ "$emoji" == "🎪" ]]; then
+        echo "                                                 🎭 🎪 🎭 🎪 🎭"
+        echo "                                     🌟 $title 🌟"
+        echo "                                                 🎭 🎪 🎭 🎪 🎭"
+    elif [[ "$emoji" == "♈" ]]; then
+        echo "                                                ✨ ♈ ✨ ♈ ✨"
+        echo "                                   🌟 $title 🌟"
+        echo "                                                ✨ ♈ ✨ ♈ ✨"
+    elif [[ "$emoji" == "🔮" ]]; then
+        echo "                                                📜 🔮 📜 🔮 📜"
+        echo "                                      🌟 $title 🌟"
+        echo "                                                📜 🔮 📜 🔮 📜"
+    elif [[ "$emoji" == "🌊" ]]; then
+        echo "                                                 🔥 🌊 🔥 🌊 🔥"
+        echo "                                      🌟 $title 🌟"
+        echo "                                                 🔥 🌊 🔥 🌊 🔥"
+    elif [[ "$emoji" == "🔬" ]]; then
+        echo "                                                🧠 🔬 🧠 🔬 🧠"
+        echo "                                     🌟 $title 🌟"
+        echo "                                                🧠 🔬 🧠 🔬 🧠"
+    elif [[ "$emoji" == "⚡" ]]; then
+        echo "                                                🔮 ⚡ 🔮 ⚡ 🔮"
+        echo "                                    🌟 $title 🌟"
+        echo "                                                🔮 ⚡ 🔮 ⚡ 🔮"
+    elif [[ "$emoji" == "🌀" ]]; then
+        echo "                                                ⏰ 🌀 ⏰ 🌀 ⏰"
+        echo "                                    🌟 $title 🌟"
+        echo "                                                ⏰ 🌀 ⏰ 🌀 ⏰"
+    else
+        echo "                                          $emoji ✨ $emoji ✨ $emoji"
+        echo "                                   🌟 $title 🌟"
+        echo "                                          $emoji ✨ $emoji ✨ $emoji"
+    fi
+    echo -e "${RESET}"
+    echo
+}
+
+# Mystical section header with emoji decorations
+display_mystical_header() {
+    local title="$1"
+    local subtitle="$2"
+    local main_emoji="${3:-🔮}"
+    local color="${4:-${MAGENTA}}"
+    
+    echo -e "${color}${BOLD}"
+    
+    # Create sparkle pattern around the title
+    local decoration="✨ $main_emoji ✨ $main_emoji ✨"
+    center_text "$decoration"
+    center_text "$title"
+    center_text "$decoration"
+    
+    # Add subtitle if provided
+    if [[ -n "$subtitle" ]]; then
+        echo
+        center_text "$subtitle"
+    fi
+    
+    echo -e "${RESET}"
+    echo
+}
+
+# Replace the old display_section_header with sparkly version
+display_section_header() {
+    local title="$1"
+    local icon="$2"
+    
+    # Use the icon as the decorative emoji, fallback to sparkles
+    local decoration_emoji="${icon:-✨}"
+    
+    # Use sparkle title with thematic emojis
+    display_sparkle_title "$title" "$decoration_emoji" "${CYAN}"
+}
+

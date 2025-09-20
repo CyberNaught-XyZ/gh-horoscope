@@ -19,7 +19,7 @@ RESET='\033[0m'
 display_setup_banner() {
     echo -e "${MAGENTA}"
     echo "╔══════════════════════════════════════════════════════════════════════╗"
-    echo "║                    🔮 HOROSCOPE SETUP WIZARD 🔮                     ║"
+    echo "║                    🔮 HOROSCOPE SETUP WIZARD 🔮                      ║"
     echo "║                                                                      ║"
     echo "║              Setting up your mystical coding environment             ║"
     echo "╚══════════════════════════════════════════════════════════════════════╝"
@@ -114,8 +114,8 @@ main() {
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
         print_error "Missing required dependencies: ${missing_deps[*]}"
         print_info "Please install missing dependencies and run setup again"
-        print_info "  Ubuntu/Debian: sudo apt install ${missing_deps[*]}"
-        print_info "  macOS: brew install ${missing_deps[*]}"
+        print_info "Ubuntu/Debian: sudo apt install ${missing_deps[*]}"
+        print_info "macOS: brew install ${missing_deps[*]}"
         exit 1
     fi
     
@@ -141,7 +141,7 @@ main() {
     else
         print_warning "GitHub CLI not found - some features will be limited"
         print_info "Install GitHub CLI for full functionality:"
-        print_info "  https://cli.github.com/"
+        print_info "https://cli.github.com/"
         echo
     fi
     

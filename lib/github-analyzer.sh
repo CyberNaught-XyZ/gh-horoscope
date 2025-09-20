@@ -18,11 +18,96 @@ declare -g EMOJI_COUNT=0
 declare -g ISSUE_KARMA=0
 declare -g PR_KARMA=0
 
+# Flags and summary for embarrassing artifacts discovered during analysis
+declare -g FOUND_TODO=0
+declare -g FOUND_DEBUG_PRINTS=0
+declare -g FOUND_SECRET_LIKE=0
+declare -g EMBARRASSING_SUMMARY=""
+
 # Check GitHub CLI authentication
 check_github_auth() {
     if ! gh auth status &>/dev/null; then
         return 1
     fi
+    return 0
+}
+
+# Helper: return night-owl percentage (integer)
+get_night_owl_score() {
+    if [[ -z "${TOTAL_COMMITS:-}" || ${TOTAL_COMMITS} -eq 0 ]]; then
+        echo 0
+        return
+    fi
+    local pct=$(( (NIGHT_OWL_COUNT * 100) / TOTAL_COMMITS ))
+    echo "$pct"
+}
+
+# Helper: return weekend-commits percentage (integer)
+get_weekend_warrior_score() {
+    if [[ -z "${TOTAL_COMMITS:-}" || ${TOTAL_COMMITS} -eq 0 ]]; then
+        echo 0
+        return
+    fi
+    local pct=$(( (WEEKEND_COMMITS * 100) / TOTAL_COMMITS ))
+    echo "$pct"
+}
+
+# Scan commit messages and repo data for TODOs, debug prints, and secret-like patterns
+find_embarrassing_artifacts() {
+    FOUND_TODO=0
+    FOUND_DEBUG_PRINTS=0
+    FOUND_SECRET_LIKE=0
+    EMBARRASSING_SUMMARY=""
+
+    # Accept commit messages as args or use global COMMIT_MESSAGES
+    local messages=()
+    if [[ $# -gt 0 ]]; then
+        messages=("$@")
+    else
+        messages=("${COMMIT_MESSAGES[@]}")
+    fi
+
+    # Check commit messages for TODO/FIXME/HACK/XXX
+    for m in "${messages[@]}"; do
+        if echo "$m" | grep -qiE "\b(TODO|FIXME|HACK|XXX)\b"; then
+            FOUND_TODO=1
+        fi
+        if echo "$m" | grep -qiE "\b(console\.log|printf\(|print\(|logger\.debug|dbg\(|pprint\()"; then
+            FOUND_DEBUG_PRINTS=1
+        fi
+        if echo "$m" | grep -qiE "(AKIA|BEGIN RSA PRIVATE KEY|-----BEGIN PRIVATE KEY-----|api[_-]?key|secret[_-]?key|password=|passwd=)"; then
+            FOUND_SECRET_LIKE=1
+        fi
+    done
+
+    # Also do a light scan of repository descriptions/names for TODO-like markers (if REPOS_DATA available)
+    if [[ -n "$REPOS_DATA" ]]; then
+        if echo "$REPOS_DATA" | grep -qiE "\b(TODO|WIP|FIXME|HACK)\b"; then
+            FOUND_TODO=1
+        fi
+        if echo "$REPOS_DATA" | grep -qiE "(api[_-]?key|secret|password|BEGIN RSA PRIVATE KEY)"; then
+            FOUND_SECRET_LIKE=1
+        fi
+    fi
+
+    # Build a conservative summary (no secrets printed)
+    local parts=()
+    if [[ $FOUND_TODO -eq 1 ]]; then
+        parts+=("leftover TODO/FIXME markers")
+    fi
+    if [[ $FOUND_DEBUG_PRINTS -eq 1 ]]; then
+        parts+=("debug prints/logging statements")
+    fi
+    if [[ $FOUND_SECRET_LIKE -eq 1 ]]; then
+        parts+=("secret-like patterns (rotate credentials)")
+    fi
+
+    if [[ ${#parts[@]} -gt 0 ]]; then
+        EMBARRASSING_SUMMARY="Found: ${parts[*]}"
+    else
+        EMBARRASSING_SUMMARY="No obvious embarrassing artifacts detected"
+    fi
+
     return 0
 }
 
@@ -148,6 +233,9 @@ analyze_commit_patterns() {
     if [[ -n "$commit_messages_raw" ]]; then
         readarray -t COMMIT_MESSAGES < <(echo "$commit_messages_raw" | head -100)
     fi
+
+    # Populate embarrassing artifact flags and summary
+    find_embarrassing_artifacts
     
     return 0
 }
@@ -1552,7 +1640,7 @@ generate_advanced_insights_summary() {
     local productivity_rhythm=$(echo "${COMMIT_TIME_ANALYSIS[*]}" | grep -o "productivity_rhythm:[^:]*" | cut -d: -f2)
     local peak_period=$(echo "${COMMIT_TIME_ANALYSIS[*]}" | grep -o "peak_period:[^:]*" | cut -d: -f2)
     if [[ -n "$productivity_rhythm" ]] && [[ -n "$peak_period" ]]; then
-        display_simple_insight "⏰ Temporal Wisdom: Your $productivity_rhythm coding rhythm peaks in the $peak_period - the stars align with your natural cycles!"
+        display_simple_insight "Temporal Wisdom: Your $productivity_rhythm coding rhythm peaks in the $peak_period - the stars align with your natural cycles!"
     fi
     
     # Language evolution insights
@@ -1578,16 +1666,445 @@ generate_advanced_insights_summary() {
 display_simple_insight() {
     local insight="$1"
     echo
-    echo "    ✨ $insight"
+    echo "                                     ✨ $insight"
     echo
 }
 
 # Display section header for advanced insights
 display_section_header() {
     local title="$1"
+    local icon="$2"
+    
+    # Use the sparkly title style from display.sh instead of boxes
+    display_sparkle_title "$title" "$icon" "${CYAN}"
+}
+
+# Daily coding prediction with full experience
+display_daily_prediction() {
+    clear
+    
+    # Make sure we source required modules
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$script_dir/fortune-data.sh"
+    source "$script_dir/display.sh"
+    
+    # Loading animation
+    echo -e "                                     ${CYAN}${BOLD}"
+    echo "                            🌟 Consulting the cosmic code streams..."
     echo
-    echo "╭────────────────────────────────────────────────────────────────────╮"
-    echo "│                          $title                          │"
-    echo "╰────────────────────────────────────────────────────────────────────╯"
+    
+    local symbols=("🌟" "✨" "🔮" "⭐" "💫" "🌙" "☄️" "🪐")
+    for ((i=0; i<10; i++)); do
+        local symbol_index=$((i % ${#symbols[@]}))
+        echo -ne "\r                         ${symbols[$symbol_index]} The stars align for your coding destiny... ${symbols[$symbol_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    sleep 1
+    clear
+    
+    # Beautiful title
+    echo -e "${MAGENTA}${BOLD}"
+    echo "                                     📅 ⭐ 📅 ⭐ 📅"
+    echo "                          🌟 ⭐ DAILY CODING PREDICTION ⭐ 🌟"
+    echo "                                     📅 ⭐ 📅 ⭐ 📅"
     echo
+    echo "                          🔮 Today's Mystical Code Prophecy 🔮"
+    echo
+    
+    # Main prediction section
+    echo -e "${YELLOW}${BOLD}"
+    echo "                        🌟 ═══════════════════════════════════ 🌟"
+    echo
+    echo "                              ✨ Today's Cosmic Guidance ✨"
+    echo
+    echo "                        🌟 ═══════════════════════════════════ 🌟"
+    echo -e "${RESET}"
+    echo
+    
+    # Display the prediction with mystical formatting
+    echo -e "${CYAN}${BOLD}"
+    echo "    🌟 Today's Cosmic Coding Energy"
+    echo "    ═══════════════════════════════════════════════════════════════════════════"
+    echo -e "${WHITE}"
+    
+    # Get the prediction and wrap it properly
+    local prediction=$(get_daily_prediction)
+    echo -n "    • 🔮 "
+    echo "$prediction" | fold -s -w 71 | sed '1!s/^/      /'
+    echo -e "${RESET}"
+    echo
+    echo
+    echo -e "${MAGENTA}"
+    echo "                  ✨ ･ﾟ✧*:･ﾟ✧ ✦ The cosmic code flows through you ✦ ･ﾟ✧*:･ﾟ✧ ✨"
+    echo -e "${RESET}"
+    echo
+}
+
+# Coding element display with full experience
+display_coding_element() {
+    clear
+    
+    # Make sure we source required modules
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$script_dir/fortune-data.sh"
+    source "$script_dir/display.sh"
+    
+    # Loading animation
+    echo -e "${CYAN}${BOLD}"
+    echo "                          🌪️ Analyzing your elemental coding essence..."
+    echo
+    
+    local elements=("🔥" "💧" "🌪️" "🌍" "⚡" "❄️" "🌙" "☀️")
+    for ((i=0; i<12; i++)); do
+        local element_index=$((i % ${#elements[@]}))
+        echo -ne "\r                         ${elements[$element_index]} The elements whisper your coding nature... ${elements[$element_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    sleep 1
+    clear
+    
+    # Get element based on GitHub data
+    local element_result=$(get_coding_element "${PRIMARY_LANGUAGES[*]}" "normal" "standard")
+    local element_name=$(get_element_name "$element_result")
+    local description=$(get_element_description "$element_name")
+    
+    # Beautiful title
+    echo -e "${MAGENTA}${BOLD}"
+    echo "                                     ⚡ 🌊 ⚡ 🌊 ⚡"
+    echo "                         🌟 🌊 ELEMENTAL CODING ESSENCE 🌊 🌟"
+    echo "                                     ⚡ 🌊 ⚡ 🌊 ⚡"
+    echo
+    echo "                          🌪️ Your Primal Programming Force 🌪️"
+    echo
+    
+    # Element reveal
+    echo -e "${YELLOW}${BOLD}"
+    echo "                       🌟 ═══════════════════════════════════ 🌟"
+    echo
+    echo "                                   ✨ $element_name Element ✨"
+    echo
+    echo "                       🌟 ═══════════════════════════════════ 🌟"
+    echo -e "${RESET}"
+    echo
+    
+    # Description
+    echo -e "${CYAN}${BOLD}"
+    echo "    🔥 Your Elemental Coding Nature"
+    echo "    ═══════════════════════════════════════════════════════════════════════════"
+    echo -e "${WHITE}"
+    echo -n "    • 🌟 "
+    echo "$description" | fold -s -w 71 | sed '1!s/^/      /'
+    echo -e "${RESET}"
+    echo
+    echo
+    echo -e "${MAGENTA}"
+    echo "                ✨ ･ﾟ✧*:･ﾟ✧ ✦ The elements flow through your code ✦ ･ﾟ✧*:･ﾟ✧ ✨"
+    echo -e "${RESET}"
+    echo
+}
+
+# Commit message analysis with full experience
+display_commit_analysis() {
+    clear
+    
+    # Make sure we source required modules
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$script_dir/fortune-data.sh"
+    source "$script_dir/display.sh"
+    
+    # Loading animation
+    echo -e "${CYAN}${BOLD}"
+    echo "                         📝 Analyzing your commit message mystique..."
+    echo
+    
+    local symbols=("📝" "✍️" "📜" "🔮" "✨" "💭" "📋" "⚡")
+    for ((i=0; i<10; i++)); do
+        local symbol_index=$((i % ${#symbols[@]}))
+        echo -ne "\r                         ${symbols[$symbol_index]} Deciphering your coding chronicles... ${symbols[$symbol_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    sleep 1
+    clear
+    
+    # Beautiful title
+    echo -e "${MAGENTA}${BOLD}"
+    echo "                                    📜 ✍️ 📜 ✍️ 📜"
+    echo "                         🌟 ✍️ COMMIT MESSAGE MYSTIQUE ✍️ 🌟"
+    echo "                                    📜 ✍️ 📜 ✍️ 📜"
+    echo
+    echo "                         🔮 Your Coding Chronicles Revealed 🔮"
+    echo
+    
+    # Analysis section
+    echo -e "${YELLOW}${BOLD}"
+    echo "                       🌟 ═══════════════════════════════════ 🌟"
+    echo
+    echo "                             ✨ Message Pattern Analysis ✨"
+    echo
+    echo "                       🌟 ═══════════════════════════════════ 🌟"
+    echo -e "${RESET}"
+    echo
+    
+    # Get and display analysis
+    local analysis=$(get_commit_message_wisdom)
+    
+    echo -e "${CYAN}${BOLD}"
+    echo "    📜 Your Commit Message Signature"
+    echo "    ═══════════════════════════════════════════════════════════════════════════"
+    echo -e "${WHITE}"
+    echo -n "    • ✍️ "
+    echo "$analysis" | fold -s -w 71 | sed '1!s/^/      /'
+    echo -e "${RESET}"
+    echo
+    echo
+    echo -e "${MAGENTA}"
+    echo "                     ✨ ･ﾟ✧*:･ﾟ✧ ✦ Your messages tell your story ✦ ･ﾟ✧*:･ﾟ✧ ✨"
+    echo -e "${RESET}"
+    echo
+}
+
+# Helper function to extract element name from result
+get_element_name() {
+    local element_result="$1"
+    
+    # Extract just the element name from complex results
+    if [[ "$element_result" =~ Fire|🔥 ]]; then
+        echo "Fire"
+    elif [[ "$element_result" =~ Water|💧|🌊 ]]; then
+        echo "Water"
+    elif [[ "$element_result" =~ Earth|🌍|🌱 ]]; then
+        echo "Earth"
+    elif [[ "$element_result" =~ Air|🌪️|💨 ]]; then
+        echo "Air"
+    elif [[ "$element_result" =~ Lightning|⚡ ]]; then
+        echo "Lightning"
+    elif [[ "$element_result" =~ Shadow|🌙|🌚 ]]; then
+        echo "Shadow"
+    elif [[ "$element_result" =~ Light|☀️|💡 ]]; then
+        echo "Light"
+    elif [[ "$element_result" =~ Ice|❄️|🧊 ]]; then
+        echo "Ice"
+    else
+        # Default fallback
+        echo "Fire"
+    fi
+}
+
+# Helper function to get element description
+get_element_description() {
+    local element="$1"
+    case "$element" in
+        "Fire") echo "🔥 Your code burns with passionate intensity. You write with fierce determination, creating blazing solutions that illuminate the darkness of complex problems." ;;
+        "Water") echo "💧 Your code flows like a peaceful stream, adapting to any container. You find the path of least resistance while still reaching every corner of the problem space." ;;
+        "Earth") echo "🌍 Your code stands solid and enduring like ancient mountains. Built with methodical care, your solutions form the bedrock that others build upon." ;;
+        "Air") echo "🌪️ Your code dances through problems with ethereal grace. Light and elegant, your solutions float above complexity with brilliant simplicity." ;;
+        "Lightning") echo "⚡ Your code strikes with electric precision. Fast and brilliant, you illuminate solutions in sudden flashes of inspired genius." ;;
+        "Shadow") echo "🌙 Your code works in mysterious ways. Behind the scenes, your elegant solutions solve problems others never even noticed existed." ;;
+        "Light") echo "☀️ Your code radiates clarity and illumination. Every function shines with purpose, guiding others through the darkness of confusion." ;;
+        "Ice") echo "❄️ Your code possesses crystalline perfection. Cool and precise, each line forms beautiful patterns of logical clarity." ;;
+    esac
+}
+
+# Helper function for commit message wisdom
+get_commit_message_wisdom() {
+    local patterns=("Your messages dance between dimensions: 'stuff', 'changes', 'idk'. This chaos reflects a mind that sees patterns beyond linear thought - order will emerge from your beautiful madness."
+                   "Every commit message is a haiku of purpose. You write with crystalline clarity, each word chosen with the precision of a master craftsperson."
+                   "Your messages tell epic tales of transformation. Each commit reads like a chapter in the grand novel of your codebase's evolution."
+                   "You speak in the ancient tongue of descriptive commits. Future developers will thank you for these breadcrumbs of wisdom."
+                   "Your messages pulse with urgency and passion. Even in text, your dedication to solving problems shines through every character.")
+    echo "${patterns[$((RANDOM % ${#patterns[@]}))]}"
+}
+
+# Tarot session with full experience
+display_tarot_session() {
+    clear
+    
+    # Make sure we source required modules
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$script_dir/tarot-system.sh"
+    source "$script_dir/display.sh"
+    
+    # Loading animation
+    echo -e "${CYAN}${BOLD}"
+    echo "                         🃏 Shuffling the mystical programming cards..."
+    echo
+    
+    local symbols=("🃏" "🔮" "✨" "🌟" "💫" "🎴" "🃏" "🌙")
+    for ((i=0; i<12; i++)); do
+        local symbol_index=$((i % ${#symbols[@]}))
+        echo -ne "\r                     ${symbols[$symbol_index]} The cards whisper ancient programming wisdom... ${symbols[$symbol_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    sleep 1
+    clear
+    
+    # Run the actual tarot session
+    track_usage "tarot"
+    run_tarot_session
+}
+
+# Oracle session with full experience
+display_oracle_session() {
+    clear
+    
+    # Make sure we source required modules
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$script_dir/oracle-sessions.sh"
+    source "$script_dir/display.sh"
+    
+    # Loading animation
+    echo -e "${CYAN}${BOLD}"
+    echo "                        🔮 Opening portal to the Oracle's chamber..."
+    echo
+    
+    local symbols=("🔮" "💎" "🌟" "✨" "🔍" "💫" "🌌" "⚡")
+    for ((i=0; i<10; i++)); do
+        local symbol_index=$((i % ${#symbols[@]}))
+        echo -ne "\r                     ${symbols[$symbol_index]} The Oracle awakens from digital slumber... ${symbols[$symbol_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    sleep 1
+    clear
+    
+    # Run the actual oracle session
+    track_usage "oracle"
+    run_oracle_session
+}
+
+# Celebrity comparison with full experience
+display_celebrity_session() {
+    clear
+    
+    # Make sure we source required modules
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$script_dir/celebrity-comparison.sh"
+    source "$script_dir/display.sh"
+    
+    # Loading animation
+    echo -e "${CYAN}${BOLD}"
+    echo "                         👑 Scanning the developer multiverse..."
+    echo
+    
+    local symbols=("👑" "⭐" "🌟" "✨" "🎭" "🏆" "💫" "🌠")
+    for ((i=0; i<12; i++)); do
+        local symbol_index=$((i % ${#symbols[@]}))
+        echo -ne "\r                     ${symbols[$symbol_index]} Finding your celebrity developer twin... ${symbols[$symbol_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    sleep 1
+    clear
+    
+    # Run the actual celebrity comparison
+    track_usage "celebrity"
+    local username="${1:-demo-user}"
+    analyze_github_user "$username"
+    clear
+    display_coding_doppelganger "$username"
+}
+
+# Roast mode with full experience
+display_roast_session() {
+    clear
+    
+    # Make sure we source required modules
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$script_dir/comedy-generator.sh"
+    source "$script_dir/display.sh"
+    
+    # Loading animation
+    echo -e "${CYAN}${BOLD}"
+    echo "                        🔥 Preparing comedic algorithms for roasting..."
+    echo
+    
+    local symbols=("🔥" "😈" "🎭" "💥" "⚡" "🌶️" "😂" "🎪")
+    for ((i=0; i<10; i++)); do
+        local symbol_index=$((i % ${#symbols[@]}))
+        echo -ne "\r                     ${symbols[$symbol_index]}Calibrating humor settings to 'loving roast'... ${symbols[$symbol_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    sleep 1
+    clear
+    
+    # Run the actual roast mode
+    track_usage "roast"
+    local username="${1:-demo-user}"
+    analyze_github_user "$username"
+    clear
+    run_roast_mode "$username"
+}
+
+# Compliment mode with full experience
+display_compliment_session() {
+    clear
+    
+    # Make sure we source required modules
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$script_dir/comedy-generator.sh"
+    source "$script_dir/display.sh"
+    
+    # Loading animation
+    echo -e "${CYAN}${BOLD}"
+    echo "                        💝 Gathering cosmic appreciation energies..."
+    echo
+    
+    local symbols=("💝" "🌟" "✨" "💖" "🌸" "🎉" "💫" "🏆")
+    for ((i=0; i<10; i++)); do
+        local symbol_index=$((i % ${#symbols[@]}))
+        echo -ne "\r                         ${symbols[$symbol_index]} Celebrating your coding journey... ${symbols[$symbol_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    sleep 1
+    clear
+    
+    # Run the actual compliment mode
+    track_usage "compliment"
+    local username="${1:-demo-user}"
+    analyze_github_user "$username"
+    clear
+    run_compliment_mode "$username"
+}
+
+# Achievements display with full experience
+display_achievements_session() {
+    clear
+    
+    # Make sure we source required modules
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source "$script_dir/achievements.sh"
+    source "$script_dir/display.sh"
+    
+    # Loading animation
+    echo -e "${CYAN}${BOLD}"
+    echo "                         🏆 Unlocking your legendary developer achievements..."
+    echo
+    
+    local symbols=("🏆" "🥇" "🎖️" "⭐" "🌟" "💎" "👑" "🎯")
+    for ((i=0; i<10; i++)); do
+        local symbol_index=$((i % ${#symbols[@]}))
+        echo -ne "\r                            ${symbols[$symbol_index]} Revealing your hall of fame moments... ${symbols[$symbol_index]}"
+        sleep 0.3
+    done
+    
+    echo -e "\n"
+    sleep 1
+    clear
+    
+    # Run the actual achievements display
+    show_achievements
 }

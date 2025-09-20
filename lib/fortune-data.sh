@@ -242,18 +242,22 @@ get_mystical_prediction() {
     local primary_language="$2"
     
     local predictions=(
-        "A merge conflict approaches from the east. Resolve it with patience and a good diff tool."
-        "Your next bug will hide in plain sight, disguised as a feature. Question everything."
-        "The pull request you least expect will change everything. Stay vigilant."
-        "A forgotten password will unlock new opportunities. Check your saved credentials."
-        "Your rubber duck will speak profound truths during the next debugging session."
-        "A stack overflow error will lead to a stackoverflow.com solution. The circle completes."
-        "Your commit from 3 months ago will make perfect sense today. Past-you was wise."
-        "A production deployment on Friday will either be perfect or legendary. Choose wisely."
-        "Your test coverage percentage matches your luck percentage this week. Write more tests."
-        "A junior developer will ask you a question that reveals your own knowledge gaps. Embrace learning."
-        "Your side project will achieve consciousness at 3:33 AM. Don't panic, just git push."
-        "The documentation you write today will save future-you from existential crisis."
+    "A merge conflict approaches from an unexpected branch; your best weapon will be empathy and a patient rebase."
+    "The bug you laugh at today will be the legacy mystery of tomorrow. Log, document, and leave breadcrumbs for archaeologists."
+    "An unassuming pull request will flip an architectural decision — watch the diff, not the PR title."
+    "Credentials forgotten in a config file will reveal a hidden path; rotate them and bless your secrets manager."
+    "Your rubber duck will offer a theory so absurd it's correct. Explain the problem out loud; your brain will do the rest."
+    "A stack overflow error summons an even stranger stackexchange solution. The universe prefers recursion and irony."
+    "Past-you's 'temporary hack' will pay dividends in the future — or cause a late-night outage. Pack an emergency snack."
+    "A Friday deploy will become your legend. Whether heroic or catastrophic depends on how loudly you celebrate the postmortem."
+    "Your test coverage will flirt with perfection, then ghost you when you least expect it. Add deterministic tests and a mocking ritual."
+    "A junior will ask the question that fractures your assumptions; the answer will be in the comments you never wrote."
+    "Your side project will send an existential commit at 03:33; it will be dramatic, slightly embarrassed, and oddly useful."
+    "The documentation you write today will be the lifeline that rescues anxious future-you from midnight debugging expeditions."
+    "An obscure log line will lead you to a breakthrough. Read the noise between the timestamps."
+    "A seemingly harmless refactor will reveal a hidden coupling. Roll back gently and add a test for courage."
+    "Your dependency update will fix a bug and introduce a new philosophical debate about semver. Convene the committee."
+    "A merge labeled 'minor' becomes the pivot point of a product direction. Don't underestimate footnotes."
     )
     
     # Select prediction based on username hash
@@ -266,16 +270,16 @@ get_mystical_prediction() {
 # GitHub zen wisdom
 get_zen_wisdom() {
     local zen_quotes=(
-        "Code is poetry written in the language of logic."
-        "A bug fixed is a lesson learned; a feature added is wisdom shared."
-        "The master programmer codes as if the universe depends on elegance."
-        "In the beginning was the Command Line, and the Command Line was with Code, and the Command Line was Code."
-        "When you can write a function that works, you are a programmer. When you can write a function others understand, you are an artist."
-        "The Tao of Programming flows through clean functions and meaningful variable names."
-        "Debug with compassion, for yesterday's code was written by yesterday's you."
-        "Version control is the universe's way of teaching us that time is not linear in development."
-        "A hundred lines of untested code is worth less than ten lines with tests."
-        "The best comment is code so clear it needs no explanation."
+"Code is poetry written in the language of logic."
+"A bug fixed is a lesson learned; a feature added is wisdom shared."
+"The master programmer codes as if the universe depends on elegance."
+"In the beginning was the Command Line, and the Command Line was with Code, and the Command Line was Code."
+"When you can write a function that works, you are a programmer. When you can write a function others understand, you are an artist."
+"The Tao of Programming flows through clean functions and meaningful variable names."
+"Debug with compassion, for yesterday's code was written by yesterday's you."
+"Version control is the universe's way of teaching us that time is not linear in development."
+"A hundred lines of untested code is worth less than ten lines with tests."
+"The best comment is code so clear it needs no explanation."
     )
     
     local index=$((RANDOM % ${#zen_quotes[@]}))

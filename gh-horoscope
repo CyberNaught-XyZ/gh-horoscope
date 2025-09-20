@@ -114,6 +114,21 @@ run_interactive_mode() {
     # Track interactive mode usage and check achievements
     track_usage "interactive"
     
+    # Get username if not provided - prioritize actual GitHub user
+    if [[ -z "$USERNAME" ]]; then
+        USERNAME=$(gh api user --jq '.login' 2>/dev/null || echo "")
+        if [[ -z "$USERNAME" ]]; then
+            display_warning "Unable to determine GitHub username automatically."
+            display_info "Using demonstration mode with sample data."
+            display_info "For real analysis, authenticate with GitHub: gh auth login"
+            echo
+            USERNAME="demo-user"
+        else
+            display_info "🔍 Interactive mode for GitHub user: $USERNAME"
+            echo
+        fi
+    fi
+    
     display_crystal_ball
     echo
     display_mystical_quote "Welcome, seeker, to the interactive realm of code divination..."
@@ -122,72 +137,76 @@ run_interactive_mode() {
     while true; do
         display_interactive_menu
         read -p "🔮 Choose your mystical path (1-13): " choice
+        clear
         
         case $choice in
             1)
-                echo "🎭 The spirits reveal your developer archetype..."
-                # Would call specific archetype analysis
-                echo "⏳ Consulting the ancient scrolls..."
-                sleep 2
-                echo "🧙‍♂️ You are... The Code Whisperer! You speak to bugs in their native tongue."
+                display_archetype_loading
+                display_archetype_reveal "The Code Whisperer" "You speak to bugs in their native tongue. Your mystical ability to commune with the deepest mysteries of code allows you to debug problems that perplex mere mortals. Like a digital shaman, you understand the ancient spirits that dwell within loops, conditionals, and recursive functions."
                 ;;
             2)
-                echo "🔮 The Bug Oracle awakens..."
+                display_bug_oracle_awakening
                 read -p "🗣️  What question troubles your coding soul? " question
-                echo "⏳ Consulting the ethereal bug database..."
-                sleep 2
-                echo "🪄 The Oracle speaks: '${question}' - The answer lies in the third Stack Overflow result, but only when viewed during a full moon."
+                display_bug_oracle_loading "$question"
+                
+                # Use the existing Oracle wisdom system to analyze the question
+                local response=""
+                if [[ "$question" =~ (bug|debug|error|fix|broken|wrong) ]]; then
+                    response="${ORACLE_RESPONSES[debugging]}"
+                elif [[ "$question" =~ (git|merge|conflict|branch) ]]; then
+                    response="🔍 **The Git Oracle speaks:** Conflicts are conversations between parallel realities. Listen to both sides, understand their intent, then merge their wisdom. Remember: git reflog is your time machine when reality fractures."
+                elif [[ "$question" =~ (performance|slow|speed|optimize) ]]; then
+                    response="⚡ **The Performance Oracle whispers:** Speed is not about doing things fast, but about not doing unnecessary things. Profile before optimizing - assumptions are the mother of all performance bugs. The fastest code is the code that never runs."
+                elif [[ "$question" =~ (test|testing|unit|integration) ]]; then
+                    response="🧪 **The Testing Oracle reveals:** Tests are love letters to your future self. They protect your code from chaos and your sleep from anxiety. Write tests that tell the story of what your code should do."
+                else
+                    # Generic wisdom based on question
+                    response="🔮 **The Bug Oracle reflects:** Every question reveals a seeker of truth. Your curiosity is the compass that navigates complexity. The answer often lies not in new knowledge, but in connecting what you already know."
+                fi
+                
+                display_bug_oracle_response "$question" "$response"
                 ;;
             3)
-                echo "🌟 Today's cosmic coding energy..."
-                get_daily_prediction
+                analyze_github_user "$USERNAME"
+                clear
+                display_daily_prediction
                 ;;
             4)
-                echo "⚡ Revealing your elemental coding nature..."
-                echo "🌊 You are a Water Coder - your code flows gracefully around obstacles."
+                analyze_github_user "$USERNAME"
+                clear
+                display_coding_element
                 ;;
-            5) 
-                echo "📜 Analyzing your commit message mystique..."
-                echo "🔮 Your messages speak in the ancient tongue of 'fix stuff' and 'it works now'."
+            5)
+                analyze_github_user "$USERNAME"
+                clear
+                display_commit_analysis
                 ;;
             6)
-                echo "🃏 Drawing programming tarot cards for your destiny..."
-                track_usage "tarot"
-                run_tarot_session
+                display_tarot_session
                 ;;
             7)
-                echo "🔮 Opening portal to the Oracle's chamber..."
-                track_usage "oracle"
-                run_oracle_session
+                display_oracle_session
                 ;;
             8)
-                echo "👑 Finding your celebrity developer twin..."
-                track_usage "celebrity"
-                analyze_github_user "${USERNAME:-demo-user}"
-                display_coding_doppelganger "${USERNAME:-demo-user}"
+                display_celebrity_session "${USERNAME:-demo-user}"
                 ;;
             9)
-                echo "🔥 Preparing to roast your code with love..."
-                track_usage "roast"
-                analyze_github_user "${USERNAME:-demo-user}"
-                run_roast_mode "${USERNAME:-demo-user}"
+                display_roast_session "${USERNAME:-demo-user}"
                 ;;
             10)
-                echo "💝 Celebrating your coding journey..."
-                track_usage "compliment"
-                analyze_github_user "${USERNAME:-demo-user}"
-                run_compliment_mode "${USERNAME:-demo-user}"
+                display_compliment_session "${USERNAME:-demo-user}"
                 ;;
             11)
-                echo "🏛️ Generating your complete mystical profile..."
-                break # Exit interactive mode and run full horoscope
+                display_github_loading "Analyzing your GitHub soul..." 3
+                # Don't clear - preserve the header and let horoscope generation continue
+                # Exit interactive mode and run full horoscope
+                break
                 ;;
             12)
-                echo "🏆 Revealing your legendary achievements..."
-                show_achievements
+                display_achievements_session
                 ;;
             13)
-                echo "🚪 The mystical realm bids you farewell..."
+                echo -ne "                      ${RED}${BOLD}                    🚪 The mystical realm bids you farewell..."
                 display_mystical_quote "May your code compile and your bugs be few!"
                 exit 0
                 ;;
@@ -197,6 +216,7 @@ run_interactive_mode() {
         esac
         echo
         read -p "Press Enter to continue your mystical journey..." 
+        clear
         echo
     done
 }

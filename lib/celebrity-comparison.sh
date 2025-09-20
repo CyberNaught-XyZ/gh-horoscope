@@ -232,33 +232,39 @@ display_celebrity_comparison() {
     local username="$1"
     local celebrity="$2"
 
+    echo 
+    echo "                     🌟 ✨ 🌟 ✨ **CELEBRITY DEVELOPER COMPARISON** ✨ 🌟 ✨ 🌟"
     echo
-    echo "🌟 ✨ 🌟 ✨ **CELEBRITY DEVELOPER COMPARISON** ✨ 🌟 ✨ 🌟"
-    echo
-    echo "📊 **Comparing @$username with legendary developer $celebrity**"
-    echo
+    echo "                    📊 **Comparing @$username with legendary developer $celebrity**"
+    echo -e "\n"
 
     # Show celebrity info with elegant header and bullet points
+    echo -e "\n"
+    echo -e "${CYAN}${BOLD}"
     echo "    👑 **CELEBRITY PROFILE** 👑"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
     
     # Display celebrity info with bullet points and spacing
     local celebrity_info=$(get_celebrity_info "$celebrity")
     echo "$celebrity_info" | while IFS= read -r line; do
         wrap_celebrity_text "$line"
     done
+    echo -e "${RESET}"
 
     # Show comparison analysis with elegant header and bullet points
+    echo -e "\n"
+    echo -e "${CYAN}${BOLD}"
     echo "    🔍 **COMPARISON ANALYSIS** 🔍"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
 
     # Display comparison with bullet points and spacing
     local comparison=$(compare_with_celebrity "$username" "$celebrity")
     echo "$comparison" | while IFS= read -r line; do
         wrap_celebrity_text "$line"
     done
+    echo -e "${RESET}"
     echo
 }
 
@@ -266,10 +272,11 @@ display_celebrity_comparison() {
 display_coding_doppelganger() {
     local username="$1"
 
-    echo "🔍 **Scanning the celebrity developer database...**"
-    echo "📡 **Analyzing your coding DNA...**"
+    echo "                                          🔍 **Scanning the celebrity developer database...**"
+    echo "                                               📡 **Analyzing your coding DNA...**"
     sleep 1
-    echo "🧬 **Cross-referencing with legendary patterns...**"
+    echo "                                           🧬 **Cross-referencing with legendary patterns...**"
+    echo -e "\n"
     sleep 1
     echo
 
@@ -277,16 +284,18 @@ display_coding_doppelganger() {
     local celebrity=$(echo "$result" | cut -d':' -f1)
     local score=$(echo "$result" | cut -d':' -f2)
 
-    echo "🎉 **MATCH FOUND!** 🎉"
-    echo
+    echo "                                          🎉 **MATCH FOUND!** 🎉"
+    echo -e "\n"
+    echo -e "${CYAN}${BOLD}"
     echo "    🎭 **YOUR CODING DOPPELGANGER** 🎭"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
 
     # Display doppelganger result with bullet point
     local doppelganger_msg="**@$username**, you are ${score}% similar to **$celebrity**!"
     echo "    • $doppelganger_msg"
-    echo
+    echo -e "${RESET}"
+    echo -e "\n"
 
     display_celebrity_comparison "$username" "$celebrity"
 }

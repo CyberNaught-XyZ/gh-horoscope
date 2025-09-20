@@ -65,6 +65,16 @@ PROGRAMMING_TAROT[19_The_Code_Review_Response]="🎺 **The Code Review Response 
 
 PROGRAMMING_TAROT[20_The_Production_Deploy]="🌍 **The Production Deploy (The World)** - Completion and fulfillment! Your code has traveled from local development through testing to live in the real world, serving real users. The cycle is complete, but new cycles await."
 
+PROGRAMMING_TAROT[21_The_Debug_Serenity]="🧘 **The Debug Serenity (The Empress)** - Calm through breakpoints. You nurture failing tests back to health with patience, unit tests, and strategic console.log therapy. Growth happens when you scaffold the fragile parts of your system."
+
+PROGRAMMING_TAROT[22_The_Refactor_Ritual]="🔧 **The Refactor Ritual (The Hermit Revisited)** - Quiet wisdom guides your tidy changes. Small, well-tested refactors are like pruning a bonsai: the aesthetic emerges over many careful cuts."
+
+PROGRAMMING_TAROT[23_The_AdHoc_Solution]="🩹 **The Ad-Hoc Solution (The Fool's Bandage)** - Quick fixes applied in crisis. Sometimes necessary, rarely elegant. Remember to record your battlefield medicine in task trackers so peace can follow."
+
+PROGRAMMING_TAROT[24_The_Monitoring_Oracle]="📈 **The Monitoring Oracle (The Seer)** - Logs, metrics, traces — the stars of your system. When alarms sing, listen to their melody; they often tell you where the architecture aches."
+
+PROGRAMMING_TAROT[25_The_Refinement_Circle]="🔁 **The Refinement Circle (The Wheel of Improvement)** - Iteration is not failure; it is craft. Release, learn, polish, repeat. Your small feedback loops compound into major breakthroughs."
+
 # Programming-themed Minor Arcana suits
 PROGRAMMING_TAROT[Ace_of_Commits]="🌱 **Ace of Commits** - The seed of a new repository! A fresh start, an empty main branch waiting for your first commit. Pure potential crystallized into git init. The beginning of something beautiful."
 
@@ -86,18 +96,47 @@ draw_single_card() {
         "0_The_Programmer" "1_The_Stack_Overflow" "2_The_Documentation" "3_The_Senior_Dev"
         "4_The_Tech_Lead" "5_The_Pair_Programming" "6_The_Git_Merge" "7_The_Code_Review"
         "8_The_Debugging" "9_The_CI_CD" "10_The_Load_Balancer" "11_The_Technical_Debt"
-        "12_The_Legacy_Code" "13_The_Refactoring" "14_The_Production_Bug" "15_The_System_Crash"
-        "16_The_Open_Source" "17_The_Moonlighting" "18_The_Code_Quality" "19_The_Code_Review_Response"
-        "20_The_Production_Deploy" "Ace_of_Commits" "Two_of_Commits" "Three_of_Commits"
-        "Ace_of_Bugs" "King_of_Frameworks" "Queen_of_APIs" "Knight_of_DevOps"
+    "12_The_Legacy_Code" "13_The_Refactoring" "14_The_Production_Bug" "15_The_System_Crash"
+    "16_The_Open_Source" "17_The_Moonlighting" "18_The_Code_Quality" "19_The_Code_Review_Response"
+    "20_The_Production_Deploy" "21_The_Debug_Serenity" "22_The_Refactor_Ritual" "23_The_AdHoc_Solution"
+    "24_The_Monitoring_Oracle" "25_The_Refinement_Circle" "Ace_of_Commits" "Two_of_Commits" "Three_of_Commits"
+    "Ace_of_Bugs" "King_of_Frameworks" "Queen_of_APIs" "Knight_of_DevOps"
     )
     
     local random_index=$(($RANDOM % ${#cards[@]}))
     echo "${cards[$random_index]}"
 }
 
+draw_daily_card() {
+    # Use today's date as seed for consistent daily card
+    local cards=(
+        "0_The_Programmer" "1_The_Stack_Overflow" "2_The_Documentation" "3_The_Senior_Dev"
+        "4_The_Tech_Lead" "5_The_Pair_Programming" "6_The_Git_Merge" "7_The_Code_Review"
+        "8_The_Debugging" "9_The_CI_CD" "10_The_Load_Balancer" "11_The_Technical_Debt"
+    "12_The_Legacy_Code" "13_The_Refactoring" "14_The_Production_Bug" "15_The_System_Crash"
+    "16_The_Open_Source" "17_The_Moonlighting" "18_The_Code_Quality" "19_The_Code_Review_Response"
+    "20_The_Production_Deploy" "21_The_Debug_Serenity" "22_The_Refactor_Ritual" "23_The_AdHoc_Solution"
+    "24_The_Monitoring_Oracle" "25_The_Refinement_Circle" "Ace_of_Commits" "Two_of_Commits" "Three_of_Commits"
+    "Ace_of_Bugs" "King_of_Frameworks" "Queen_of_APIs" "Knight_of_DevOps"
+    )
+    
+    # Get today's date as a number (YYYYMMDD format)
+    local today_seed=$(date '+%Y%m%d')
+    
+    # Use date as seed for consistent daily card selection
+    local daily_index=$((today_seed % ${#cards[@]}))
+    echo "${cards[$daily_index]}"
+}
+
 draw_three_card_spread() {
-    echo "🔮 **DRAWING THREE CARDS FOR YOUR CODING JOURNEY** 🔮"
+    # Beautiful title like other functions
+    echo -e "${MAGENTA}${BOLD}"
+    echo "                                            🔮 ⏰ 🔮 ⏰ 🔮"
+    echo "                                    🌟 ⏰ THREE CARD READING ⏰ 🌟"
+    echo "                                            🔮 ⏰ 🔮 ⏰ 🔮"
+    echo
+    echo "                                    📜 Past • Present • Future 📜"
+    echo -e "${RESET}"
     echo
     
     local past_card=$(draw_single_card)
@@ -113,36 +152,67 @@ draw_three_card_spread() {
         future_card=$(draw_single_card)
     done
     
+    echo -e "${CYAN}${BOLD}"
     echo "    🕰️ **YOUR CODING PAST** 🕰️"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
     wrap_tarot_text "${PROGRAMMING_TAROT[$past_card]}"
     
+    echo -e "${CYAN}${BOLD}"
     echo "    ⚡ **YOUR CODING PRESENT** ⚡"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
     wrap_tarot_text "${PROGRAMMING_TAROT[$present_card]}"
     
+    echo -e "${CYAN}${BOLD}"
     echo "    🌟 **YOUR CODING FUTURE** 🌟"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
     wrap_tarot_text "${PROGRAMMING_TAROT[$future_card]}"
+    echo -e "${RESET}"
 }
 
 draw_single_daily_card() {
-    echo "🃏 **YOUR DAILY PROGRAMMING TAROT** 🃏"
+    # Beautiful title like other functions
+    echo -e "${MAGENTA}${BOLD}"
+    echo "                                              🃏 ✨ 🃏 ✨ 🃏"
+    echo "                                    🌟 ✨ DAILY PROGRAMMING TAROT ✨ 🌟"
+    echo "                                              🃏 ✨ 🃏 ✨ 🃏"
+    echo
+    echo "                                   🔮 Today's Mystical Coding Guidance 🔮"
+    echo -e "${RESET}"
     echo
     
-    local daily_card=$(draw_single_card)
+    local daily_card=$(draw_daily_card)
     
-    echo "    ✨ **TODAY'S CODING GUIDANCE** ✨"
-    echo "    ═══════════════════════════════════════════════════════════════"
+    # Beautiful centered section with consistent formatting
+    echo -e "${YELLOW}${BOLD}"
+    echo "                                 🌟 ═══════════════════════════════════ 🌟"
     echo
+    echo "                                           ✨ Card of the Day ✨"
+    echo
+    echo "                                 🌟 ═══════════════════════════════════ 🌟"
+    echo -e "${RESET}"
+    echo
+    
+    # Display reading with proper wrapping
+    echo -e "${CYAN}${BOLD}"
+    echo "    🃏 Your Programming Tarot"
+    echo "    ═══════════════════════════════════════════════════════════════════════════"
+    echo -e "${WHITE}"
     wrap_tarot_text "${PROGRAMMING_TAROT[$daily_card]}"
+    echo -e "${RESET}"
 }
 
 draw_career_guidance_spread() {
-    echo "💼 **CAREER DEVELOPMENT TAROT SPREAD** 💼"
+    # Beautiful title
+    echo -e "${MAGENTA}${BOLD}"
+    echo "                                                💼 🌟 💼 🌟 💼"
+    echo "                                    🌟 💼 CAREER DEVELOPMENT TAROT 💼 🌟"
+    echo "                                                💼 🌟 💼 🌟 💼"
+    echo
+    echo "                                    🔮 Your Professional Path Revealed 🔮"
+    echo -e "${RESET}"
     echo
     
     local skills_card=$(draw_single_card)
@@ -163,46 +233,64 @@ draw_career_guidance_spread() {
         advice_card=$(draw_single_card)
     done
     
+    echo -e "${CYAN}${BOLD}"
     echo "    💪 **YOUR TECHNICAL STRENGTHS** 💪"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
     wrap_tarot_text "${PROGRAMMING_TAROT[$skills_card]}"
     
+    echo -e "${CYAN}${BOLD}"
     echo "    🚀 **OPPORTUNITIES AHEAD** 🚀"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
     wrap_tarot_text "${PROGRAMMING_TAROT[$opportunities_card]}"
     
-    echo "    ⚠️ **CHALLENGES TO FACE** ⚠️"
+    echo -e "${CYAN}${BOLD}"
+    echo "    ⚠️  **CHALLENGES TO FACE** ⚠️"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
     wrap_tarot_text "${PROGRAMMING_TAROT[$challenges_card]}"
     
-    echo "    🧙‍♂️ **THE ORACLE'S ADVICE** 🧙‍♂️"
+    echo -e "${CYAN}${BOLD}"
+    echo "    🧙‍♂️  **THE ORACLE'S ADVICE** 🧙‍♂️"
     echo "    ═══════════════════════════════════════════════════════════════"
-    echo
+    echo -e "${WHITE}"
     wrap_tarot_text "${PROGRAMMING_TAROT[$advice_card]}"
+    echo -e "${RESET}"
 }
 
 display_tarot_menu() {
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                    🔮 **PROGRAMMING TAROT ORACLE** 🔮               │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    echo "│  1. 🃏 Draw Single Daily Card                                       │"
-    echo "│  2. 🔮 Three-Card Spread (Past, Present, Future)                    │"
-    echo "│  3. 💼 Career Guidance Spread                                       │"
-    echo "│  4. 🎯 Random Programming Wisdom                                    │"
-    echo "│  5. 🚪 Return to Main Menu                                          │"
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+    echo -e "${RED}${BOLD}"
+    cat << 'EOF'
+         ╔══════════════════════════════════════════════════════════════════════╗
+         ║                     🔮 PROGRAMMING TAROT ORACLE 🔮                   ║
+         ╠══════════════════════════════════════════════════════════════════════╣
+         ║  1. 🃏 Draw Single Daily Card                                        ║
+         ║  2. 🔮 Three-Card Spread (Past, Present, Future)                     ║
+         ║  3. 💼 Career Guidance Spread                                        ║
+         ║  4. 🎯 Random Programming Wisdom                                     ║
+         ║  5. 🚪 Return to Main Menu                                           ║
+         ╚══════════════════════════════════════════════════════════════════════╝
+EOF
+    echo -e "${RESET}"
     echo
 }
 
 run_tarot_session() {
     clear
-    echo "🌟 ✨ 🌟 ✨ 🌟 ✨ **PROGRAMMING TAROT CARDS** ✨ 🌟 ✨ 🌟 ✨ 🌟"
+    
+    # Use sparkly title format like other modules
+    echo -e "${MAGENTA}${BOLD}"
+    echo "                                    🃏 🔮 ✨ 🔮 🃏"
+    echo "                         🌟 🔮 PROGRAMMING TAROT CARDS 🔮 🌟"
+    echo "                                    🃏 🔮 ✨ 🔮 🃏"
     echo
-    echo "Welcome to the mystical realm of Programming Tarot! These cards reveal"
-    echo "the hidden patterns of your coding journey and illuminate the path ahead."
+    echo "                        📜 Mystical Cards of Code Destiny 📜"
+    echo -e "${RESET}"
+    echo
+    
+    echo "           Welcome to the mystical realm of Programming Tarot! These cards reveal"
+    echo "         the hidden patterns of your coding journey and illuminate the path ahead."
     echo
     
     # Check if running in interactive mode
@@ -214,9 +302,11 @@ run_tarot_session() {
     fi
     
     while true; do
-        display_tarot_menu
-        echo -n "🔮 Choose your tarot experience (1-5): "
-        read choice
+    display_tarot_menu
+    echo -n "🔮 Choose your tarot experience (1-5): "
+    read choice
+    # Clear the menu display so subsequent output replaces it
+    clear
         echo
         
         case $choice in
@@ -230,14 +320,19 @@ run_tarot_session() {
                 draw_career_guidance_spread
                 ;;
             4)
+                echo -e "${CYAN}${BOLD}"
                 echo "    🎯 **RANDOM PROGRAMMING WISDOM** 🎯"
                 echo "    ═══════════════════════════════════════════════════════════════"
-                echo
+                echo -e "${WHITE}"
                 local random_card=$(draw_single_card)
                 wrap_tarot_text "${PROGRAMMING_TAROT[$random_card]}"
+                echo -e "${RESET}"
                 ;;
             5)
-                echo "🚪 The tarot cards bid you farewell... until next time!"
+                echo -e "               ${CYAN}${BOLD}🚪 The tarot cards bid you farewell... until next time!${RESET}"
+                echo
+                echo -e "             ${RED}${BOLD}\"The cards whisper: Your future is written in lines of code...\"${RESET}"
+                echo -e "              ${CYAN}${BOLD}✨ May your commits be clean and your merges conflict-free! ✨${RESET}"
                 return 0
                 ;;
             *)
