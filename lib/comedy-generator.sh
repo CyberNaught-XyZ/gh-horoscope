@@ -2,27 +2,21 @@
 
 # Wrap text for better terminal display
 wrap_and_indent_text() {
-    echo "$text" | fold -w $((width - ${#indent})) -s | while IFS= read -r line; do
-        if [[ -n "$line" ]]; then
-            echo "$indent$line"
-            indent="      "  # Continuation lines get extra indent
+    local text="$1"
     local indent="    • "
     local width=75  # Leave some margin for terminal edges
-    
+
     # Return early if content is empty or only whitespace
     if [[ -z "$text" || -z "${text//[[:space:]]/}" ]]; then
         echo "    • No content available."
         echo
         return
     fi
-    
+
     # Use fold to wrap text at word boundaries, then add proper indentation
     echo "$text" | fold -w $((width - ${#indent})) -s | while IFS= read -r line; do
-    if [[ -n "${CODING_PATTERN_ROASTS[$roast_type]:-}" ]]; then
-        if [[ "$roast_type" == "commit_spammer" ]]; then
-            printf "${CODING_PATTERN_ROASTS[$roast_type]:-}\n" "$total_commits"
-        else
-            echo "$indent$line"
+        if [[ -n "$line" ]]; then
+            echo "${indent}${line}"
             indent="      "  # Continuation lines get extra indent
         fi
     done
@@ -30,9 +24,6 @@ wrap_and_indent_text() {
 }
 
 # Comedy Generator module for GitHub CLI Horoscope Extension
-    if [[ $night_percentage -gt 70 ]]; then
-        roasts+=("$(select_dynamic_roast "night_owl")")
-    fi
 
 # Roast categories and jokes
 declare -A COMMIT_MESSAGE_ROASTS
@@ -291,8 +282,25 @@ select_dynamic_roast() {
     fi
     
     # Select random variation
-    local random_index=$(($RANDOM % ${#available_variations[@]}))
-    local selected_roast="${available_variations[$random_index]}"
+    # If we detected embarrassing artifacts, bias towards nastier variations
+    local selected_roast=""
+    if [[ ${FOUND_TODO:-0} -eq 1 || ${FOUND_DEBUG_PRINTS:-0} -eq 1 || ${FOUND_SECRET_LIKE:-0} -eq 1 ]]; then
+        local nasty_candidates=()
+        for v in "${available_variations[@]}"; do
+            if [[ "$v" =~ insult|gremlin|poltergeist|whitespace|pip|poltergeist|grim|toxic|anarchist|poltergeist|poltergeist|poltergeist ]]; then
+                nasty_candidates+=("$v")
+            fi
+        done
+        if [[ ${#nasty_candidates[@]} -gt 0 ]]; then
+            local ri=$(($RANDOM % ${#nasty_candidates[@]}))
+            selected_roast="${nasty_candidates[$ri]}"
+        fi
+    fi
+
+    if [[ -z "$selected_roast" ]]; then
+        local random_index=$(($RANDOM % ${#available_variations[@]}))
+        selected_roast="${available_variations[$random_index]}"
+    fi
     
     # Mark as used
     USED_ROASTS[$selected_roast]=1
@@ -512,16 +520,26 @@ generate_roast() {
     
     # Check REPOSITORY_ROASTS
     if [[ -n "${REPOSITORY_ROASTS[$roast_type]:-}" ]]; then
-        printf "${REPOSITORY_ROASTS[$roast_type]:-}\n" "$repo_count"
+        local fmt="${REPOSITORY_ROASTS[$roast_type]:-}"
+        fmt="${fmt//%d/$repo_count}"
+        # Convert any escaped '%%' into a single percent for display
+        fmt="${fmt//%%/%}"
+        printf "%s\n" "$fmt"
         return
     fi
     
     # Check CODING_PATTERN_ROASTS  
     if [[ -n "${CODING_PATTERN_ROASTS[$roast_type]:-}" ]]; then
         if [[ "$roast_type" == "commit_spammer" ]]; then
-            printf "${CODING_PATTERN_ROASTS[$roast_type]:-}\n" "$total_commits"
+            local fmt="${CODING_PATTERN_ROASTS[$roast_type]:-}"
+            fmt="${fmt//%d/$total_commits}"
+            fmt="${fmt//%%/%}"
+            printf "%s\n" "$fmt"
         else
-            printf "${CODING_PATTERN_ROASTS[$roast_type]:-}\n" "$night_percentage"
+            local fmt="${CODING_PATTERN_ROASTS[$roast_type]:-}"
+            fmt="${fmt//%d/$night_percentage}"
+            fmt="${fmt//%%/%}"
+            printf "%s\n" "$fmt"
         fi
         return
     fi
@@ -552,7 +570,10 @@ generate_roast() {
         night_owl*|coding_vampire*|midnight_warrior*)
             # Map night owl variants
             if [[ -n "${CODING_PATTERN_ROASTS[night_owl_extreme]}" ]]; then
-                printf "${CODING_PATTERN_ROASTS[night_owl_extreme]}\n" "$night_percentage"
+                local fmt="${CODING_PATTERN_ROASTS[night_owl_extreme]}"
+                fmt="${fmt//%d/$night_percentage}"
+                fmt="${fmt//%%/%}"
+                printf "%s\n" "$fmt"
                 return
             fi
             ;;
