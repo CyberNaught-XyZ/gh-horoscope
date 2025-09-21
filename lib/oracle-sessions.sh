@@ -197,7 +197,7 @@ provide_technical_debt_consultation() {
     
     echo
     printf "    %-70s\n" "🎯 DEBT ANALYSIS SUMMARY"
-    printf "    %-70s\n" "$(printf '═%.0s' {1..70})"
+    printf "    %-70s\n" "$(printf '-%.0s' {1..70})"
     echo
     printf "    • Debt Severity Level: %s\n" "$DEBT_SEVERITY_LEVEL"
     printf "    • Debt Categories Detected: %d\n" "$debt_count"
@@ -233,7 +233,7 @@ provide_technical_debt_consultation() {
     # Overall debt management strategy
     echo
     printf "    %-70s\n" "🗺️ DEBT MANAGEMENT STRATEGY"
-    printf "    %-70s\n" "$(printf '─%.0s' {1..70})"
+    printf "    %-70s\n" "$(printf '-%.0s' {1..70})"
     echo
     
     case $DEBT_SEVERITY_LEVEL in
@@ -541,7 +541,7 @@ provide_burnout_check() {
     
     echo
     printf "%-75s\n" "🔥 BURNOUT CHECK ORACLE 🔥"
-    printf "%-75s\n" "$(printf '═%.0s' {1..75})"
+    printf "%-75s\n" "$(printf '-%.0s' {1..75})"
     
     if [[ $weekend_percentage -gt 60 ]]; then
         wrap_oracle_text "• ⚠️ Weekend Warrior Warning: $weekend_percentage% weekend commits suggest you code more on weekends than weekdays! Your passion is admirable, but even magical systems need downtime for updates. Schedule deliberate rest - your Monday morning self will thank your Sunday evening wisdom. Protect your creative energy!" | sed 's/^/  /'
@@ -567,7 +567,7 @@ provide_skill_development() {
     
     echo
     printf "%-75s\n" "📚 SKILL DEVELOPMENT ORACLE 📚"
-    printf "%-75s\n" "$(printf '═%.0s' {1..75})"
+    printf "%-75s\n" "$(printf '-%.0s' {1..75})"
     
     if [[ $lang_count -eq 1 ]]; then
         wrap_oracle_text "• 🎯 Specialization Path: Your focus on $primary_lang shows commitment to mastery. Consider expanding horizontally: Study $primary_lang's ecosystem deeply (frameworks, tools), learn a complementary language (different paradigm), explore architecture patterns specific to your domain." | sed 's/^/  /'
@@ -604,7 +604,7 @@ provide_team_collaboration() {
     
     echo
     printf "%-75s\n" "👥 TEAM COLLABORATION ORACLE 👥"
-    printf "%-75s\n" "$(printf '═%.0s' {1..75})"
+    printf "%-75s\n" "$(printf '-%.0s' {1..75})"
     
     # Analyze commit message style for collaboration insights
     if [[ "$commit_messages" =~ (feat|fix|docs|style|refactor|test|chore) ]]; then
@@ -981,7 +981,7 @@ run_oracle_session() {
                 ;;
             15)
                 clear
-                echo -e "${CYAN}${BOLD}        🚪 **The Oracle fades into the digital mist...**${RESET}"
+                echo -e "${CYAN}${BOLD}             🚪 **The Oracle fades into the digital mist...**${RESET}"
                 echo
                 echo -e "${MAGENTA}${BOLD}\"Remember, seeker: The wisdom was within you all along.\"${RESET}"
                 echo -e "${MAGENTA}${BOLD}\"I merely helped you find the words for what you already knew.\"${RESET}"

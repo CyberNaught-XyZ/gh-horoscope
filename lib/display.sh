@@ -823,23 +823,23 @@ display_mystical_insight() {
 display_interactive_menu() {
     echo -e "${CYAN}${BOLD}"
     cat << 'EOF'
-                           ╔══════════════════════════════════════════════════════════════════════╗
-                           ║                         🔮 MYSTICAL MENU 🔮                          ║
-                           ╠══════════════════════════════════════════════════════════════════════╣
-                           ║  1. 🎭 Discover Your Developer Archetype                             ║
-                           ║  2. 🔮 Ask the Bug Oracle a Question                                 ║
-                           ║  3. 🌟 Get Your Daily Coding Prediction                              ║
-                           ║  4. ⚡ Reveal Your Coding Element                                    ║
-                           ║  5. 📜 Analyze Your Commit Message Patterns                          ║
-                           ║  6. 🃏 Programming Tarot Card Reading                                ║
-                           ║  7. 🔮 Oracle Wisdom Session                                         ║
-                           ║  8. 👑 Find Your Celebrity Developer Twin                            ║
-                           ║  9. 🔥 Roast My Code (Humorous Analysis)                             ║
-                           ║ 10. 💝 Compliment My Journey                                         ║
-                           ║ 11. 🏛️  Generate Full Horoscope                                       ║
-                           ║ 12. 🏆 View Achievement Gallery                                      ║
-                           ║ 13. 🚪 Exit the Mystical Realm                                       ║
-                           ╚══════════════════════════════════════════════════════════════════════╝
+                       ╔══════════════════════════════════════════════════════════════════════╗
+                       ║                         🔮 MYSTICAL MENU 🔮                          ║
+                       ╠══════════════════════════════════════════════════════════════════════╣
+                       ║  1. 🎭 Discover Your Developer Archetype                             ║
+                       ║  2. 🔮 Ask the Bug Oracle a Question                                 ║
+                       ║  3. 🌟 Get Your Daily Coding Prediction                              ║
+                       ║  4. ⚡ Reveal Your Coding Element                                    ║
+                       ║  5. 📜 Analyze Your Commit Message Patterns                          ║
+                       ║  6. 🃏 Programming Tarot Card Reading                                ║
+                       ║  7. 🔮 Oracle Wisdom Session                                         ║
+                       ║  8. 👑 Find Your Celebrity Developer Twin                            ║
+                       ║  9. 🔥 Roast My Code (Humorous Analysis)                             ║
+                       ║ 10. 💝 Compliment My Journey                                         ║
+                       ║ 11. 🏛️  Generate Full Horoscope                                      ║
+                       ║ 12. 🏆 View Achievement Gallery                                      ║
+                       ║ 13. 🚪 Exit the Mystical Realm                                       ║
+                       ╚══════════════════════════════════════════════════════════════════════╝
 EOF
     echo -e "${RESET}"
     echo
@@ -860,8 +860,8 @@ EOF
     ║  4. 👥 Inquire about teamwork and collaboration                      ║
     ║  5. 🔥 Address burnout and work-life balance                         ║
     ║  6. 👤 Overcome imposter syndrome                                    ║
-    ║  7. 🛠️  Get help choosing technologies                                ║
-    ║  8. 🏛️  Deal with legacy code                                         ║
+    ║  7. 🛠️  Get help choosing technologies                               ║
+    ║  8. 🏛️  Deal with legacy code                                        ║
     ║  9. 🚀 Get guidance on side projects                                 ║
     ║ 10. 🌟 Learn about open source contribution                          ║
     ║ 11. 🥠 Receive quick wisdom (fortune cookie style)                   ║
