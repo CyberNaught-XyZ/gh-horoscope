@@ -2,6 +2,7 @@
 /tests/
 
 # Node / Python / env files
+checklist.md
 node_modules/
 venv/
 .env
