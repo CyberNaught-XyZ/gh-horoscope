@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # Wrap text for better terminal display
 wrap_and_indent_text() {
     local text="$1"

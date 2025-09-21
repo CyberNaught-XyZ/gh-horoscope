@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # Oracle Sessions module for GitHub CLI Horoscope Extension
 # Interactive mystical coding advice system
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # gh-horoscope - CLI tool that generates a playful "horoscope" from GitHub activity
 # Purpose: contest submission for "For the Love of Code" (terminal-based UX)
 # Comments tailored for judges: concise description for each function. Hidden

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Purpose: Project setup helper for initial environment configuration.
-
+ 
 
 set -e
 

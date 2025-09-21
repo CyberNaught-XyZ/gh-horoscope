@@ -1,5 +1,5 @@
 CheckList of debuging steps taken:
-
+ 
 - Easter Eggs
     - Konami Code
         - Animation is nice and has hints towards other easter eggs

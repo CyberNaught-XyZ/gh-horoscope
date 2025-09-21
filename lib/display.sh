@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # Display module for GitHub CLI Horoscope Extension
 # Handles all terminal formatting, colors, and ASCII art
 # Judge note: this file contains presentation helpers only. It intentionally

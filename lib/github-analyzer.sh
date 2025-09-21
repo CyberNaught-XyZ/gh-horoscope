@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # GitHub Analyzer module for GitHub CLI Horoscope Extension
 # Fetches and analyzes GitHub user data for mystical insights.
 # Judge-friendly comments only: this module describes data collection and

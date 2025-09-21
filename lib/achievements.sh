@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # Achievement System for GitHub CLI Horoscope Extension
 # Tracks and celebrates developer progress through usage and feature discovery
 # Note: The project includes hidden/secret features. Their implementation

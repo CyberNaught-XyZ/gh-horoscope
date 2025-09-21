@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # Fortune Data module for GitHub CLI Horoscope Extension
 # Contains all the mystical horoscope templates, jokes, and predictions
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # Tarot System module for GitHub CLI Horoscope Extension
 # Full programming-themed tarot deck with mystical readings
 

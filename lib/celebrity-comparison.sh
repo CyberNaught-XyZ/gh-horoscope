@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # Celebrity Developer Comparison module for GitHub CLI Horoscope Extension
 # Compare your coding patterns with famous developers.
 # Comments are judge-friendly: high-level descriptions and a light tone are

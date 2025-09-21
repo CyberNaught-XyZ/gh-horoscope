@@ -1,5 +1,5 @@
 # 🔮 GitHub CLI Horoscope Extension
-
+ 
 Hey there! So I made this absolutely ridiculous horoscope thing for GitHub that I'm way too proud of. It looks at your coding habits and tells your "digital fortune" like some kind of mystical code wizard. Started as a joke, ended up being genuinely useful (and hilarious).
 
 Built this for the **"For the Love of Code 2025"** competition because why not turn procrastination into art? 🎨

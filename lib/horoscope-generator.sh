@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # Horoscope Generator module for GitHub CLI Horoscope Extension
 # Generates personalized horoscopes based on GitHub analysis data.
 # High-level comments only for judges. Also: includes light human humor
