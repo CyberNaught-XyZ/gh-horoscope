@@ -160,6 +160,8 @@ The Oracle system is probably my favorite part. Each one analyzes different aspe
 
 ## 🎭 What You'll Actually See
 
+![Screenshot of gh-horoscope in action](gh.horoscope.png)
+
 Here's what happens when you run this thing (prepare for terminal magic):
 
 ```
