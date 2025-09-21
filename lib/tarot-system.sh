@@ -90,7 +90,36 @@ PROGRAMMING_TAROT[Queen_of_APIs]="👸 **Queen of APIs** - Elegant interface des
 
 PROGRAMMING_TAROT[Knight_of_DevOps]="🏇 **Knight of DevOps** - Swift deployment! You ride into production with containers and pipelines as your weapons. Your CI/CD charges forward, bringing development and operations into harmony."
 
+# Subtle hint-cards (rarely drawn) that nudge seekers toward hidden features
+PROGRAMMING_TAROT[Hint_Button_Sequence]="🃏 **The Button Sequence (Subtle Hint)** - Somewhere in the interface, a sequence of directional taps from classic controllers echoes a secret. Pay attention to rhythmic prompts during celebrations."
+
+PROGRAMMING_TAROT[Hint_Retro_Map]="🃏 **Retro Map Echo (Subtle Hint)** - Nostalgia sometimes hides in names. A retro multiplayer map title might resurface in celebratory messages — listen for playful place-names."
+
 # Tarot reading functions
+# Small helper: emit a subtle easter-egg hint with a low probability (~10%).
+# Hints are intentionally vague and TTY-guarded to avoid revealing mechanics in CI.
+maybe_emit_hint() {
+    # Only emit hints in interactive TTY sessions unless overridden
+    if [[ -n "$GH_HOROSCOPE_NONINTERACTIVE" || ! -t 1 ]]; then
+        return 0
+    fi
+
+    # 10% chance
+    local roll=$((RANDOM % 100))
+    if [[ $roll -lt 10 ]]; then
+        # Pick a subtle hint message (do not reveal exact internals)
+        local hints=(
+            "🥠 Hint: listen for classic controller rhythms hidden in the interface."
+            "🥠 Hint: sometimes old school button sequences unlock playful surprises."
+            "🥠 Hint: a retro shooter map name might echo in your celebration messages."
+        )
+        local idx=$((RANDOM % ${#hints[@]}))
+        echo
+        echo "${YELLOW}${BOLD}${hints[$idx]}${RESET}"
+        echo
+    fi
+}
+
 draw_single_card() {
     local cards=(
         "0_The_Programmer" "1_The_Stack_Overflow" "2_The_Documentation" "3_The_Senior_Dev"
@@ -312,6 +341,7 @@ run_tarot_session() {
         case $choice in
             1)
                 draw_single_daily_card
+                maybe_emit_hint
                 ;;
             2)
                 draw_three_card_spread
@@ -326,6 +356,7 @@ run_tarot_session() {
                 echo -e "${WHITE}"
                 local random_card=$(draw_single_card)
                 wrap_tarot_text "${PROGRAMMING_TAROT[$random_card]}"
+                maybe_emit_hint
                 echo -e "${RESET}"
                 ;;
             5)

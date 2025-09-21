@@ -1,0 +1,7 @@
+# Ignore test artifacts
+/tests/
+
+# Node / Python / env files
+node_modules/
+venv/
+.env

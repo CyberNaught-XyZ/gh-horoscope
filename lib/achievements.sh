@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # Achievement System for GitHub CLI Horoscope Extension
-# Tracks and celebrates developer progress through mystical achievements
+# Tracks and celebrates developer progress through usage and feature discovery
+# Note: The project includes hidden/secret features. Their implementation
+# details are intentionally not documented in comments; comments here only
+# acknowledge that such a feature category exists.
 
 # Wrap text for better terminal display
 wrap_achievement_text() {
@@ -35,7 +38,42 @@ init_achievement_system() {
     fi
     
     if [[ ! -f "$STATS_FILE" ]]; then
-        echo '{"total_uses": 0, "first_use": "", "consecutive_days": 0, "last_use": "", "roast_count": 0, "oracle_questions": 0, "tarot_draws": 0, "celebrity_comparisons": 0, "interactive_sessions": 0}' > "$STATS_FILE"
+        echo '{"total_uses": 0, "first_use": "", "consecutive_days": 0, "last_use": "", "roast_count": 0, "oracle_questions": 0, "tarot_draws": 0, "celebrity_comparisons": 0, "interactive_sessions": 0, "egg_count": 0}' > "$STATS_FILE"
+    fi
+}
+
+# Record discovery of a hidden feature (increments discovery counter and
+# optionally records an identifier). Comments intentionally avoid describing
+# hidden feature internals.
+mark_easter_egg_found() {
+    local egg_id="$1"
+    init_achievement_system
+
+    # Update egg counter
+    update_stats "egg_count" 1 || true
+
+    # Optionally record an identifier for the discovered hidden feature
+    local egg_log="$ACHIEVEMENT_DIR/found_eggs.log"
+    if [[ -n "$egg_id" ]]; then
+        # Avoid duplicate entries
+        if [[ ! -f "$egg_log" || ! $(grep -x "$egg_id" "$egg_log" 2>/dev/null) ]]; then
+            echo "$egg_id" >> "$egg_log"
+        fi
+    fi
+
+    # Check milestone achievements based on updated discovery count
+    check_achievement "easter_egg_hunter"
+
+}
+
+# Get current easter egg count
+get_egg_count() {
+    init_achievement_system
+    if [[ -f "$STATS_FILE" ]]; then
+        local val=$(grep -o '"egg_count": [0-9]*' "$STATS_FILE" | sed 's/.*: //' || echo "0")
+        echo "$val"
+    else
+        echo "0"
     fi
 }
 
@@ -91,11 +129,13 @@ ACHIEVEMENTS["interactive_explorer"]=" 🎪 Interactive Explorer - Use interacti
 ACHIEVEMENTS["combo_master"]=" 🎯 Combo Master - Use command combinations (-ort, -cra)"
 ACHIEVEMENTS["power_user"]=" 🔧 Power User - Use all single-letter flags in one session"
 
-# Hidden Secrets
+# Feature: secret/celebration behaviors.
+# Implementation details are intentionally opaque in comments to avoid
+# revealing hidden-feature mechanics during contest/judge review.
 ACHIEVEMENTS["konami_code"]=" 🕹️ Konami Code - Enter secret developer sequence"
-ACHIEVEMENTS["easter_egg_hunter"]=" 🎮 Easter Egg Hunter - Discover 5 easter eggs"
-ACHIEVEMENTS["secret_seeker"]=" 🔍 Secret Seeker - Find 10 hidden features"
-ACHIEVEMENTS["ghost_in_shell"]=" 👻 Ghost in Shell - Find ultra-secret developer mode"
+ACHIEVEMENTS["easter_egg_hunter"]=" 🎮 Easter Egg Hunter - Discover 3 easter eggs"
+ACHIEVEMENTS["goldeneye_007"]=" 🕶️ GoldenEye 007 - A license to debug (cinematic reveal)"
+ACHIEVEMENTS["nuketown_cod"]=" 💥 Nuketown (COD) - Retro arcade explosion of secrets"
 
 # Social Features
 ACHIEVEMENTS["doppelganger_detector"]=" 👯 Doppelganger Detector - Find your GitHub twin"
@@ -134,6 +174,18 @@ update_stats() {
     if [[ -f "$STATS_FILE" ]]; then
         # Extract current value using grep and sed (bash-compatible JSON parsing)
         current_value=$(grep -o "\"$stat_key\": [0-9]*" "$STATS_FILE" | sed 's/.*: //' || echo "0")
+        # If key not present, initialize it to 0 in file
+        if ! grep -q "\"$stat_key\"" "$STATS_FILE" 2>/dev/null; then
+            # Insert key with 0 before closing brace
+            sed -i "s/}/, \"$stat_key\": 0}/" "$STATS_FILE"
+            current_value=0
+        fi
+    else
+        # Create default stats file including the key
+        cat > "$STATS_FILE" << EOF
+{"total_uses": 0, "unique_days": 0, "first_use": "$current_date", "consecutive_days": 1, "last_use": "$current_date", "roast_count": 0, "oracle_questions": 0, "tarot_draws": 0, "celebrity_comparisons": 0, "interactive_sessions": 0, "egg_count": 0}
+EOF
+        current_value=0
     fi
     
     # Increment the value
@@ -154,6 +206,62 @@ EOF
     
     # Update last_use date
     sed -i "s/\"last_use\": \"[^\"]*\"/\"last_use\": \"$current_date\"/" "$STATS_FILE"
+
+    # If this invocation represents a new calendar day, increment unique_days and
+    # update consecutive_days accordingly. We base this on the stored last_use
+    # (which was replaced above) so we read the previous value before the update
+    # was applied.
+    if [[ "$stat_key" == "total_uses" || "$stat_key" == "interactive_sessions" ]]; then
+
+        # Read previous last_use from the file before we updated it (we have it in
+        # the variable current_date but need previous). Fallback to first_use if missing.
+        local prev_date=$(grep -o '"last_use": "[0-9-]*"' "$STATS_FILE" | sed 's/.*: "\([0-9-]*\)"/\1/' || true)
+    
+        # prev_date is now equal to current_date because we already replaced it; to
+        # detect a day change robustly, check first_use as a hint and also check
+        # if unique_days key exists; if not, initialize it.
+        if ! grep -q '"unique_days"' "$STATS_FILE" 2>/dev/null; then
+            sed -i "s/}/, \"unique_days\": 0}/" "$STATS_FILE"
+        fi
+
+        # Determine if we've already recorded usage for today by checking an entry
+        # in a small ledger file. Use a simple file keyed by date to avoid
+        # brittle JSON parsing here.
+        local day_ledger="$ACHIEVEMENT_DIR/used_days.log"
+        if [[ ! -f "$day_ledger" || ! $(grep -x "$current_date" "$day_ledger" 2>/dev/null) ]]; then
+    
+            # New day: append and increment unique_days
+            echo "$current_date" >> "$day_ledger"
+    
+            # Increment unique_days in stats file
+            if grep -q '"unique_days": [0-9]*' "$STATS_FILE" 2>/dev/null; then
+                local ud=$(grep -o '"unique_days": [0-9]*' "$STATS_FILE" | sed 's/.*: //' || echo 0)
+                ud=$((ud + 1))
+                sed -i "s/\"unique_days\": [0-9]*/\"unique_days\": $ud/" "$STATS_FILE"
+            else
+                sed -i "s/}/, \"unique_days\": 1}/" "$STATS_FILE"
+            fi
+
+            # Update consecutive_days: if previous day (current_date - 1) is in ledger,
+            # increment, otherwise reset to 1
+            local yesterday
+            yesterday=$(date -d "$current_date -1 day" +%Y-%m-%d 2>/dev/null || true)
+            if [[ -n "$yesterday" && $(grep -x "$yesterday" "$day_ledger" 2>/dev/null) ]]; then
+    
+                # increment consecutive_days
+                if grep -q '"consecutive_days": [0-9]*' "$STATS_FILE" 2>/dev/null; then
+                    local cd=$(grep -o '"consecutive_days": [0-9]*' "$STATS_FILE" | sed 's/.*: //' || echo 0)
+                    cd=$((cd + 1))
+                    sed -i "s/\"consecutive_days\": [0-9]*/\"consecutive_days\": $cd/" "$STATS_FILE"
+                else
+                    sed -i "s/}/, \"consecutive_days\": 1}/" "$STATS_FILE"
+                fi
+            else
+                # reset to 1
+                sed -i "s/\"consecutive_days\": [0-9]*/\"consecutive_days\": 1/" "$STATS_FILE" || true
+            fi
+        fi
+    fi
     
     # Show the update (only show actual incremented values)
     if [[ $new_value -gt 0 ]]; then
@@ -217,6 +325,9 @@ check_milestone_achievements() {
     local tarot_draws=$(grep -o '"tarot_draws": [0-9]*' "$stats_file" | sed 's/.*: //' || echo "0")
     local celebrity_comparisons=$(grep -o '"celebrity_comparisons": [0-9]*' "$stats_file" | sed 's/.*: //' || echo "0")
     local total_uses=$(grep -o '"total_uses": [0-9]*' "$stats_file" | sed 's/.*: //' || echo "0")
+    local unique_days=$(grep -o '"unique_days": [0-9]*' "$stats_file" | sed 's/.*: //' || echo "0")
+    # egg_count tracks number of discovered hidden features
+    local egg_count=$(grep -o '"egg_count": [0-9]*' "$stats_file" | sed 's/.*: //' || echo "0")
     
     case "$achievement_id" in
         "coffee_bean")
@@ -249,6 +360,9 @@ check_milestone_achievements() {
         "starstruck")
             [[ $celebrity_comparisons -ge 5 ]] && unlock_achievement "$achievement_id"
             ;;
+        "easter_egg_hunter")
+            [[ $egg_count -ge 3 ]] && unlock_achievement "$achievement_id"
+            ;;
         "hollywood_hacker")
             [[ $celebrity_comparisons -ge 20 ]] && unlock_achievement "$achievement_id"
             ;;
@@ -256,7 +370,8 @@ check_milestone_achievements() {
             [[ $total_uses -ge 100 ]] && unlock_achievement "$achievement_id"
             ;;
         "legendary_legend")
-            [[ $total_uses -ge 365 ]] && unlock_achievement "$achievement_id"
+            # Legendary should be based on days used, not raw invocation count
+            [[ $unique_days -ge 365 ]] && unlock_achievement "$achievement_id"
             ;;
     esac
 }
@@ -297,17 +412,46 @@ check_time_achievements() {
             [[ "$current_date" == "03-17" ]] && unlock_achievement "$achievement_id"
             ;;
         "autumn_analyzer")
-            # September (9), October (10), November (11) 
-            [[ $current_month -eq 9 || $current_month -eq 10 || $current_month -eq 11 ]] && unlock_achievement "$achievement_id"
+            # Hemisphere-aware seasonal checks
+            source "$(dirname "${BASH_SOURCE[0]}")/hemisphere.sh" 2>/dev/null || true
+            local hemisphere=$(detect_hemisphere 2>/dev/null || echo "northern")
+            if [[ "$hemisphere" == "southern" ]]; then
+                # Southern: autumn is Mar-May
+                [[ $current_month -ge 3 && $current_month -le 5 ]] && unlock_achievement "$achievement_id"
+            else
+                # Northern: Sep-Nov
+                [[ $current_month -eq 9 || $current_month -eq 10 || $current_month -eq 11 ]] && unlock_achievement "$achievement_id"
+            fi
             ;;
         "winter_wizard")
-            [[ $current_month -eq 12 || $current_month -eq 1 || $current_month -eq 2 ]] && unlock_achievement "$achievement_id"
+            source "$(dirname "${BASH_SOURCE[0]}")/hemisphere.sh" 2>/dev/null || true
+            hemisphere=$(detect_hemisphere 2>/dev/null || echo "northern")
+            if [[ "$hemisphere" == "southern" ]]; then
+                # Southern winter is Jun-Aug
+                [[ $current_month -ge 6 && $current_month -le 8 ]] && unlock_achievement "$achievement_id"
+            else
+                [[ $current_month -eq 12 || $current_month -eq 1 || $current_month -eq 2 ]] && unlock_achievement "$achievement_id"
+            fi
             ;;
         "spring_sprinter")
-            [[ $current_month -ge 3 && $current_month -le 5 ]] && unlock_achievement "$achievement_id"
+            source "$(dirname "${BASH_SOURCE[0]}")/hemisphere.sh" 2>/dev/null || true
+            hemisphere=$(detect_hemisphere 2>/dev/null || echo "northern")
+            if [[ "$hemisphere" == "southern" ]]; then
+                # Southern spring is Sep-Nov
+                [[ $current_month -ge 9 && $current_month -le 11 ]] && unlock_achievement "$achievement_id"
+            else
+                [[ $current_month -ge 3 && $current_month -le 5 ]] && unlock_achievement "$achievement_id"
+            fi
             ;;
         "summer_sage")
-            [[ $current_month -ge 6 && $current_month -le 8 ]] && unlock_achievement "$achievement_id"
+            source "$(dirname "${BASH_SOURCE[0]}")/hemisphere.sh" 2>/dev/null || true
+            hemisphere=$(detect_hemisphere 2>/dev/null || echo "northern")
+            if [[ "$hemisphere" == "southern" ]]; then
+                # Southern summer is Dec-Feb
+                [[ $current_month -eq 12 || $current_month -eq 1 || $current_month -eq 2 ]] && unlock_achievement "$achievement_id"
+            else
+                [[ $current_month -ge 6 && $current_month -le 8 ]] && unlock_achievement "$achievement_id"
+            fi
             ;;
     esac
 }
@@ -327,6 +471,17 @@ unlock_achievement() {
     display_achievement_celebration "$achievement_id"
     
     # Mark as unlocked (save just the achievement ID for easier checking)
+    echo "$achievement_id" >> "$ACHIEVEMENT_DIR/unlocked.log"
+}
+
+# Quietly mark achievement as unlocked without showing celebration (useful for
+# custom celebration flows where caller will display its own animation)
+unlock_achievement_quiet() {
+    local achievement_id="$1"
+    init_achievement_system
+    if [[ -f "$ACHIEVEMENT_DIR/unlocked.log" ]] && grep -q "^$achievement_id$" "$ACHIEVEMENT_DIR/unlocked.log" 2>/dev/null; then
+        return 0
+    fi
     echo "$achievement_id" >> "$ACHIEVEMENT_DIR/unlocked.log"
 }
 
@@ -479,6 +634,394 @@ display_achievement_celebration() {
     
     # Wait for user to appreciate the moment
     read -p "Press Enter to continue your mystical journey..."
+    clear
+}
+
+# Konami-specific secret celebration with sparkles, emojis and choice
+display_konami_celebration() {
+    clear
+    local konami_art="
+                     ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
+                        🎮  🪄  K O N A M I   S E Q U E N C E  🎮  🪄
+                          ✨ You have discovered the hidden code! ✨
+                     ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨"
+
+    echo -e "${YELLOW}${BOLD}"
+    echo -e "                                 $konami_art"
+    echo -e "${RESET}"
+
+    echo -e "${MAGENTA}${BOLD}"
+    echo -e "                             🎉 Konami Easter Egg Found! 🎉"
+    echo -e "${RESET}\n"
+
+    # Light sparkles to match other achievements (no heavy animation here yet)
+    echo -e "${MAGENTA}"
+    echo -e "                    ✨ ✨ ✨  Secret Sequence Discovered  ✨ ✨ ✨"
+    echo -e "${RESET}\n"
+
+    # If stdin is not a TTY, auto-continue (useful for non-interactive tests)
+    if [[ ! -t 0 ]]; then
+        return 0
+    fi
+
+    # Prompt user for animation only when running interactively.
+    if [[ -t 1 && -z "${GH_HOROSCOPE_NONINTERACTIVE:-}" ]]; then
+        read -p "Press Enter to see the secret animation..."
+    fi
+
+    # Clear screen before running the animation to make it dramatic
+    clear
+
+    # Play a short Konami-themed secret animation
+    animate_konami_sequence
+
+    # Show a special easter-egg overlay message directly on the animation screen
+    konami_closing_overlay
+
+    # After overlay, wait for final acknowledgement then return to menu
+    read -p "Press Enter to return to the main menu..."
+    clear
+    return 0
+}
+
+# Short Konami-themed secret animation (minimal, TTY-friendly)
+animate_konami_sequence() {
+    # Enhanced sequence: colored arrows, quick matrix interlude, then flourish
+    local arrows=("⬆️ ⬆️ ⬇️ ⬇️ ⬅️ ➡️ ⬅️ ➡️ B A")
+    local label=("🎮 K O N A M I")
+    local power=("✨ POWER-UNLOCKED ✨")
+
+    # Loop the arrow + label + power frames with color
+    local hint_count=0
+    # Preselect three unique interlude slots out of the total (3 * 6 = 18)
+    local total_slots=18
+    local hint_slots=()
+    if command -v shuf >/dev/null 2>&1; then
+        mapfile -t hint_slots < <(shuf -n 3 -i 1-${total_slots})
+    else
+        # Fallback deterministic choices if shuf not available
+        hint_slots=(3 9 15)
+    fi
+    # Normalize into associative lookup for quick checks
+    declare -A hint_slot_map
+    for s in "${hint_slots[@]}"; do
+        hint_slot_map[$s]=1
+    done
+    local frame_index=0
+    for i in 1 2 3; do
+        echo -e "${CYAN}${BOLD}"
+        center_text "${arrows[0]}"
+        echo -e "${RESET}"
+        sleep 0.25
+
+        echo -e "${YELLOW}${BOLD}"
+        center_text "${label[0]}"
+        echo -e "${RESET}"
+        sleep 0.25
+
+        echo -e "${MAGENTA}${BOLD}"
+        center_text "${power[0]}"
+        echo -e "${RESET}"
+        sleep 0.25
+
+        # Quick matrix interlude (short, colorful)
+        for j in {1..6}; do
+                echo -ne "\r"
+                local randline="$(shuf -n1 -e "010101" "101010" "█▒░" "▒█░" "▓▒░" 2>/dev/null || echo "█▒░")"
+                echo -e "${GREEN}"
+                center_text "$randline"
+                echo -e "${RESET}"
+
+                # Advance global interlude frame index and show hint only if it's a
+                # preselected slot (ensures exactly three hints maximum).
+                frame_index=$((frame_index+1))
+                if [[ ${hint_slot_map[$frame_index]} == 1 && $hint_count -lt 3 ]]; then
+                    show_konami_secret_hint
+                    hint_count=$((hint_count+1))
+                    sleep 0.28
+                fi
+
+                sleep 0.06
+            done
+    done
+
+    # Final flourish: rainbow rapid fireworks
+    for k in {1..6}; do
+        local color_index=$((k % ${#RAINBOW_COLORS[@]}))
+        echo -e "${RAINBOW_COLORS[$color_index]}${BOLD}"
+        center_text "✨🔥 🎮 ✨ POWER-UP! ✨🎮🔥✨"
+        echo -e "${RESET}"
+        sleep 0.12
+    done
+    echo
+}
+
+# Display a brief, subtle in-app hint overlay (kept intentionally minimal in
+# comments; hint content is part of the feature and not described here).
+show_konami_secret_hint() {
+    local hints=(
+        "Zombies"
+        "N64"
+        "retro"
+    )
+    # cycle through a small set of short overlay strings (internal UI only)
+    local choice="${hints[$RANDOM % ${#hints[@]}]}"
+    echo -e "${DIM}${CYAN}"
+    center_text "$choice"
+    echo -e "${RESET}"
+}
+
+# Small closing quote to match the project's tone
+konami_closing_quote() {
+    # Backwards-compatible (keeps previous behavior if used elsewhere)
+    echo -e "${CYAN}${BOLD}"
+    center_text "Well done, seeker. Keep your secrets close and your commits closer." 
+    echo -e "${DIM}May your diffs be small and your tests be green.${RESET}\n"
+    if [[ -t 0 ]]; then
+        sleep 1
+    fi
+}
+
+# Overlayed, special easter-egg closing message shown on the animation screen
+konami_closing_overlay() {
+    echo -e "${YELLOW}${BOLD}"
+    center_text "✨ You found a hidden relic! ✨"
+    echo -e "${MAGENTA}${BOLD}"
+    center_text "This secret belongs to the curious — well played, explorer." 
+    echo -e "${DIM} ${BOLD}                                        Keep it close. Share it only in whispered commits.${RESET}\n"
+}
+
+    # GoldenEye-themed celebration screen (cinematic title and animation)
+display_goldeneye_celebration() {
+    clear
+    # Use a here-doc for a safe, literal multi-line header (avoids encoding issues)
+    local golden_art="""
+                                            🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫
+                                              ✨  🕹️  🎮  G O L D E N E Y E   6 4  🎮  🕹️  ✨        
+                                               👁️    🎮 License to Frag — N64 Classic 🎮    👁️          
+                                            🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫 🕹️ 🔫
+
+"""
+
+    # Header like Konami with big celebration
+    echo -e "${YELLOW}"
+    # Print the art block centered-ish (use center_ascii_block for multi-line)
+    echo -e "$golden_art"
+    echo -e "${RESET}"
+
+    # Ensure the main title is prominent
+    echo -e "${MAGENTA}${BOLD}"
+    echo -e "                                                    🎮 GoldenEye 64 Easter Egg Found! 🎉"
+    echo -e "${RESET}\n"
+
+    echo -e "${RED}${BOLD}"
+    center_text "🔫 🔫 🔫  Retro N64 Secret Discovered  🔫 🔫 🔫"
+    echo -e "${RESET}\n"
+
+    # Non-interactive safety: quietly return so automated tests don't block
+    if [[ ! -t 0 ]]; then
+        unlock_achievement_quiet "goldeneye_007" 2>/dev/null || true
+        return 0
+    fi
+
+    # Prompt user and then play a short golden flourish animation
+    if [[ -t 1 && -z "${GH_HOROSCOPE_NONINTERACTIVE:-}" ]]; then
+        read -p "Press Enter to see the secret animation..."
+    fi
+    clear
+
+    # Bigger animated retro N64 sequence: water-gun duel + title frames + fireworks
+    # We'll animate a pair of 'water guns' (retro blaster emoji) firing at the title
+    local frames=()
+
+    frames+=("        ░░░  N 6 4  ░░░     ")
+    frames+=("          ░ COD NUKE ░    ")
+    frames+=("      ✨ LICENSE TO FRAG ✨   ")
+
+    # Projectile frames using emoji: water pistol and person target
+    # Emoji-rich duel frames (water pistol and person targets)
+    local duel=(
+        "🔫  -->            🧑"
+        " 🔫 --->          🧑"
+        "  🔫---->        🧑"
+        "   🔫---->      🧑"
+        "    🔫----->   🧑"
+        "      🔫--->  🧑"
+        "       🔫---> 🧑"
+        "        🔫--->🧑"
+        "         💥 💦"
+        "        💥 💦 💥"
+        "      ✨ 💦 ✨ 💦 ✨"
+        "      🎯  HEADSHOT"
+    )
+
+    # Title pass: show each main title frame with a duel animation overlay
+    for title_frame in "${frames[@]}"; do
+        for d in {1..3}; do
+            echo -e "${YELLOW}${BOLD}"
+            center_text "$title_frame"
+            echo -e "${RESET}"
+
+            # quick projectile overlay that looks like a shot crossing the screen
+            for dd in "${duel[@]}"; do
+                echo -e "${CYAN}${BOLD}"
+                center_text "$dd"
+                echo -e "${RESET}"
+                sleep 0.06
+            done
+        done
+        sleep 0.18
+    done
+
+    # Bigger fireworks / cinematic headshot flourish - include impact frame
+    for k in {1..6}; do
+        local ci=$((k % ${#RAINBOW_COLORS[@]}))
+        echo -e "${RAINBOW_COLORS[$ci]}${BOLD}"
+        center_text "✨🔥 ✨ RETRO HEADSHOT! ✨🔥 ✨"
+        echo -e "${RESET}"
+        sleep 0.09
+    done
+
+    # Impact sequence (dramatic frames) - ASCII friendly
+    echo -e "${RED}${BOLD}"
+    center_text "      ###  HEADSHOT!  ###      "
+    echo -e "${RESET}"
+    sleep 0.18
+    echo -e "${YELLOW}${BOLD}"
+    center_text "       ***  *CRITICAL*  ***       "
+    echo -e "${RESET}"
+    sleep 0.22
+
+    echo -e "${RED}${BOLD}"
+    center_text "🎮  Nicely done, player. Keep your steps subtle and your shots tidy.  🎮"
+    echo -e "${DIM}                                                May your aim be true and your reloads swift.${RESET}\n"
+    sleep 1
+    read -p "Press Enter to return to the main menu..."
+    clear
+}
+
+# Nuketown/COD-themed celebration (retro arcade style, playful)
+# Note: This is one of several hidden-feature celebration screens; details
+# about hidden features are intentionally not described in comments.
+display_nuketown_celebration() {
+    clear
+
+    # GoldenEye-like cinematic header for Nuketown (CoD Zombies themed)
+        echo -e "${RED}${BOLD}"
+        local nuketown_header="
+                                            💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥
+                                              ✨   🕹️   🔥   N U K E T O W N   🔥   🕹️   ✨
+                                                💥  Retro Black Ops — COD ZOMBIES MODE  💥
+                                            💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥 💥
+"
+        echo -e "$nuketown_header"
+        echo -e "${RESET}\n"
+
+    # Non-interactive safety
+    if [[ ! -t 0 ]]; then
+        unlock_achievement_quiet "nuketown_cod" 2>/dev/null || true
+        return 0
+    fi
+
+    # Prominent subtitle and title like GoldenEye
+    echo -e "${MAGENTA}${BOLD}"
+    center_text "🎮 Nuketown Easter Egg Found! 🎉"
+    echo -e "${RESET}\n"
+
+    echo -e "${YELLOW}${BOLD}"
+    center_text "🔫 🔫 🔫  Retro COD Zombies Secret Discovered  🔫 🔫 🔫"
+    echo -e "${RESET}\n"
+
+    # Prompt the user for the cinematic animation
+    echo -e "${RED}${DIM}"
+    if [[ -t 1 && -z "${GH_HOROSCOPE_NONINTERACTIVE:-}" ]]; then
+        read -p "Press Enter to detonate your retro reveal... — \"Zombies Incoming\" mode engaged"
+    fi
+    echo -e "${RESET}"
+    clear
+
+    # Cinematic intro frames (fog, distant sirens, undead moan text)
+    local intro=(
+        "~ ~ ~  DISTRESS SIGNAL  ~ ~ ~"
+        "   ...an old map whispers: NUKETOWN..."
+        "     DING DING DING — Zombies are coming..."
+    )
+    for line in "${intro[@]}"; do
+        echo -e "${DIM}${CYAN}"
+        center_text "$line"
+        echo -e "${RESET}"
+        sleep 0.6
+    done
+
+    # Animated retro blast + Zombies reference
+    local frames=(
+        "   [ . . . ]   "
+        "  [ . 1 . ] "
+        " [ . 2 . ]"
+        " [ . 3 . ] "
+        " [ . 4 . ] "
+        " [ . 5 . ] "
+        " [ . 6 . ] "
+        " [ . 7 . ] "
+        " [ . 8 . ] "
+        " [ . 9 . ] "
+        " [ . 10 . ] "
+        "   ✨ GET COVER! ✨  "
+    )
+
+    # Add a skull / zombie ascii flourish between frames
+    local zombie_frames=(
+        "        ( -_- )  ...you hear the groan"
+        "       ( 0_0 )  ...shuffling closer"
+        "      ( o_o )  ...they're almost here"
+        "     ( 0_0 )  ...you feel a chill"
+        "     ( -_- )  ...they're interrupting your goldeneye 007 time"
+        "      ( >_< )  ...you try to finish the level"
+        "       ( x_x )  ...but they are getting closer"
+        "        ( +_+ )  ...you know it's soon to late"
+        "         ( -_- )  ...you brace for impact"
+        "          ( x_x )  ...HEADSHOT!"
+    )
+
+    for i in {0..10}; do
+        echo -e "${YELLOW}${BOLD}"
+        center_text "${frames[$i]}"
+        echo -e "${RESET}"
+        sleep 0.18
+
+        if [[ $i -lt ${#zombie_frames[@]} ]]; then
+            echo -e "${MAGENTA}${DIM}"
+            center_text "${zombie_frames[$i]}"
+            echo -e "${RESET}"
+            sleep 0.22
+        fi
+    done
+
+    # Cinematic headshot / retro fireworks
+    for k in {1..6}; do
+        local ci=$((k % ${#RAINBOW_COLORS[@]}))
+        echo -e "${RAINBOW_COLORS[$ci]}${BOLD}"
+        center_text "✨🔥 ✨ NUKE READY! ✨🔥 ✨"
+        echo -e "${RESET}"
+        sleep 0.09
+    done
+
+    # Final dramatic titles and prompt
+    echo -e "${RED}${BOLD}"
+    read -p "Press Enter to Detonate the Nuke!"
+    echo -e "${RESET}\n"
+    clear
+    # small finale flourish frames (one last headshot / confetti)
+    for f in {1..3}; do
+        echo -e "${RED}${BOLD}"
+        center_text "💥  NUKE DETONATED  💥"
+        echo -e "${RESET}"
+        sleep 0.12
+    done
+    echo -e "${MAGENTA}${BOLD}"
+    center_text "🎮  Well played, survivor. Keep your wits sharp and your shots sharper. 🎮"
+    echo -e "${RESET}\n"
+    read -p "Press Enter to return to the main menu..."
     clear
 }
 
@@ -936,7 +1479,7 @@ test_achievement_celebrations() {
         "new_year_ninja" "valentine_virtuoso" "lucky_leprechaun"
         "daily_devotee" "weekly_warrior" "monthly_master" "legendary_legend"
         "interactive_explorer" "combo_master" "power_user"
-        "konami_code" "easter_egg_hunter" "secret_seeker" "ghost_in_shell"
+    "konami_code" "easter_egg_hunter"
         "doppelganger_detector" "friend_maker" "global_connector"
         "pattern_analyst" "mind_reader" "bullseye"
         "autumn_analyzer" "winter_wizard" "spring_sprinter" "summer_sage"

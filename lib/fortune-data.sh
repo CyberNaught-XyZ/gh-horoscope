@@ -286,16 +286,31 @@ get_zen_wisdom() {
     echo "${zen_quotes[$index]}"
 }
 
-# Seasonal coding wisdom
+# Seasonal coding wisdom (hemisphere-aware)
+source "$(dirname "${BASH_SOURCE[0]}")/hemisphere.sh" 2>/dev/null || true
 get_seasonal_wisdom() {
     local month=$(date +%m)
-    
-    case $month in
-        12|01|02) echo "❄️  Winter Coding: Like the quiet snow, let your code be clean and purposeful. Bugs hibernate in warm, well-tested functions." ;;
-        03|04|05) echo "🌸 Spring Coding: New growth emerges in your repositories. Time to plant seeds of ambitious projects and watch them bloom." ;;
-        06|07|08) echo "☀️  Summer Coding: Your productivity burns bright like the summer sun. Open source contributions flourish in the long days." ;;
-        09|10|11) echo "🍂 Autumn Coding: Time to harvest the wisdom of completed projects and prepare for winter's focused development cycles." ;;
-    esac
+    local hemisphere=$(detect_hemisphere 2>/dev/null || echo "northern")
+
+    # Map month to season numbers: 1..12
+    # For northern hemisphere: Dec-Feb = winter, Mar-May = spring, Jun-Aug = summer, Sep-Nov = autumn
+    # For southern hemisphere we flip: Dec-Feb = summer, Mar-May = autumn, Jun-Aug = winter, Sep-Nov = spring
+
+    if [[ "$hemisphere" == "southern" ]]; then
+        case $month in
+            12|01|02) echo "☀️  Summer Coding: Your productivity burns bright like the summer sun. Open source contributions flourish in the long days." ;;
+            03|04|05) echo "🍂 Autumn Coding: Time to harvest the wisdom of completed projects and prepare for winter's focused development cycles." ;;
+            06|07|08) echo "❄️  Winter Coding: Like the quiet snow, let your code be clean and purposeful. Bugs hibernate in warm, well-tested functions." ;;
+            09|10|11) echo "🌸 Spring Coding: New growth emerges in your repositories. Time to plant seeds of ambitious projects and watch them bloom." ;;
+        esac
+    else
+        case $month in
+            12|01|02) echo "❄️  Winter Coding: Like the quiet snow, let your code be clean and purposeful. Bugs hibernate in warm, well-tested functions." ;;
+            03|04|05) echo "🌸 Spring Coding: New growth emerges in your repositories. Time to plant seeds of ambitious projects and watch them bloom." ;;
+            06|07|08) echo "☀️  Summer Coding: Your productivity burns bright like the summer sun. Open source contributions flourish in the long days." ;;
+            09|10|11) echo "🍂 Autumn Coding: Time to harvest the wisdom of completed projects and prepare for winter's focused development cycles." ;;
+        esac
+    fi
 }
 
 # Cryptic Developer Archetypes - the mysterious coding personalities

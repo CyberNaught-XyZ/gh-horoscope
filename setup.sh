@@ -1,11 +1,9 @@
 #!/bin/bash
+# Purpose: Project setup helper for initial environment configuration.
 
-# 🔮 GitHub CLI Horoscope Extension Setup Script
-# Easy GitHub token configuration with validation and permissions
 
 set -e
 
-# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -15,7 +13,6 @@ CYAN='\033[0;36m'
 WHITE='\033[1;37m'
 RESET='\033[0m'
 
-# ASCII Art Banner
 display_setup_banner() {
     echo -e "${MAGENTA}"
     echo "╔══════════════════════════════════════════════════════════════════════╗"
@@ -27,7 +24,6 @@ display_setup_banner() {
     echo
 }
 
-# Utility functions
 print_success() {
     echo -e "${GREEN}✅ $1${RESET}"
 }
@@ -44,32 +40,26 @@ print_info() {
     echo -e "${CYAN}ℹ️  $1${RESET}"
 }
 
-# Check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Validate GitHub token format (basic check)
 validate_github_token() {
     local token="$1"
-    # GitHub tokens should start with certain prefixes and be a specific length
     if [[ ${#token} -lt 20 ]]; then
         return 1
     fi
-    # Check for valid token prefixes (personal access token patterns)
     if [[ "$token" =~ ^(ghp_|gho_|ghu_|ghs_|ghr_) ]] || [[ ${#token} -eq 40 ]]; then
         return 0
     fi
     return 1
 }
 
-# Test GitHub token functionality
 test_github_token() {
     local token="$1"
     print_info "Testing GitHub token functionality..."
     
     if command_exists gh; then
-        # Test with GitHub CLI if available
         if GITHUB_TOKEN="$token" gh api user >/dev/null 2>&1; then
             print_success "GitHub token is valid and working!"
             return 0
@@ -78,7 +68,6 @@ test_github_token() {
             return 1
         fi
     else
-        # Test with curl if gh CLI not available
         local response=$(curl -s -H "Authorization: token $token" https://api.github.com/user)
         if echo "$response" | grep -q '"login"'; then
             print_success "GitHub token is valid and working!"
@@ -90,19 +79,16 @@ test_github_token() {
     fi
 }
 
-# Main setup function
 main() {
     display_setup_banner
     
     print_info "🌟 Welcome to the GitHub Horoscope Extension setup!"
     echo
     
-    # Check for dependencies
     print_info "🔍 Checking system dependencies..."
     
     local missing_deps=()
     
-    # Check for essential commands
     if ! command_exists curl; then
         missing_deps+=("curl")
     fi
@@ -122,12 +108,10 @@ main() {
     print_success "All system dependencies found!"
     echo
     
-    # Check GitHub CLI installation
     print_info "🔍 Checking GitHub CLI installation..."
     if command_exists gh; then
         print_success "GitHub CLI found: $(gh --version | head -n1)"
         
-        # Check if already authenticated
         if gh auth status >/dev/null 2>&1; then
             print_success "GitHub CLI is already authenticated!"
             local current_user=$(gh api user --jq '.login' 2>/dev/null || echo "unknown")
@@ -145,26 +129,22 @@ main() {
         echo
     fi
     
-    # Configuration directory setup
     print_info "📂 Setting up configuration directory..."
     CONFIG_DIR="$HOME/.gh-horoscope"
     mkdir -p "$CONFIG_DIR"
     chmod 700 "$CONFIG_DIR"  # Secure permissions
     print_success "Configuration directory created: $CONFIG_DIR"
     
-    # Set up log directory
     LOG_DIR="$CONFIG_DIR/logs"
     mkdir -p "$LOG_DIR"
     chmod 700 "$LOG_DIR"
     print_success "Log directory created: $LOG_DIR"
     
-    # GitHub Token Configuration
     print_info "🔑 GitHub Token Configuration..."
     echo
     
     local setup_token=false
     
-    # Check existing token
     if [[ -n "$GITHUB_TOKEN" ]]; then
         print_info "Found GITHUB_TOKEN environment variable"
         if validate_github_token "$GITHUB_TOKEN"; then
@@ -183,7 +163,6 @@ main() {
         setup_token=true
     fi
     
-    # Interactive token setup if needed
     if [[ "$setup_token" == "true" ]]; then
         echo
         print_info "🎯 To get the full mystical experience, you'll need a GitHub token."
@@ -209,7 +188,6 @@ main() {
             if [[ -n "$token" ]]; then
                 if validate_github_token "$token"; then
                     if test_github_token "$token"; then
-                        # Save to config file securely
                         echo "export GITHUB_TOKEN=\"$token\"" > "$CONFIG_DIR/token"
                         chmod 600 "$CONFIG_DIR/token"
                         print_success "GitHub token saved securely!"
@@ -233,7 +211,6 @@ main() {
     
     echo
     
-    # Set executable permissions on main script
     print_info "🔧 Setting up script permissions..."
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     
@@ -242,13 +219,11 @@ main() {
         print_success "Made gh-horoscope executable"
     fi
     
-    # Make all library scripts executable too
     if [[ -d "$SCRIPT_DIR/lib" ]]; then
         chmod +x "$SCRIPT_DIR/lib"/*.sh 2>/dev/null || true
         print_success "Set permissions on library scripts"
     fi
     
-    # Final setup completion
     echo
     print_success "🎉 Setup completed successfully!"
     echo
@@ -270,5 +245,4 @@ main() {
     echo -e "${MAGENTA}✨ May your commits be meaningful and your bugs be few! ✨${RESET}"
 }
 
-# Run main function
 main "$@"

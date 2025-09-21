@@ -1,9 +1,56 @@
 CheckList of debuging steps taken:
 
+- Easter Eggs
+    - Konami Code
+        - Animation is nice and has hints towards other easter eggs
+        - Correctly detects the konami code input sequence
+        - Correctly unlocks the konami code achievement
+        - Correctly displays the konami code celebration
+        - Working as intended - Correctly provides a special celebration for unlocking the konami code achievement (Will add more easter eggs in the future)
+
+    - goldeneye 007
+        - Correctly detects the goldeneye 007 input sequence
+        - Correctly unlocks the goldeneye 007 achievement
+        - Correctly displays the goldeneye 007 celebration
+        - I see this as Completed and Working as intended
+            - Ideas for the future
+                - Add more easter eggs
+                    - Add more detail to each easter egg plus more examples/Humour
+                    - Add option to send easter egg celebration to friend via Github Api (If possible??)
+                    - Add option to share on social media (If possible??)
+                    - Add sound effects (If possible??)
+                    - Add confetti animation (If possible??)
+                    - Add option to customize easter egg style (If possible??)
+
+
+
+- Moonphase
+    - Moonphase is correctly calculated based on the current date
+    - Moonphase is correctly mapped to the correct phase name and emoji
+    - Working as intended - Correctly provides the moonphase based on the current date (Will add more phases in the future)
+    - Moonphase is using conways algorithm
+    - Moonphase is correctly outputting a joke and changing on the correct days
+        - All phases are working as intended, aligned and colored correctly
+        - All emojis are working as intended, aligned and colored correctly
+        - All of them are themed and arted to pop out and look nice
+            
+            - I see this as Completed and Working as intended
+                - Ideas for the future
+                    - Add more phases
+                    - Add more detail to each phase plus more examples/Humour
+                    - Add option to send moonphase to friend via Github Api (If possible??)
+                    - Add option to share on social media (If possible??)
+                    - Add sound effects (If possible??)
+                    - Add confetti animation (If possible??)
+                    - Add option to customize moonphase style (If possible??)
+
 - Achievements Celebrations
     - Titles are correctly lined up and colored
     - Text aligned and wrapped correctly
     - Emojis are correctly Placed/Displayed/Positioned
+    - Has a Next page option to view more achievements
+    - Obviously hidden achievements are not shown
+    - Counts days and time properly for the time and day based achievements
     - Working
     
     - Working as intended - Correctly provides a celebration for each achievement (Will add more achievements in the future or more celebrations styles for each achievement)

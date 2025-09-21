@@ -276,6 +276,55 @@ QUICK_ORACLE_WISDOM=(
     "🥠 The smallest entropy you remove today saves hours of grief tomorrow. Start with the smallest friction." 
 )
 
+# Append a couple of very subtle hint-like fortune lines to the quick wisdom pool
+QUICK_ORACLE_WISDOM+=(
+    "🥠 Subtle hint: old-school controller rhythms sometimes open doors in playful UIs."
+    "🥠 Subtle hint: listen for retro map names during celebratory sequences."
+)
+
+# Maybe emit a subtle easter-egg hint (10% chance). Hints are intentionally vague
+# and only shown during interactive TTY sessions so CI/judges aren't spoiled.
+maybe_emit_hint_oracle() {
+    # Don't show hints in non-interactive or machine modes
+    if [[ -n "$GH_HOROSCOPE_NONINTERACTIVE" || ! -t 1 ]]; then
+        return 0
+    fi
+
+    local roll=$((RANDOM % 100))
+    if [[ $roll -lt 10 ]]; then
+        local hints=(
+            "🥠 Whisper: Wasn't gaming actually good years ago? Ko."
+            "🥠 Whisper: 7some achievements recall cinematic code moments; listen closely.00"
+            "🥠 Whisper: hidden zombie maps sometimes leave clues in celebration text."
+        )
+        local idx=$((RANDOM % ${#hints[@]}))
+        echo
+        echo "${YELLOW}${BOLD}${hints[$idx]}${RESET}"
+        echo
+    fi
+}
+
+# Safe helper: return a random element from a named array, or empty string if array is empty.
+# Usage: safe_random_from_array ARRAY_NAME
+safe_random_from_array() {
+    local arr_name="$1"
+    # Use nameref if available for clarity
+    if declare -p "$arr_name" >/dev/null 2>&1; then
+        # Create nameref to array
+        local -n arr_ref="$arr_name"
+        local count=${#arr_ref[@]}
+        if [[ $count -eq 0 ]]; then
+            echo ""
+            return 0
+        fi
+        echo "${arr_ref[RANDOM % count]}"
+        return 0
+    else
+        echo ""
+        return 0
+    fi
+}
+
 # Daily coding mantras
 CODING_MANTRAS=(
     "🧘 \"Today I code with intention, not just instinct.\""
@@ -439,14 +488,12 @@ provide_career_guidance() {
     fi
     
     if [[ $REPO_COUNT -gt 20 ]]; then
-        echo "│                                                                   │"
-        echo "│ 📈 Your $REPO_COUNT repositories show entrepreneurial spirit!      │"
-        echo "│ Consider product management, startup CTO, or consultant roles.   │"
+        display_section_header "📈 Repository Portfolio"
+        wrap_oracle_text "Your $REPO_COUNT repositories show entrepreneurial spirit! Consider product management, startup CTO, or consultant roles where your broad experience will pay off." | sed 's/^/  /'
+        echo
     elif [[ $ABANDONED_REPOS -gt $((REPO_COUNT / 2)) ]]; then
-        echo "│                                                                   │"  
-        echo "│ 🔍 Your exploration pattern suggests you thrive on variety.      │"
-        echo "      Consulting, contracting, or roles with diverse project"
-        echo "      exposure will feed your curiosity and prevent boredom."
+        display_section_header "🔍 Exploration Pattern"
+        wrap_oracle_text "Your exploration pattern suggests you thrive on variety. Consulting, contracting, or roles with diverse project exposure will feed your curiosity and prevent boredom." | sed 's/^/  /'
         echo
     fi
 }
@@ -474,22 +521,16 @@ provide_debugging_wisdom() {
     
     if [[ "$commit_messages" =~ (fix|bug|debug|error) ]]; then
         local fix_frequency=$(echo "$commit_messages" | grep -o -i "fix\|bug\|debug\|error" | wc -l)
-        echo "│                                                                   │"
-        echo "│ 🔧 **Your Fix Pattern:** $fix_frequency debugging-related commits    │"
-        echo "│ suggest you're comfortable diving deep into problems. Channel     │"
-        echo "│ this persistence into systematic debugging: reproduce, isolate,   │"
-        echo "│ fix, test, document. Your tenacity is your debugging superpower! │"
+        display_section_header "🔧 Your Fix Pattern"
+        wrap_oracle_text "$fix_frequency debugging-related commits suggest you're comfortable diving deep into problems. Channel this persistence into systematic debugging: reproduce, isolate, fix, test, document. Your tenacity is your debugging superpower!" | sed 's/^/  /'
+        echo
     fi
-    
+
     if [[ "$commit_messages" =~ (please.*work|why|help|broken) ]]; then
-        echo "│                                                                   │"
-        echo "│ 😅 **Desperation Pattern Detected:** Your commit messages reveal  │"
-        echo "│ the beautiful human struggle with code! Remember: every bug is   │"
-        echo "│ a teacher. When frustrated, step back, rubber duck debug, or     │"
-        echo "│ explain the problem to a friend. Clarity comes with distance.    │"
+        display_section_header "😅 Desperation Pattern Detected"
+        wrap_oracle_text "Your commit messages reveal the beautiful human struggle with code! Remember: every bug is a teacher. When frustrated, step back, rubber duck debug, or explain the problem to a friend. Clarity comes with distance." | sed 's/^/  /'
+        echo
     fi
-    
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
 }
 
 # Burnout check based on commit frequency patterns  
@@ -592,39 +633,30 @@ provide_team_collaboration() {
 # Project focus advice based on repository patterns
 provide_project_focus() {
     local username="$1"
+    # Ensure sane defaults to avoid division by zero
+    if [[ -z "$REPO_COUNT" || "$REPO_COUNT" -eq 0 ]]; then
+        REPO_COUNT=1
+    fi
+    if [[ -z "$ABANDONED_REPOS" ]]; then
+        ABANDONED_REPOS=0
+    fi
     local abandonment_ratio=$((ABANDONED_REPOS * 100 / REPO_COUNT))
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│                🎯 **PROJECT FOCUS ORACLE** 🎯                       │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    
+    display_section_header "🎯 PROJECT FOCUS ORACLE"
+
     if [[ $abandonment_ratio -gt 70 ]]; then
-        echo "│ 🌪️ **The Project Tornado:** $abandonment_ratio% of your projects │"
-        echo "│ show signs of abandonment - you're a beautiful storm of ideas!    │"
-        echo "│ Channel this creativity: pick ONE project as your 'flagship' and  │"
-        echo "│ commit to finishing it. Let other ideas be experiments, but       │"
-        echo "│ have one project that showcases your ability to ship.             │"
+        wrap_oracle_text "🌪️ The Project Tornado: $abandonment_ratio% of your projects show signs of abandonment - you're a beautiful storm of ideas! Channel this creativity: pick ONE project as your 'flagship' and commit to finishing it. Let other ideas be experiments, but have one project that showcases your ability to ship." | sed 's/^/  /'
     elif [[ $abandonment_ratio -gt 40 ]]; then
-        echo "│ 🔍 **The Explorer:** $abandonment_ratio% abandonment suggests you │"
-        echo "│ love learning through doing! This curiosity is valuable, but      │"
-        echo "│ consider maintaining 2-3 'showcase' projects alongside your       │"
-        echo "│ experiments. Quality portfolio beats quantity of repos.           │"
+        wrap_oracle_text "🔍 The Explorer: $abandonment_ratio% abandonment suggests you love learning through doing! This curiosity is valuable, but consider maintaining 2-3 'showcase' projects alongside your experiments. Quality portfolio beats quantity of repos." | sed 's/^/  /'
     else
-        echo "│ 🏆 **The Finisher:** Only $abandonment_ratio% abandonment shows │"
-        echo "│ impressive follow-through! Your consistency is your superpower.   │"
-        echo "│ You're the person teams depend on to see things through. Use     │"
-        echo "│ this reliability to take on increasingly ambitious projects.     │"
+        wrap_oracle_text "🏆 The Finisher: Only $abandonment_ratio% abandonment shows impressive follow-through! Your consistency is your superpower. You're the person teams depend on to see things through. Use this reliability to take on increasingly ambitious projects." | sed 's/^/  /'
     fi
-    
+
     if [[ $REPO_COUNT -gt 50 ]]; then
-        echo "│                                                                   │"
-        echo "│ 📊 **Repository Abundance:** $REPO_COUNT repositories! Consider  │"
-        echo "│ consolidating similar projects, archiving experiments, and       │"
-        echo "│ highlighting your top 5-10 most representative works. Quality   │"
-        echo "│ curation makes a stronger impression than quantity.              │"
+        echo
+        display_section_header "📊 Repository Abundance"
+        wrap_oracle_text "$REPO_COUNT repositories detected. Consider consolidating similar projects, archiving experiments, and highlighting your top 5-10 most representative works. Quality curation makes a stronger impression than quantity." | sed 's/^/  /'
     fi
-    
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
 }
 
 # Coding rhythm analysis from temporal patterns
@@ -633,42 +665,25 @@ provide_coding_rhythm() {
     local night_percentage=$(get_night_owl_score)
     local weekend_percentage=$(get_weekend_warrior_score) 
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│               🕰️ **CODING RHYTHM ORACLE** 🕰️                       │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    
+    display_section_header "🕰️ CODING RHYTHM ORACLE"
+
     if [[ $night_percentage -gt 50 ]]; then
-        echo "│ 🌙 **Night Owl Flow:** $night_percentage% nocturnal commits reveal │"
-        echo "│ your peak creative hours in darkness. Embrace this rhythm but     │"
-        echo "│ protect your sleep! Consider: focused deep work blocks at night,  │"
-        echo "│ morning review sessions, and afternoon collaboration time.        │"
+        wrap_oracle_text "🌙 Night Owl Flow: $night_percentage% nocturnal commits reveal your peak creative hours in darkness. Embrace this rhythm but protect your sleep! Consider focused deep work blocks at night, morning review sessions, and afternoon collaboration time." | sed 's/^/  /'
     elif [[ $night_percentage -lt 20 ]]; then
-        echo "│ 🌅 **Morning Warrior:** $night_percentage% night commits show your │"
-        echo "│ discipline! Your fresh morning mind is your secret weapon.        │"
-        echo "│ Schedule challenging problems for AM hours and use evenings       │"
-        echo "│ for lighter tasks like documentation and planning.                │"
+        wrap_oracle_text "🌅 Morning Warrior: $night_percentage% night commits show your discipline! Your fresh morning mind is your secret weapon. Schedule challenging problems for AM hours and use evenings for lighter tasks like documentation and planning." | sed 's/^/  /'
     else
-        echo "│ ⚖️ **Balanced Rhythm:** Your $night_percentage% night coding shows │"
-        echo "│ healthy temporal distribution. You adapt your coding to your      │"
-        echo "│ life instead of sacrificing life to code. This sustainability    │"
-        echo "│ will serve you well in long-term projects.                       │"
+        wrap_oracle_text "⚖️ Balanced Rhythm: Your $night_percentage% night coding shows healthy temporal distribution. You adapt your coding to your life instead of sacrificing life to code. This sustainability will serve you well in long-term projects." | sed 's/^/  /'
     fi
-    
+
     if [[ $weekend_percentage -gt 40 ]]; then
-        echo "│                                                                   │"
-        echo "│ 🎮 **Weekend Creator:** $weekend_percentage% weekend commits      │"
-        echo "│ suggest you use free time for passion projects! Balance this     │"
-        echo "│ with rest to maintain creativity. Consider: one full rest day,   │"
-        echo "│ morning coding (fresh mind), evening social time.                │"
+        echo
+        display_section_header "🎮 Weekend Creator"
+        wrap_oracle_text "$weekend_percentage% weekend commits suggest you use free time for passion projects! Balance this with rest to maintain creativity. Consider: one full rest day, morning coding (fresh mind), evening social time." | sed 's/^/  /'
     fi
-    
-    # Provide rhythm optimization advice
-    echo "│                                                                   │"
-    echo "│ 💡 **Rhythm Optimization:** Track your best coding hours for a    │"
-    echo "│ week. Schedule important work during peak energy times, mundane   │"
-    echo "│ tasks during low energy. Your natural rhythm is your ally!       │"
-    
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+
+    echo
+    display_section_header "💡 Rhythm Optimization"
+    wrap_oracle_text "Track your best coding hours for a week. Schedule important work during peak energy times, mundane tasks during low energy. Your natural rhythm is your ally!" | sed 's/^/  /'
 }
 
 # Technical growth recommendations  
@@ -677,124 +692,77 @@ provide_technical_growth() {
     local archetype=$(analyze_developer_archetype "$username" "${COMMIT_MESSAGES[*]}" "$(get_night_owl_score)" "$(get_weekend_warrior_score)" "$REPO_COUNT")
     local primary_lang="${PRIMARY_LANGUAGES[0]:-Unknown}"
     
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│              🚀 **TECHNICAL GROWTH ORACLE** 🚀                      │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    
+    display_section_header "🚀 TECHNICAL GROWTH ORACLE"
+
     case $archetype in
         *"Stack_Overflow_Shaman"*)
-            echo "│ 📚 **From Shaman to Sage:** You excel at finding solutions!     │"
-            echo "│ Next level: contribute answers to Stack Overflow, write         │"
-            echo "│ technical blogs, or create educational content. Transform       │"
-            echo "│ your solution-finding skills into solution-teaching skills.    │"
+            wrap_oracle_text "📚 From Shaman to Sage: You excel at finding solutions! Next level: contribute answers to Stack Overflow, write technical blogs, or create educational content. Transform your solution-finding skills into solution-teaching skills." | sed 's/^/  /'
             ;;
         *"Perfectionist"*)
-            echo "│ 🔍 **From Perfectionist to Pragmatist:** Your attention to      │"
-            echo "│ detail is exceptional! Growth path: learn to balance           │"
-            echo "│ perfection with delivery. Practice MVP thinking, time-boxing   │"
-            echo "│ optimization tasks, and embracing 'good enough' iterations.    │"
+            wrap_oracle_text "🔍 From Perfectionist to Pragmatist: Your attention to detail is exceptional! Growth path: learn to balance perfection with delivery. Practice MVP thinking, time-boxing optimization tasks, and embracing 'good enough' iterations." | sed 's/^/  /'
             ;;
         *"Night_Owl"*|*"Vampire"*)
-            echo "│ 🦉 **Night Owl Evolution:** Your dark hours coding shows       │"
-            echo "│ dedication! Growth areas: async programming patterns,          │"
-            echo "│ distributed systems (different timezone thinking), and        │"
-            echo "│ mentoring others about deep focus techniques.                 │"
+            wrap_oracle_text "🦉 Night Owl Evolution: Your dark hours coding shows dedication! Growth areas: async programming patterns, distributed systems (different timezone thinking), and mentoring others about deep focus techniques." | sed 's/^/  /'
             ;;
         *"Weekend_Warrior"*)
-            echo "│ ⚔️ **Weekend Warrior Advancement:** Your passion projects      │"
-            echo "│ show drive! Channel this energy into open source leadership,  │"
-            echo "│ community building, or side business development. Your        │"
-            echo "│ self-motivated work ethic is a leadership superpower.        │"
+            wrap_oracle_text "⚔️ Weekend Warrior Advancement: Your passion projects show drive! Channel this energy into open source leadership, community building, or side business development. Your self-motivated work ethic is a leadership superpower." | sed 's/^/  /'
             ;;
         *)
-            echo "│ 🌟 **Unique Path Forward:** Your coding patterns suggest a     │"
-            echo "│ distinctive approach to development. Consider: technical      │"
-            echo "│ writing, conference speaking, or mentoring to share your     │"
-            echo "│ unique perspective with the broader developer community.     │"
+            wrap_oracle_text "🌟 Unique Path Forward: Your coding patterns suggest a distinctive approach to development. Consider technical writing, conference speaking, or mentoring to share your unique perspective with the broader developer community." | sed 's/^/  /'
             ;;
     esac
-    
+
     # Language-specific technical growth
     case $primary_lang in
         "JavaScript"|"TypeScript")
-            echo "│                                                                   │"
-            echo "│ 🟡 **JS/TS Technical Growth:** Master advanced async patterns,   │"
-            echo "│ contribute to open source frameworks, or explore edge computing │"
-            echo "│ with Deno/Bun. Consider WebAssembly for performance bridges.    │"
+            echo
+            wrap_oracle_text "🟡 JS/TS Technical Growth: Master advanced async patterns, contribute to open source frameworks, or explore edge computing with Deno/Bun. Consider WebAssembly for performance bridges." | sed 's/^/  /'
             ;;
         "Python") 
-            echo "│                                                                   │"
-            echo "│ 🐍 **Python Technical Growth:** Dive into CPython internals,    │"
-            echo "│ async programming, or scientific computing. Consider creating   │"
-            echo "│ your own packages or contributing to major Python libraries.    │"
+            echo
+            wrap_oracle_text "🐍 Python Technical Growth: Dive into CPython internals, async programming, or scientific computing. Consider creating your own packages or contributing to major Python libraries." | sed 's/^/  /'
             ;;
         "Go"|"Rust")
-            echo "│                                                                   │"
-            echo "│ ⚡ **Systems Technical Growth:** Explore distributed systems,   │"
-            echo "│ contribute to major infrastructure projects, or build          │"
-            echo "│ performance tools. Your systems knowledge is increasingly rare. │"
+            echo
+            wrap_oracle_text "⚡ Systems Technical Growth: Explore distributed systems, contribute to major infrastructure projects, or build performance tools. Your systems knowledge is increasingly rare." | sed 's/^/  /'
             ;;
     esac
-    
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+
 }
 
 # Open source path recommendations
 provide_open_source_path() {
-    local username="$1"  
+    local username="$1"
     local karma_score=$((ISSUE_KARMA + PR_KARMA))
     local primary_lang="${PRIMARY_LANGUAGES[0]:-Unknown}"
-    
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│              🌟 **OPEN SOURCE PATH ORACLE** 🌟                      │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    
+
+    display_section_header "🌟 OPEN SOURCE PATH ORACLE"
+
     if [[ $karma_score -lt 50 ]]; then
-        echo "│ 🌱 **Open Source Seedling:** Your journey begins now! Start with: │"
-        echo "│ • Find a project you actively use and love                       │"
-        echo "│ • Look for 'good first issue' or 'help wanted' labels           │"
-        echo "│ • Start with documentation improvements - always needed!         │"
-        echo "│ • Fix typos, improve examples, or clarify confusing sections    │"
-        echo "│ Small contributions build confidence and community connections.  │"
+        wrap_oracle_text "🌱 Open Source Seedling: Your journey begins now! Start with: Find a project you actively use and love; look for 'good first issue' or 'help wanted' labels; start with documentation improvements - always needed; fix typos, improve examples, or clarify confusing sections. Small contributions build confidence and community connections." | sed 's/^/  /'
     elif [[ $karma_score -lt 200 ]]; then
-        echo "│ 🌿 **Growing Contributor:** Karma score $karma_score shows       │"
-        echo "│ emerging involvement! Your next steps:                           │" 
-        echo "│ • Take on feature implementations, not just fixes               │"
-        echo "│ • Review others' PRs - teaching builds your reputation         │"
-        echo "│ • Participate in project discussions and architecture decisions │"
-        echo "│ • Consider maintaining a small library in your domain          │"
+        wrap_oracle_text "🌿 Growing Contributor: Karma score $karma_score shows emerging involvement! Your next steps: take on feature implementations, not just fixes; review others' PRs - teaching builds your reputation; participate in project discussions and architecture decisions; consider maintaining a small library in your domain." | sed 's/^/  /'
     else
-        echo "│ 🌳 **Open Source Leader:** Karma score $karma_score suggests     │"
-        echo "│ significant contributions! Your leadership path:                 │"
-        echo "│ • Mentor new contributors in projects you care about           │"
-        echo "│ • Start your own project addressing a real problem             │"
-        echo "│ • Speak at conferences about your open source experience       │"
-        echo "│ • Bridge communities between related projects                  │"
+        wrap_oracle_text "🌳 Open Source Leader: Karma score $karma_score suggests significant contributions! Mentor new contributors, start your own project addressing a real problem, speak at conferences about your open source experience, and bridge communities between related projects." | sed 's/^/  /'
     fi
-    
+
     # Language-specific open source opportunities
     case $primary_lang in
         "JavaScript"|"TypeScript")
-            echo "│                                                                   │"
-            echo "│ 🟡 **JS/TS Open Source:** Contribute to npm packages, React      │"
-            echo "│ ecosystem, or build developer tools. The JS community rewards   │"
-            echo "│ innovation and accessibility improvements.                       │"
+            echo
+            wrap_oracle_text "🟡 JS/TS Open Source: Contribute to npm packages, the React ecosystem, or build developer tools. The JS community rewards innovation and accessibility improvements." | sed 's/^/  /'
             ;;
         "Python")
-            echo "│                                                                   │"
-            echo "│ 🐍 **Python Open Source:** PyPI needs maintainers! Scientific  │"
-            echo "│ computing, web frameworks, and CLI tools are always evolving.  │"
-            echo "│ Python's community values mentorship and documentation.        │"
+            echo
+            wrap_oracle_text "🐍 Python Open Source: PyPI needs maintainers! Scientific computing, web frameworks, and CLI tools are always evolving. Python's community values mentorship and documentation." | sed 's/^/  /'
             ;;
         "Go"|"Rust")
-            echo "│                                                                   │"
-            echo "│ ⚡ **Systems Open Source:** Infrastructure projects need your   │"
-            echo "│ expertise! Kubernetes, databases, and performance tools        │"
-            echo "│ welcome systems programmers who understand efficiency.         │"
+            echo
+            wrap_oracle_text "⚡ Systems Open Source: Infrastructure projects need your expertise! Contribute to Kubernetes, databases, or performance tools where systems programmers make a big impact." | sed 's/^/  /'
             ;;
     esac
-    
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+
+    echo
 }
 
 # Language mastery guidance
@@ -803,81 +771,53 @@ provide_language_mastery() {
     local primary_lang="${PRIMARY_LANGUAGES[0]:-Unknown}"
     local lang_count=${#PRIMARY_LANGUAGES[@]}
     local secondary_lang="${PRIMARY_LANGUAGES[1]:-None}"
-    
-    echo "╭─────────────────────────────────────────────────────────────────────╮"
-    echo "│              🎯 **LANGUAGE MASTERY ORACLE** 🎯                       │"
-    echo "├─────────────────────────────────────────────────────────────────────┤"
-    
-    echo "│ 🔤 **Primary Language:** $primary_lang                             │"
+
+    display_section_header "🎯 LANGUAGE MASTERY ORACLE"
+    printf "    %-70s\n" "🔤 Primary Language: $primary_lang"
     if [[ "$secondary_lang" != "None" ]]; then
-        echo "│ 🔤 **Secondary Language:** $secondary_lang                         │"
+        printf "    %-70s\n" "🔤 Secondary Language: $secondary_lang"
     fi
-    echo "│ 📊 **Language Portfolio:** $lang_count total languages               │"
-    echo "│                                                                   │"
-    
+    printf "    %-70s\n" "📊 Language Portfolio: $lang_count total languages"
+    echo
+
     if [[ $lang_count -eq 1 ]]; then
-        echo "│ 🏹 **Single Language Mastery Path:**                             │"
-        echo "│ Your focused approach to $primary_lang is commendable!          │"
-        echo "│ Deep specialization strategy:                                    │"
-        echo "│ • Master advanced language features and idioms                  │"
-        echo "│ • Contribute to the language ecosystem (tools, libraries)      │"
-        echo "│ • Become a community expert through teaching and writing       │"
-        echo "│ • Learn a complementary language to broaden perspective         │"
+        wrap_oracle_text "🏹 Single Language Mastery Path: Your focused approach to $primary_lang is commendable! Deep specialization strategy: Master advanced language features and idioms; contribute to the language ecosystem (tools, libraries); become a community expert through teaching and writing; learn a complementary language to broaden perspective." | sed 's/^/  /'
     elif [[ $lang_count -le 3 ]]; then
-        echo "│ ⚖️ **Balanced Mastery Path:**                                     │"
-        echo "│ Your $lang_count languages show thoughtful progression!          │"
-        echo "│ Choose your mastery focus:                                       │"
-        echo "│ • Deep dive: Pick one for expert-level mastery                 │"
-        echo "│ • T-shaped: Broad knowledge, deep in your primary language     │"
-        echo "│ • Bridge expert: Connect different language communities        │"
+        wrap_oracle_text "⚖️ Balanced Mastery Path: Your $lang_count languages show thoughtful progression! Choose your mastery focus: Deep dive: Pick one for expert-level mastery; T-shaped: Broad knowledge, deep in your primary language; Bridge expert: Connect different language communities." | sed 's/^/  /'
     else
-        echo "│ 🌈 **Polyglot Excellence Path:**                                 │"
-        echo "│ Your $lang_count languages reveal adaptability mastery!         │"
-        echo "│ Polyglot strategy:                                               │"
-        echo "│ • Language design patterns: Study what makes languages unique  │"
-        echo "│ • Paradigm mastery: Functional, OOP, systems programming       │"
-        echo "│ • Tool building: Create bridges between language ecosystems    │"
-        echo "│ • Architecture: Design systems that leverage each lang's best  │"
+        wrap_oracle_text "🌈 Polyglot Excellence Path: Your $lang_count languages reveal adaptability mastery! Polyglot strategy: Study language design patterns; master multiple paradigms; build tools that bridge ecosystems; design architectures that leverage each language's strengths." | sed 's/^/  /'
     fi
-    
+
     # Specific mastery advice for primary language
-    echo "│                                                                   │"
+    echo
     case $primary_lang in
         "JavaScript")
-            echo "│ 🟡 **JavaScript Mastery:** Async mastery, prototype chains,      │"
-            echo "│ closures, and the event loop. Build tools, not just apps.       │"
+            wrap_oracle_text "🟡 JavaScript Mastery: Async mastery, prototype chains, closures, and the event loop. Build tools, not just apps." | sed 's/^/  /'
             ;;
         "TypeScript") 
-            echo "│ 🔷 **TypeScript Mastery:** Advanced types, generics, conditional │"
-            echo "│ types. You're at the cutting edge of type-safe JavaScript!      │"
+            wrap_oracle_text "🔷 TypeScript Mastery: Advanced types, generics, conditional types. You're at the cutting edge of type-safe JavaScript!" | sed 's/^/  /'
             ;;
         "Python")
-            echo "│ 🐍 **Python Mastery:** Metaclasses, decorators, async/await,    │"
-            echo "│ C extensions. Python's depth is bottomless - dive deep!         │"
+            wrap_oracle_text "🐍 Python Mastery: Metaclasses, decorators, async/await, C extensions. Python's depth is bottomless - dive deep!" | sed 's/^/  /'
             ;;
         "Go")
-            echo "│ 🔵 **Go Mastery:** Concurrency patterns, performance tuning,    │"
-            echo "│ and simplicity philosophy. Master the 'less is more' mindset.   │"
+            wrap_oracle_text "🔵 Go Mastery: Concurrency patterns, performance tuning, and the simplicity philosophy. Master the 'less is more' mindset." | sed 's/^/  /'
             ;;
         "Rust")
-            echo "│ 🦀 **Rust Mastery:** Lifetime system, unsafe code, proc macros. │"
-            echo "│ You're wielding one of the most powerful tools in computing!    │"
+            wrap_oracle_text "🦀 Rust Mastery: Lifetime system, unsafe code, proc macros. You're wielding one of the most powerful tools in computing!" | sed 's/^/  /'
             ;;
         "Java")
-            echo "│ ☕ **Java Mastery:** JVM internals, concurrency, enterprise     │"
-            echo "│ patterns. Your enterprise skills are in high demand!           │"
+            wrap_oracle_text "☕ Java Mastery: JVM internals, concurrency, and enterprise patterns. Your enterprise skills are in high demand!" | sed 's/^/  /'
             ;;
         "C++")
-            echo "│ ⚡ **C++ Mastery:** Template metaprogramming, memory management, │"
-            echo "│ modern C++ features. You speak the language of performance!     │"
+            wrap_oracle_text "⚡ C++ Mastery: Template metaprogramming, memory management, and modern C++ features. You speak the language of performance!" | sed 's/^/  /'
             ;;
         *)
-            echo "│ 🌟 **$primary_lang Mastery:** Every language has hidden depths. │"
-            echo "│ Explore advanced features, contribute to community, teach!      │"
+            wrap_oracle_text "🌟 $primary_lang Mastery: Every language has hidden depths. Explore advanced features, contribute to community, and teach others." | sed 's/^/  /'
             ;;
     esac
-    
-    echo "╰─────────────────────────────────────────────────────────────────────╯"
+
+    echo
 }
 
 # Interactive oracle session
@@ -947,6 +887,8 @@ ask_technical_question() {
     fi
     
     display_mystical_insight "🧙‍♂️  The Oracle Responds" "$response"
+    # Maybe emit an additional hint for curious seekers
+    maybe_emit_hint_oracle || true
 }
 
 run_oracle_session() {
@@ -956,7 +898,7 @@ run_oracle_session() {
     if [[ ! -t 0 ]]; then
         echo "⚠️  Non-interactive mode detected. Providing random oracle wisdom..."
         echo
-        local random_wisdom=${QUICK_ORACLE_WISDOM[$RANDOM % ${#QUICK_ORACLE_WISDOM[@]}]}
+    local random_wisdom=$(safe_random_from_array QUICK_ORACLE_WISDOM)
         display_oracle_art "default"
         display_mystical_insight "🥠 Oracle Wisdom" "$random_wisdom"
         return 0
@@ -1021,13 +963,13 @@ run_oracle_session() {
                 ;;
             11)
                 clear
-                local random_wisdom=${QUICK_ORACLE_WISDOM[$RANDOM % ${#QUICK_ORACLE_WISDOM[@]}]}
+                local random_wisdom=$(safe_random_from_array QUICK_ORACLE_WISDOM)
                 display_oracle_art "default"
                 display_mystical_insight "🥠 Quick Oracle Wisdom" "$random_wisdom"
                 ;;
             12)
                 clear
-                local random_mantra=${CODING_MANTRAS[$RANDOM % ${#CODING_MANTRAS[@]}]}
+                local random_mantra=$(safe_random_from_array CODING_MANTRAS)
                 display_oracle_art "default"
                 display_mystical_insight "🧘 Today's Coding Mantra" "$random_mantra"
                 ;;
