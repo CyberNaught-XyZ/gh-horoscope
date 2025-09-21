@@ -1,10 +1,11 @@
 # 🔮 GitHub CLI Horoscope Extension
  
-Hey there! So I made this absolutely ridiculous horoscope thing for GitHub, I don't have my own thoughts they suggested i provided. It looks at your coding habits and tells your "digital fortune" like some kind of mystical code wizard. Started as a joke, ended up being genuinely useful (and hilarious).
+Hey there! So I made this absolutely ridiculous horoscope thing for GitHub, I don't have my own thoughts they suggested i provided. It looks at your coding habits and tells your "digital fortune" like some kind of mystical code wizard. Started as a joke, ended up being genuinely useful (and kinda funny :p).
 
 ## ✨ What This Thing Actually Does
 
 Okay, so this isn't your grandma's horoscope. This thing digs deep into your GitHub data and comes up with surprisingly accurate (and hilariously invasive) insights about your coding life:
+This has **ALOT** and will continue to grow ! Even has a achievement system and easter eggs to find ! 
 
 ### 🎭 **The Main Event - Your Coding Personality**
 - 🦉 **Night Owl Detection**: Calls you out for those 3 AM "quick fixes"
@@ -281,7 +282,8 @@ Feel free to add your own observational comedy patterns.
 3. **User doesn't exist** - Check the username spelling
 
 ### "It's Not Funny Enough"
-That's a you problem. My humor is perfect. 😎
+That's a you problem. My humor is as good as the 2 braincells left health. Not good. 😎
+(I will add alot more content with answers, roasts, etc but had to submit tonight)
 
 ### Debug Mode (For When You Really Need To Know)
 ```bash
