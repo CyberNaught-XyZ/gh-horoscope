@@ -1,8 +1,6 @@
 # 🔮 GitHub CLI Horoscope Extension
  
-Hey there! So I made this absolutely ridiculous horoscope thing for GitHub that I'm way too proud of. It looks at your coding habits and tells your "digital fortune" like some kind of mystical code wizard. Started as a joke, ended up being genuinely useful (and hilarious).
-
-Built this for the **"For the Love of Code 2025"** competition because why not turn procrastination into art? 🎨
+Hey there! So I made this absolutely ridiculous horoscope thing for GitHub, I don't have my own thoughts they suggested i provided. It looks at your coding habits and tells your "digital fortune" like some kind of mystical code wizard. Started as a joke, ended up being genuinely useful (and hilarious).
 
 ## ✨ What This Thing Actually Does
 
@@ -65,62 +63,31 @@ gh horoscope --interactive
 
 You get ASCII art, crystal ball displays, and a proper mystical journey through your coding soul.
 
-## 🚀 Getting This Thing Running
+## 🚀 Getting Started
 
-### The Easy Way (GitHub CLI Extension)
+### Recommended: Install as a GitHub CLI Extension
 
-If you've got the GitHub CLI installed (and if you don't, what are you even doing with your life?):
+If you have GitHub CLI installed, just run:
 
 ```bash
 gh extension install CyberNaught-XyZ/Github-CLI-horoscope
 ```
 
-That's it. Seriously. Then just run `gh horoscope` and prepare to have your mind blown.
+Then use:
 
-### The Slightly Less Easy Way (Manual)
+```bash
+gh horoscope
+```
 
-Don't have GitHub CLI? No worries, I got you:
+### Or: Use the Setup Script
 
-1. **First, get GitHub CLI** (trust me, you want this):
-   ```bash
-   # macOS folks
-   brew install gh
-   
-   # Ubuntu/Debian people  
-   sudo apt install gh
-   ```
+If you prefer, you can run the provided setup script:
 
-2. **Login to GitHub** (so it can stalk your repos):
-   ```bash
-   gh auth login
-   ```
+```bash
+./setup.sh
+```
 
-3. **Then install this masterpiece**:
-   ```bash
-   gh extension install CyberNaught-XyZ/Github-CLI-horoscope
-   ```
-
-### The "I Like Doing Things The Hard Way" Method
-
-1. **Clone it**:
-   ```bash
-   git clone https://github.com/CyberNaught-XyZ/Github-CLI-horoscope.git
-   cd Github-CLI-horoscope
-   ```
-
-2. **Make it executable** (because permissions are a thing):
-   ```bash
-   chmod +x gh-horoscope
-   ```
-
-3. **Put it somewhere your terminal can find it**:
-   ```bash
-   # Either add to PATH
-   export PATH="$PATH:$(pwd)"
-   
-   # Or make a symlink (fancy!)
-   ln -s "$(pwd)/gh-horoscope" ~/.local/bin/gh-horoscope
-   ```
+This will guide you through any required steps.
 
 ## 🎯 How To Use This Magic
 
@@ -197,9 +164,9 @@ Here's what happens when you run this thing (prepare for terminal magic):
 
 ```
     ╔══════════════════════════════════════════════════════════════════════╗
-    ║                     🔮 GITHUB CRYSTAL BALL 🔮                      ║
+    ║                     🔮 GITHUB CRYSTAL BALL 🔮                        ║
     ║                                                                      ║
-    ║     ✨ Mystical Analysis of Your Coding Patterns ✨               ║
+    ║     ✨ Mystical Analysis of Your Coding Patterns ✨                  ║
     ║                                                                      ║
     ║         .-.                                                          ║
     ║       .'{o}'.                                                        ║
