@@ -337,7 +337,7 @@ parse_args() {
                 fi
                 ;;
             --version)
-                echo "🔮 GitHub CLI Horoscope Extension v2.0.0"
+                    echo "🔮 GitHub CLI Horoscope Extension v1.0.0.0"
                 echo "For the Love of Code 2025 - Terminal Talent Category"
                 echo "Created by CyberNaught-XyZ"
                 exit 0
