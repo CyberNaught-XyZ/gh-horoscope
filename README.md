@@ -1,12 +1,4 @@
-
-   ___     __                                                     
-  / __\ /\ \ \      /\  /\___  _ __ ___  ___  ___ ___  _ __   ___ 
- / /   /  \/ /____ / /_/ / _ \| '__/ _ \/ __|/ __/ _ \| '_ \ / _ \
-/ /___/ /\  /_____/ __  / (_) | | | (_) \__ \ (_| (_) | |_) |  __/
-\____/\_\ \/      \/ /_/ \___/|_|  \___/|___/\___\___/| .__/ \___|
-                                                      |_|         
-
-# 🔮 GitHub CLI Horoscope Extension
+    # 🔮 GitHub CLI Horoscope Extension
  
 Hey there! So I made this absolutely ridiculous horoscope thing for GitHub, I don't have my own thoughts they suggested i provided. It looks at your coding habits and tells your "digital fortune" like some kind of mystical code wizard. Started as a joke, ended up being genuinely useful (and kinda funny :p).
 
