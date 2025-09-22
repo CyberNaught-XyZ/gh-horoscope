@@ -1,12 +1,8 @@
 #!/bin/bash
  
 # gh-horoscope - CLI tool that generates a playful "horoscope" from GitHub activity
-# Purpose: contest submission for "For the Lo        read -p "🔮 Choose your mystical path (1-14)[Secrets can be Revealed]: " choicee of Code" (terminal-based UX)
-# Comments tailored for judges: concise description for each function. Hidden
-# features are acknowledged but their internals are intentionally omitted from
-# comments. Sprinkle of human flavor: tears of debugging at 3am may be present.
 
-# Light humor: powered by coffee, curiosity, and the occasional rubber duck.
+# powered by coffee, curiosity, and the occasional rubber duck.
 
 set -e
 
@@ -102,6 +98,8 @@ DESCRIPTION:
     • Time Magic & Coding Rhythms ⏰
     • Collaboration Constellation 🤝
     • Repository Zodiac Signs ♈
+    • Achievement System & Easter Eggs 🏆
+    • Lunarte Calendar & Moon Phases 🌙 
 
     Original features include:
     • Night Owl Detection 🦉
@@ -180,8 +178,7 @@ run_interactive_mode() {
                     continue
                 fi
                 ;;
-            # Ghost and Secret eggs have been deprecated; only Konami, GoldenEye, and Nuketown remain
-            # Other secret handlers removed to keep the experience focused.
+
             "egg"|"easter"|"easter_egg"|"easter-egg"|"easter_egg_hunter")
                 source "$SCRIPT_DIR/lib/achievements.sh"
                 mark_easter_egg_found "easter_egg_hunter"

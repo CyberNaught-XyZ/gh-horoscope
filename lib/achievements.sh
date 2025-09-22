@@ -130,8 +130,6 @@ ACHIEVEMENTS["combo_master"]=" 🎯 Combo Master - Use command combinations (-or
 ACHIEVEMENTS["power_user"]=" 🔧 Power User - Use all single-letter flags in one session"
 
 # Feature: secret/celebration behaviors.
-# Implementation details are intentionally opaque in comments to avoid
-# revealing hidden-feature mechanics during contest/judge review.
 ACHIEVEMENTS["konami_code"]=" 🕹️ Konami Code - Enter secret developer sequence"
 ACHIEVEMENTS["easter_egg_hunter"]=" 🎮 Easter Egg Hunter - Discover 3 easter eggs"
 ACHIEVEMENTS["goldeneye_007"]=" 🕶️ GoldenEye 007 - A license to debug (cinematic reveal)"

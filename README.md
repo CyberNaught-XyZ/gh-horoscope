@@ -15,7 +15,7 @@ So look for something out of place!!
 - 🎭 **Developer Archetype**: Figures out if you're a "Copy-Paste Virtuoso" or "Documentation Ghost" (35+ types!)
 - ⚖️ **GitHub Karma**: Your open source street cred, quantified
 - 🌟 **Daily Predictions**: Actually useful advice disguised as mystical nonsense
-- 🌙 **Moon Phases**: This thing actually uses the Doomsday algorithm to accuratly calculate the active phase! (More accurate then most apps 🍆)
+- 🌙 **Lunar Calendar & Moon Phases**: This thing actually uses the Doomsday algorithm to accurately calculate the active phase! (More accurate than most apps 🍆)
 - **A LOT MORE** Give it a try!
 
 ### 🌙 **Lunar Calendar & Coding Phases**
@@ -47,6 +47,7 @@ Plus 5 more oracle types: `project-focus`, `coding-rhythm`, `technical-growth`, 
 
 ### 🃏 **Programming Tarot Cards** 
 Yeah, I made a whole tarot deck for programmers. Draw cards like "The Merge Conflict", "Stack Overflow Guidance", and "The Infinite Loop". It's either surprisingly therapeutic or gives you paranoia :).
+(New full deck of tarot cards added! they've been inspired by real tarot cards every real card is in there with a programming twist)
 
 ```bash
 gh horoscope --tarot    # Full mystical card reading
