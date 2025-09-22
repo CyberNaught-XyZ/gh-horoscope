@@ -1,22 +1,25 @@
     # 🔮 GitHub CLI Horoscope Extension
  
-Hey there! So I made this absolutely ridiculous horoscope thing for GitHub, I don't have my own thoughts they suggested i provided. It looks at your coding habits and tells your "digital fortune" like some kind of mystical code wizard. Started as a joke, ended up being genuinely useful (and kinda funny :p).
+Hey there! So I made this absolutely ridiculous horoscope thing for GitHub. I don't have my own thoughts- they suggested, I provided. It looks at your coding habits and tells your "digital fortune" like some kind of mystical code wizard. Started as a joke, ended up being genuinely useful (and kinda funny :p).
 
 ## ✨ What This Thing Actually Does
 
 Okay, so this isn't your grandma's horoscope. This thing digs deep into your GitHub data and comes up with surprisingly accurate (and hilariously invasive) insights about your coding life:
-This has **ALOT** and will continue to grow ! Even has a achievement system and easter eggs to find ! 
+This horoscope has **A LOT** and will continue to grow ! It even has an achievement system and easter eggs (there may also be one hidden in the README).
+So look for something out of place!!
 
 ### 🎭 **The Main Event - Your Coding Personality**
-- 🦉 **Night Owl Detection**: Calls you out for those 3 AM "quick fixes"
+- 🦉 **Night Owl Detection**: Calls you out for those 3 AM "quick fixes" "Nuketown"
 - 📝 **Commit Message Analysis**: Judges your "fix stuff" and "it works now" messages
 - ⚔️ **Weekend Warrior Score**: Measures how much you code when you should be living
 - 🎭 **Developer Archetype**: Figures out if you're a "Copy-Paste Virtuoso" or "Documentation Ghost" (35+ types!)
 - ⚖️ **GitHub Karma**: Your open source street cred, quantified
 - 🌟 **Daily Predictions**: Actually useful advice disguised as mystical nonsense
-
-### 🔮 **The Oracle System** (This is where it gets crazy good)
-I built this whole Oracle thing that gives you personalized coding wisdom based on your actual GitHub patterns. It's like having a wise coding mentor, but mystical:
+- 🌙 **Moon Phases**: This thing actually uses the Doomsday algorithm to accuratly calculate the active phase! (More accurate then most apps 🍆)
+- **A LOT MORE** Give it a try!
+  
+### 🔮 **The Oracle System** (This is where it gets a bit good- or creepy, depends how you look at it :))
+I built this whole Oracle thing that gives you personalized coding wisdom based on your actual GitHub patterns. It's like having a wise coding mentor, but mystical magical 🌝🍦(shut up, it's funny).
 
 ```bash
 gh horoscope --oracle career-guidance      # Career advice based on your language portfolio
@@ -29,14 +32,14 @@ gh horoscope --oracle team-collaboration   # Teamwork insights from your PR patt
 Plus 5 more oracle types: `project-focus`, `coding-rhythm`, `technical-growth`, `open-source-path`, `language-mastery`
 
 ### 🃏 **Programming Tarot Cards** 
-Yeah, I made a whole tarot deck for programmers. Draw cards like "The Merge Conflict", "Stack Overflow Guidance", and "The Infinite Loop". It's surprisingly therapeutic.
+Yeah, I made a whole tarot deck for programmers. Draw cards like "The Merge Conflict", "Stack Overflow Guidance", and "The Infinite Loop". It's either surprisingly therapeutic or gives you paranoia :).
 
 ```bash
 gh horoscope --tarot    # Full mystical card reading
 ```
 
 ### 🔥 **Roast Mode** (My personal favorite)
-This is where I got a little too creative. It analyzes your coding patterns and lovingly roasts you with observations like:
+This is where I got a little too creative but also rushed the responses a little (Will be a lot more soon and better ones :). It analyzes your coding patterns and lovingly roasts you with observations like:
 - *"You collect frameworks like Pokémon cards"*
 - *"Your commit messages tell the tragic story of software development"*
 - *"You write code like you're protecting state secrets"*
@@ -63,6 +66,7 @@ gh horoscope --interactive
 ```
 
 You get ASCII art, crystal ball displays, and a proper mystical journey through your coding soul.
+I asked for help with a crystal ball, it gave me a kite. So i stuck with it. Thought it was funny asf at 1am playing Goldeneye 
 
 ## 🚀 Getting Started
 
@@ -240,12 +244,16 @@ This thing is surprisingly sophisticated. It analyzes:
 - **Language Evolution** - Your programming language journey over time
 - **Collaboration Style** - Solo warrior vs team player analysis
 - **GitHub Karma** - Your open source contribution score
+- **Achievment system** - Collect them all or make a unlocker (Depends if you like to be proud or just have them)
+- **Doomsday and Github Algo's** 99% Accuracy when calculating and tracking Moonphases, Moonage, Github Stats, Days and more 
 
 The algorithms are way more complex than they have any right to be for a joke project.
+Actually put some work into learning the Doomsday, do i know or remember ? HA no. I hoped for the best.
 
 ## 🎨 Making It Your Own
 
 Want to customize the mystical experience? I built this to be pretty hackable:
+Everything hackable is fun in my opion
 
 ### Adding Your Own Wisdom
 - **Language horoscopes** - Add new programming languages in `lib/fortune-data.sh`
@@ -261,10 +269,11 @@ The roast system has 20+ patterns that detect things like:
 - Documentation allergies  
 - Copy-paste artistry
 - Perfectionist tendencies
+- Need more and will do more but for the time being? i got 5 assignments due in 3 weeks i'm f****d :)
 
 Feel free to add your own observational comedy patterns.
 
-## 🔧 When Things Go Wrong (They Probably Will)
+## 🔧 When Things Go Wrong (They Probably Will it's made by me)
 
 ### "It Says Command Not Found"
 1. **GitHub CLI not installed** - Install it: https://github.com/cli/cli#installation
@@ -282,8 +291,11 @@ Feel free to add your own observational comedy patterns.
 3. **User doesn't exist** - Check the username spelling
 
 ### "It's Not Funny Enough"
-That's a you problem. My humor is as good as the 2 braincells left health. Not good. 😎
-(I will add alot more content with answers, roasts, etc but had to submit tonight)
+That's a you problem. My humor is as good as the 2 braincells left health is. Not good. 😎
+(I will add alot more content with answers, roasts, etc but had to submit)
+
+I did try add as much content as possible for a first version that wouldn't break and debug wouldn't last half a year
+Honestly i think it's pretty decent. 
 
 ### Debug Mode (For When You Really Need To Know)
 ```bash
@@ -306,6 +318,7 @@ I'm always down for improvements! Here are some ideas if you want to contribute:
 - More sophisticated roasting templates (that are still loving)
 
 Just fork it, make it better, and send a PR. Or open an issue if you find bugs (which you will, because software).
+Email me a hate letter saying the code is broken, at least it's something! 
 
 ## 📜 Legal Stuff
 
@@ -315,11 +328,11 @@ MIT License - basically do whatever you want with it, just don't blame me if it 
 
 Built this for **"For the Love of Code 2025"** in the **Terminal Talent** category because I wanted to prove that bash scripts can be both sophisticated and ridiculous at the same time.
 
-This thing demonstrates:
+This thing demonstrates: (I Hope ?)
 - Advanced bash scripting (more complex than it has any right to be)
 - GitHub API mastery (with proper error handling and rate limiting)
 - Creative terminal UI design (ASCII art everywhere!)
-- Data analysis algorithms (surprisingly sophisticated pattern detection)
+- Data analysis algorithms (surprisingly sophisticated pattern detection) (Again may I iterate the Doomsday!?)
 - Professional code organization (modular architecture)
 - Genuine utility wrapped in entertainment (the best kind of software)
 
@@ -336,3 +349,4 @@ Also, if you're reading this far into a README, you might be a "Documentation Co
 *May your builds be green, your merge conflicts be minimal, and your coffee be strong!* ✨🔮✨
 
 P.S. - Yes, I know I spent too much time on the ASCII art. No, I don't regret it. Yes, there are probably bugs. No, I won't fix them unless they're really embarrassing.
+P.S.S - Now back to playing the best of Konami! 🎮
