@@ -282,8 +282,7 @@ QUICK_ORACLE_WISDOM+=(
     "🥠 Subtle hint: listen for retro map names during celebratory sequences."
 )
 
-# Maybe emit a subtle easter-egg hint (10% chance). Hints are intentionally vague
-# and only shown during interactive TTY sessions so CI/judges aren't spoiled.
+# Maybe emit a subtle easter-egg hint (10% chance). Hints are intentionally vague and cryptic.
 maybe_emit_hint_oracle() {
     # Don't show hints in non-interactive or machine modes
     if [[ -n "$GH_HOROSCOPE_NONINTERACTIVE" || ! -t 1 ]]; then
@@ -981,12 +980,18 @@ run_oracle_session() {
                 ;;
             15)
                 clear
-                echo -e "${CYAN}${BOLD}             🚪 **The Oracle fades into the digital mist...**${RESET}"
+                echo -e "${CYAN}${BOLD}"
+                center_text "🚪 **The Oracle fades into the digital mist...**"
+                echo -e "${RESET}"
                 echo
-                echo -e "${MAGENTA}${BOLD}\"Remember, seeker: The wisdom was within you all along.\"${RESET}"
-                echo -e "${MAGENTA}${BOLD}\"I merely helped you find the words for what you already knew.\"${RESET}"
+                echo -e "${MAGENTA}${BOLD}"
+                center_text "\"Remember, seeker: The wisdom was within you all along.\""
+                center_text "\"I merely helped you find the words for what you already knew.\""
+                echo -e "${RESET}"
                 echo
-                echo -e "${CYAN}${BOLD}       ✨ May your code compile and your logic flow true! ✨${RESET}"
+                echo -e "${CYAN}${BOLD}"
+                center_text "✨ May your code compile and your logic flow true! ✨"
+                echo -e "${RESET}"
                 return 0
                 ;;
             *)
@@ -994,7 +999,7 @@ run_oracle_session() {
                 ;;
         esac
         echo
-        echo -n "Press Enter to continue your consultation..."
+        center_text "Press Enter to continue your consultation..."
         read
         clear
         echo

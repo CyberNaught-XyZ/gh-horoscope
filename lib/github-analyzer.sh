@@ -2,12 +2,8 @@
  
 # GitHub Analyzer module for GitHub CLI Horoscope Extension
 # Fetches and analyzes GitHub user data for mystical insights.
-# Judge-friendly comments only: this module describes data collection and
-# analysis at a high level. Implementation details that reveal hidden
-# feature mechanics are intentionally omitted. Also includes a touch of
-# humanity in comments: sometimes there are "tears of debugging at 3am".
 
-# Note for humans: behaves politely under rate limits and occasionally weeps quietly.
+# Note behaves politely under rate limits and occasionally weeps quietly.
 
 # Global variables to store analysis results
 declare -g USER_DATA

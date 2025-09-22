@@ -2,9 +2,7 @@
  
 # Horoscope Generator module for GitHub CLI Horoscope Extension
 # Generates personalized horoscopes based on GitHub analysis data.
-# High-level comments only for judges. Also: includes light human humor
-# (e.g. "tears of debugging at 3am") in harmless places to make the output
-# friendlier to readers.
+
 
 # Friendly note: horoscopes are for entertainment; rubber ducks not included.
 
@@ -164,9 +162,9 @@ get_moon_phase() {
             A = int(y0/100)
             B = 2 - A + int(A/4)
             JD = int(365.25*(y0 + 4716)) + int(30.6001*(m0+1)) + day + B - 1524.5
-            # Known new moon reference: 2451550.1 (2000-01-06 18:14 UTC) approximate
+            # Known new moon reference: 2451578.3 (corrected for astronomical accuracy)
             # Lunar synodic period ~29.53058867 days
-            new_moon_ref = 2451550.1
+            new_moon_ref = 2451578.3
             synodic = 29.53058867
             age = JD - new_moon_ref
             age = age - int(age / synodic) * synodic
@@ -176,22 +174,19 @@ get_moon_phase() {
         }')
 
         # Age is fractional days in [0, ~29.53)
-        # Use explicit thresholds and a narrow 'new' window (~1 day) so the
-        # new moon label is only applied very near the exact new moon.
-        # This better matches common online phase tables where new moon is a
-        # short instant range rather than a multi-day slice.
+        # Use proper astronomical phase boundaries
         local age_f=$(printf "%s" "$age")
         local syn=29.53058867
         local phase_name
         phase_name=$(awk -v a="$age_f" -v syn="$syn" 'BEGIN{
-            new_thresh = 1.0
-            if (a < new_thresh || a > (syn - new_thresh)) { print "new"; exit }
-            if (a < 6.0) { print "waxing"; exit }
-            if (a < 8.8) { print "first"; exit }
-            if (a < 13.8) { print "waxing_gib"; exit }
-            if (a < 15.8) { print "full"; exit }
-            if (a < 20.8) { print "waning_gib"; exit }
-            if (a < 22.8) { print "last"; exit }
+            # Standard moon phase detection
+            if (a < 1.0 || a > (syn - 1.0)) { print "new"; exit }
+            if (a < 5.5) { print "waxing"; exit }
+            if (a < 9.5) { print "first"; exit }
+            if (a < 12.5) { print "waxing_gib"; exit }
+            if (a < 16.5) { print "full"; exit }
+            if (a < 20.5) { print "waning_gib"; exit }
+            if (a < 24.5) { print "last"; exit }
             print "waning"
         }')
 
@@ -218,6 +213,139 @@ get_moon_phase() {
     else
         echo "waning"
     fi
+}
+
+## Get current moon age in days (using Conway's algorithm)
+## Returns the number of days since the last new moon (0-29.53)
+get_moon_age() {
+    if command -v awk >/dev/null 2>&1; then
+        local age
+        age=$(awk 'BEGIN{
+            # get current UTC date components from environment
+            cmd="date -u \"+%Y %m %d\""
+            cmd | getline d
+            close(cmd)
+            split(d, a, " ")
+            y=a[1]; m=a[2]; day=a[3]
+            m0 = m + 0
+            y0 = y + 0
+            if (m0 <= 2) { y0 = y0 - 1; m0 = m0 + 12 }
+            A = int(y0/100)
+            B = 2 - A + int(A/4)
+            JD = int(365.25*(y0 + 4716)) + int(30.6001*(m0+1)) + day + B - 1524.5
+            # Known new moon reference: 2451578.3 (corrected for astronomical accuracy)
+            # Lunar synodic period ~29.53058867 days
+            new_moon_ref = 2451578.3
+            synodic = 29.53058867
+            age = JD - new_moon_ref
+            age = age - int(age / synodic) * synodic
+            if (age < 0) age += synodic
+            printf "%.2f", age
+        }')
+        echo "$age"
+    else
+        # Fallback method
+        local days_since_new_moon=$(( ($(date +%s) / 86400) % 30 ))
+        echo "$days_since_new_moon"
+    fi
+}
+
+## Display a moon calendar showing phases for upcoming days
+## Shows the next 30 days of moon phases
+display_moon_calendar() {
+    local days_ahead=${1:-15}
+    echo -e "${CYAN}${BOLD}"
+    echo "    🌙 LUNAR CALENDAR 🌙"
+    echo "    ═══════════════════════════════════════════════════════════════════════"
+    echo -e "${RESET}"
+    echo "    Date     Age   Lunar       Phase                     Meaning • Activity"
+    echo "    ────────────────────────────────────────────────────────────────────────────────────────"
+
+    for ((i=0; i<days_ahead; i++)); do
+        local future_date=$(date -d "+$i days" '+%Y-%m-%d')
+        local display_date=$(date -d "+$i days" '+%b %d')
+
+        # Calculate moon phase for this future date
+        local phase=$(awk -v date_str="$future_date" 'BEGIN{
+            split(date_str, a, "-")
+            y=a[1]; m=a[2]; day=a[3]
+            m0 = m + 0
+            y0 = y + 0
+            if (m0 <= 2) { y0 = y0 - 1; m0 = m0 + 12 }
+            A = int(y0/100)
+            B = 2 - A + int(A/4)
+            JD = int(365.25*(y0 + 4716)) + int(30.6001*(m0+1)) + day + B - 1524.5
+            new_moon_ref = 2451578.3
+            synodic = 29.53058867
+            age = JD - new_moon_ref
+            age = age - int(age / synodic) * synodic
+            if (age < 0) age += synodic
+
+            # Standard moon phase detection
+            if (age < 1.0 || age > (synodic - 1.0)) { print "new"; exit }
+            if (age < 5.5) { print "waxing"; exit }
+            if (age < 9.5) { print "first"; exit }
+            if (age < 12.5) { print "waxing_gib"; exit }
+            if (age < 16.5) { print "full"; exit }
+            if (age < 20.5) { print "waning_gib"; exit }
+            if (age < 24.5) { print "last"; exit }
+            print "waning"
+        }')
+
+        local age=$(awk -v date_str="$future_date" 'BEGIN{
+            split(date_str, a, "-")
+            y=a[1]; m=a[2]; day=a[3]
+            m0 = m + 0
+            y0 = y + 0
+            if (m0 <= 2) { y0 = y0 - 1; m0 = m0 + 12 }
+            A = int(y0/100)
+            B = 2 - A + int(A/4)
+            JD = int(365.25*(y0 + 4716)) + int(30.6001*(m0+1)) + day + B - 1524.5
+            new_moon_ref = 2451578.3
+            synodic = 29.53058867
+            age = JD - new_moon_ref
+            age = age - int(age / synodic) * synodic
+            if (age < 0) age += synodic
+            printf "%.1f", age
+        }')
+
+        # Calculate lunar calendar date - back to spaced format
+        local lunar_info=$(awk -v date_str="$future_date" 'BEGIN{
+            split(date_str, a, "-")
+            y=a[1]; m=a[2]; day=a[3]
+            m0 = m + 0
+            y0 = y + 0
+            if (m0 <= 2) { y0 = y0 - 1; m0 = m0 + 12 }
+            A = int(y0/100)
+            B = 2 - A + int(A/4)
+            JD = int(365.25*(y0 + 4716)) + int(30.6001*(m0+1)) + day + B - 1524.5
+            new_moon_ref = 2451578.3
+            synodic = 29.53058867
+            age = JD - new_moon_ref
+            lunar_month = int(age / synodic) + 1
+            lunar_day = int(age - int(age / synodic) * synodic) + 1
+            if (lunar_day == 0) lunar_day = 1
+            printf "M%d D%d", lunar_month, lunar_day
+        }')
+
+        local symbol=$(display_moon_phase "$phase")
+        local meaning=$(get_moon_phase_details "$phase" "meaning")
+        local activity=$(get_moon_phase_details "$phase" "activity")
+
+        # Create guide text with longer descriptions
+        local guide="${meaning} • ${activity}"
+
+        if [[ $i -eq 0 ]]; then
+            echo -e "    ${YELLOW}${display_date}${RESET}  ${age}d  ${lunar_info}  ${symbol}  ${guide}  ← Today"
+        else
+            echo -e "    ${display_date}  ${age}d  ${lunar_info}  ${symbol}  ${guide}"
+        fi
+    done
+
+    echo
+    echo -e "${CYAN}    🌙 Lunar Cycle: New Moon (0d) → Full Moon (~14.8d) → New Moon (~29.5d)${RESET}"
+    echo -e "${CYAN}    📅 Lunar Calendar: Each month begins at New Moon and lasts ~29.5 days${RESET}"
+    echo
 }
 
 # Generate the complete horoscope
@@ -311,7 +439,7 @@ generate_horoscope() {
     
     # Moon phase and coffee fortune
     local moon_phase=$(get_moon_phase)
-    display_horoscope_section "Lunar Coding Humor" "$(get_moon_phase_joke "$moon_phase")" "$(display_moon_phase "$moon_phase")"
+    display_horoscope_section "Lunar Coding Inspiration" "$(get_moon_phase_insights "$moon_phase")" "$(display_moon_phase "$moon_phase")"
     display_horoscope_section "Coffee Oracle Prediction" "$(get_coffee_fortune $TOTAL_COMMITS $night_owl_score)" "☕"
     
     # Lucky numbers

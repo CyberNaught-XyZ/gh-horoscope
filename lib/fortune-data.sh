@@ -172,38 +172,119 @@ generate_lucky_numbers() {
     echo "$num1, $num2, $num3, $num4, $num5"
 }
 
-# Moon phase jokes
-get_moon_phase_joke() {
+# Moon phase meanings and developer activities
+get_moon_phase_insights() {
     local phase="$1"
-    
+
     case "$phase" in
         "new")
-        echo "🌑 New Moon: Like your latest repository - full of potential but currently invisible to the world."
+        echo "🌑 **New Moon** - New beginnings, setting intentions, planting seeds"
+        echo "    💻 **Developer Activity**: Start a new feature branch or refactor legacy code. Set development goals and plant seeds for ambitious projects."
         ;;
         "waxing")
-        echo "🌒 Waxing Crescent: Your code skills are growing, just like this sliver of moonlight cutting through the darkness of bugs."
+        echo "🌒 **Waxing Crescent** - Growth, intention, building momentum"
+        echo "    💻 **Developer Activity**: Take action on planned features, build new habits, and nurture emerging projects with consistent commits."
         ;;
         "first")
-        echo "🌓 First Quarter: Half your commits work perfectly, the other half... well, that's what version control is for."
+        echo "🌓 **First Quarter** - Action, decision, commitment"
+        echo "    💻 **Developer Activity**: Push through coding challenges, make architectural decisions, and commit to your development path with determination."
         ;;
         "waxing_gib")
-        echo "🌔 Waxing Gibbous: Almost there! Like that feature you've been working on for weeks - so close to completion."
+        echo "🌔 **Waxing Gibbous** - Refinement, adjustment, perseverance"
+        echo "    💻 **Developer Activity**: Review progress, make adjustments to code, and refine features. Trust the process while fine-tuning implementations."
         ;;
         "full")
-        echo "🌕 Full Moon: Maximum visibility! Time to push that side project to production. The werewolves of code review are out tonight."
+        echo "🌕 **Full Moon** - Illumination, culmination, release"
+        echo "    💻 **Developer Activity**: Deploy completed features, release updates, and celebrate coding achievements. Let go of what no longer serves your codebase."
         ;;
         "waning_gib")
-        echo "🌖 Waning Gibbous: Time to clean up your codebase. Remove those commented-out lines you've been hoarding."
+        echo "🌖 **Waning Gibbous** - Gratitude, integration, sharing wisdom"
+        echo "    💻 **Developer Activity**: Express gratitude for completed work, share knowledge through documentation, and integrate lessons learned into future projects."
         ;;
         "last")
-        echo "🌗 Last Quarter: Perfect time to deprecate that old API you've been meaning to sunset. Cut it in half, like this moon."
+        echo "🌗 **Last Quarter** - Release, forgiveness, transition"
+        echo "    💻 **Developer Activity**: Deprecate old APIs, forgive technical debt, and prepare for new development cycles. Clean up and transition smoothly."
         ;;
         "waning")
-        echo "🌘 Waning Crescent: Energy is low, but wisdom is high. Time for code review and documentation writing."
+        echo "🌘 **Waning Crescent** - Surrender, rest, renewal"
+        echo "    💻 **Developer Activity**: Rest from intense coding, focus on code reviews, and prepare for new moon intentions. Allow renewal and gentle maintenance."
         ;;
         *)
-        echo "🌙 The moon whispers secrets of clean code and proper indentation."
+        echo "🌙 **Unknown Phase** - The moon whispers secrets of clean code and proper indentation."
+        echo "    💻 **Developer Activity**: Reflect on your coding journey and prepare for the next lunar cycle of development."
         ;;
+    esac
+}
+
+# Get moon phase meaning and activity separately for calendar display
+get_moon_phase_details() {
+    local phase="$1"
+    local detail_type="$2"  # "meaning" or "activity"
+
+    case "$phase" in
+        "new")
+            if [[ "$detail_type" == "meaning" ]]; then
+                echo "New beginnings"
+            else
+                echo "Start new features"
+            fi
+            ;;
+        "waxing")
+            if [[ "$detail_type" == "meaning" ]]; then
+                echo "Growth & intention"
+            else
+                echo "Build new habits"
+            fi
+            ;;
+        "first")
+            if [[ "$detail_type" == "meaning" ]]; then
+                echo "Action & commitment"
+            else
+                echo "Push through challenges"
+            fi
+            ;;
+        "waxing_gib")
+            if [[ "$detail_type" == "meaning" ]]; then
+                echo "Refinement & perseverance"
+            else
+                echo "Review & adjust code"
+            fi
+            ;;
+        "full")
+            if [[ "$detail_type" == "meaning" ]]; then
+                echo "Illumination & release"
+            else
+                echo "Deploy & celebrate"
+            fi
+            ;;
+        "waning_gib")
+            if [[ "$detail_type" == "meaning" ]]; then
+                echo "Gratitude & sharing"
+            else
+                echo "Document knowledge"
+            fi
+            ;;
+        "last")
+            if [[ "$detail_type" == "meaning" ]]; then
+                echo "Release & transition"
+            else
+                echo "Clean up code"
+            fi
+            ;;
+        "waning")
+            if [[ "$detail_type" == "meaning" ]]; then
+                echo "Rest & renewal"
+            else
+                echo "Code review time"
+            fi
+            ;;
+        *)
+            if [[ "$detail_type" == "meaning" ]]; then
+                echo "Mystical guidance"
+            else
+                echo "Reflect & plan"
+            fi
+            ;;
     esac
 }
 

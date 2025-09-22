@@ -1,7 +1,7 @@
 #!/bin/bash
  
 # gh-horoscope - CLI tool that generates a playful "horoscope" from GitHub activity
-# Purpose: contest submission for "For the Love of Code" (terminal-based UX)
+# Purpose: contest submission for "For the Lo        read -p "🔮 Choose your mystical path (1-14)[Secrets can be Revealed]: " choicee of Code" (terminal-based UX)
 # Comments tailored for judges: concise description for each function. Hidden
 # features are acknowledged but their internals are intentionally omitted from
 # comments. Sprinkle of human flavor: tears of debugging at 3am may be present.
@@ -141,7 +141,7 @@ run_interactive_mode() {
     
     while true; do
         display_interactive_menu
-        read -p "🔮 Choose your mystical path (1-13)[Secrets can be Reveled]: " choice
+        read -p "🔮 Choose your mystical path (1-14)[Secrets can be Reveled]: " choice
         clear
         # Normalize menu input to be case-insensitive
         shopt -s nocasematch 2>/dev/null || true
@@ -249,21 +249,28 @@ run_interactive_mode() {
                 display_compliment_session "${USERNAME:-demo-user}"
                 ;;
             11)
+                clear
+                display_mystical_loading "Consulting the lunar spirits..." 2
+                clear
+                display_moon_calendar 15
+
+                ;;
+            12)
                 display_github_loading "Analyzing your GitHub soul..." 3
                 # Don't clear - preserve the header and let horoscope generation continue
                 # Exit interactive mode and run full horoscope
                 break
                 ;;
-            12)
+            13)
                 display_achievements_session
                 ;;
-            13)
+            14)
                 echo -ne "                      ${RED}${BOLD}                    🚪 The mystical realm bids you farewell..."
                 display_mystical_quote "May your code compile and your bugs be few!"
                 exit 0
                 ;;
             *)
-                echo "❓ The spirits do not understand. Please choose 1-13."
+                echo "❓ The spirits do not understand. Please choose 1-14."
                 ;;
         esac
         echo
@@ -337,7 +344,7 @@ parse_args() {
                 fi
                 ;;
             --version)
-                    echo "🔮 GitHub CLI Horoscope Extension v1.0.0.0"
+                    echo "🔮 GitHub CLI Horoscope Extension v1.0.0."
                 echo "For the Love of Code 2025 - Terminal Talent Category"
                 echo "Created by CyberNaught-XyZ"
                 exit 0

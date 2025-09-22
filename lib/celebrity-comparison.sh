@@ -2,9 +2,7 @@
  
 # Celebrity Developer Comparison module for GitHub CLI Horoscope Extension
 # Compare your coding patterns with famous developers.
-# Comments are judge-friendly: high-level descriptions and a light tone are
-# included; no internal 'secret' mechanics are described. Occasional humor
-# (e.g. "tears of debugging at 3am") may appear in comments for human flavor.
+
 
 # Note: contains tasteful humor and metaphors — no spoilers for hidden features.
 

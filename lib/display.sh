@@ -2,9 +2,6 @@
  
 # Display module for GitHub CLI Horoscope Extension
 # Handles all terminal formatting, colors, and ASCII art
-# Judge note: this file contains presentation helpers only. It intentionally
-# does not document hidden features. Also, a tiny human touch was added:
-# "tears of debugging at 3am" — purely flavor text, no logic changes.
 
 # Fun aside: if the ASCII art looks smug, it's because it knows your commit history.
 
@@ -322,7 +319,11 @@ display_mystical_quote() {
     
     # Wrap and center the quote properly
     local wrapped_quote="\"$(echo "$quote" | fold -s -w 73)\""
-    center_text "$wrapped_quote"
+    
+    # Process each line of the wrapped quote and center it individually
+    echo "$wrapped_quote" | while IFS= read -r line; do
+        center_text "$line"
+    done
     echo -e "${RESET}"
     echo
 }
@@ -790,14 +791,32 @@ display_comedy_section() {
 display_mystical_loading() {
     local message="$1"
     local symbols=("🌑" "🌒" "🌓" "🌔" "🌕" "🌖" "🌗" "🌘")
-    
-    echo -n "    "
+
     for i in {0..20}; do
         local symbol_index=$((i % ${#symbols[@]}))
-        echo -ne "\r    ${YELLOW}${symbols[$symbol_index]} $message${RESET}"
+        # Calculate width using plain text, then apply colors for display
+        local plain_text="${symbols[$symbol_index]} $message"
+        local width=$(get_terminal_width)
+        local visual_width=$(get_visual_text_width "$plain_text")
+        local padding=$(( (width - visual_width) / 2 ))
+        [[ $padding -lt 0 ]] && padding=0
+        local loading_text="${YELLOW}${symbols[$symbol_index]} $message${RESET}"
+        # Clear the line and print centered colored text without newline
+        echo -ne "\r\033[K"
+        printf "%*s" $padding ""
+        echo -ne "$loading_text"
         sleep 0.15
     done
-    echo -ne "\r    ${GREEN}✨ $message - Complete!${RESET}\n"
+    # Completion message
+    local plain_complete="✨ $message - Complete!"
+    local width=$(get_terminal_width)
+    local visual_width=$(get_visual_text_width "$plain_complete")
+    local padding=$(( (width - visual_width) / 2 ))
+    [[ $padding -lt 0 ]] && padding=0
+    local complete_text="${GREEN}✨ $message - Complete!${RESET}"
+    echo -ne "\r\033[K"
+    printf "%*s" $padding ""
+    echo -e "$complete_text"
 }
 
 # Display mystical insight in a beautiful responsive box
@@ -823,23 +842,24 @@ display_mystical_insight() {
 display_interactive_menu() {
     echo -e "${CYAN}${BOLD}"
     cat << 'EOF'
-                       ╔══════════════════════════════════════════════════════════════════════╗
-                       ║                         🔮 MYSTICAL MENU 🔮                          ║
-                       ╠══════════════════════════════════════════════════════════════════════╣
-                       ║  1. 🎭 Discover Your Developer Archetype                             ║
-                       ║  2. 🔮 Ask the Bug Oracle a Question                                 ║
-                       ║  3. 🌟 Get Your Daily Coding Prediction                              ║
-                       ║  4. ⚡ Reveal Your Coding Element                                    ║
-                       ║  5. 📜 Analyze Your Commit Message Patterns                          ║
-                       ║  6. 🃏 Programming Tarot Card Reading                                ║
-                       ║  7. 🔮 Oracle Wisdom Session                                         ║
-                       ║  8. 👑 Find Your Celebrity Developer Twin                            ║
-                       ║  9. 🔥 Roast My Code (Humorous Analysis)                             ║
-                       ║ 10. 💝 Compliment My Journey                                         ║
-                       ║ 11. 🏛️  Generate Full Horoscope                                      ║
-                       ║ 12. 🏆 View Achievement Gallery                                      ║
-                       ║ 13. 🚪 Exit the Mystical Realm                                       ║
-                       ╚══════════════════════════════════════════════════════════════════════╝
+            ╔══════════════════════════════════════════════════════════════════════╗
+            ║                         🔮 MYSTICAL MENU 🔮                          ║
+            ╠══════════════════════════════════════════════════════════════════════╣
+            ║  1. 🎭 Discover Your Developer Archetype                             ║
+            ║  2. 🔮 Ask the Bug Oracle a Question                                 ║
+            ║  3. 🌟 Get Your Daily Coding Prediction                              ║
+            ║  4. ⚡ Reveal Your Coding Element                                    ║
+            ║  5. 📜 Analyze Your Commit Message Patterns                          ║
+            ║  6. 🃏 Programming Tarot Card Reading                                ║
+            ║  7. 🔮 Oracle Wisdom Session                                         ║
+            ║  8. 👑 Find Your Celebrity Developer Twin                            ║
+            ║  9. 🔥 Roast My Code (Humorous Analysis)                             ║
+            ║ 10. 💝 Compliment My Journey                                         ║
+            ║ 11. 🌙 View Moon Stats & Lunar Calendar                              ║ 
+            ║ 12. 🔮 Generate Full Horoscope                                       ║
+            ║ 13. 🏆 View Achievement Gallery                                      ║
+            ║ 14. 🚪 Exit the Mystical Realm                                       ║
+            ╚══════════════════════════════════════════════════════════════════════╝
 EOF
     echo -e "${RESET}"
     echo
@@ -847,7 +867,8 @@ EOF
 
     # Display responsive oracle consultation menu
     # Note: menu alignment was lovingly tuned with coffee and a few
-    # "tears of debugging at 3am" — cosmetic only, no secrets revealed.
+    # Crying Debugging sessions at 3am please be nice 
+
     display_oracle_menu() {
     echo -e "${MAGENTA}${BOLD}"
     cat << 'EOF'
@@ -860,8 +881,8 @@ EOF
     ║  4. 👥 Inquire about teamwork and collaboration                      ║
     ║  5. 🔥 Address burnout and work-life balance                         ║
     ║  6. 👤 Overcome imposter syndrome                                    ║
-    ║  7. 🛠️  Get help choosing technologies                               ║
-    ║  8. 🏛️  Deal with legacy code                                        ║
+    ║  7. 🛠️ Get help choosing technologies                                ║
+    ║  8. 🏛️ Deal with legacy code                                         ║
     ║  9. 🚀 Get guidance on side projects                                 ║
     ║ 10. 🌟 Learn about open source contribution                          ║
     ║ 11. 🥠 Receive quick wisdom (fortune cookie style)                   ║
@@ -1038,7 +1059,7 @@ display_archetype_loading() {
     echo "                                    📜 ✨ 📜 ✨ 📜"
     echo
     
-    # Loading animation with mystical symbols - aligned to the left
+    # Loading animation with mystical symbols 
     local mystical_symbols=("🔮" "🎭" "🧙‍♂️" "📜" "✨" "🌟" "💫" "🎪")
     echo -e "${CYAN}"
     

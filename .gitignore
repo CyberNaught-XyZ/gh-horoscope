@@ -1,5 +1,5 @@
 # Ignore test artifacts
-/tests/
+test/
 
 # Node / Python / env files
 checklist.md

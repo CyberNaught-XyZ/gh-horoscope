@@ -82,13 +82,121 @@ PROGRAMMING_TAROT[Two_of_Commits]="⚖️ **Two of Commits** - Choosing between 
 
 PROGRAMMING_TAROT[Three_of_Commits]="👥 **Three of Commits** - Collaborative creativity! Multiple developers contribute to a shared vision. Your individual commits become part of something larger than yourself. Teamwork makes the dream work."
 
-PROGRAMMING_TAROT[Ace_of_Bugs]="🐛 **Ace of Bugs** - A new challenge emerges! What appears to be a simple bug may reveal deeper architectural issues. Sometimes the smallest error teaches the biggest lessons about system design."
+# Wands Suit - Innovation & Creative Energy
+PROGRAMMING_TAROT[Ace_of_Innovation]="💡 **Ace of Innovation** - Creative spark ignited! A brilliant idea emerges from the void. This is pure potential - the moment before a revolutionary project begins. Your innovative energy is at its peak."
 
-PROGRAMMING_TAROT[King_of_Frameworks]="👑 **King of Frameworks** - Mastery of tools! You wield React, Angular, Vue with equal skill. Your framework knowledge is vast, but remember: tools serve the solution, not the reverse."
+PROGRAMMING_TAROT[Two_of_Innovation]="🌍 **Two of Innovation** - Global vision unfolds! You're planning something ambitious that will impact the wider development community. Consider the broader implications of your creative vision."
 
-PROGRAMMING_TAROT[Queen_of_APIs]="👸 **Queen of APIs** - Elegant interface design! Your endpoints flow like poetry, your documentation reads like love letters to future developers. You understand that good APIs are gifts to humanity."
+PROGRAMMING_TAROT[Three_of_Innovation]="🚢 **Three of Innovation** - Collaborative expansion! Your innovative ideas are gaining momentum through teamwork. Ships arriving at port symbolize successful ventures coming to fruition through collective effort."
 
-PROGRAMMING_TAROT[Knight_of_DevOps]="🏇 **Knight of DevOps** - Swift deployment! You ride into production with containers and pipelines as your weapons. Your CI/CD charges forward, bringing development and operations into harmony."
+PROGRAMMING_TAROT[Four_of_Innovation]="🚀 **Four of Innovation** - Building momentum! Your creative spark has ignited multiple projects. Balance enthusiasm with focus - not every idea needs to be pursued simultaneously."
+
+PROGRAMMING_TAROT[Five_of_Innovation]="⚡ **Five of Innovation** - Creative competition! Multiple innovative approaches compete for attention. Healthy rivalry drives excellence, but remember: collaboration often trumps competition."
+
+PROGRAMMING_TAROT[Six_of_Innovation]="✨ **Six of Innovation** - Recognition and success! Your creative solutions have been acknowledged. This card celebrates breakthroughs and the satisfaction of seeing your ideas come to life."
+
+PROGRAMMING_TAROT[Seven_of_Innovation]="🛡️ **Seven of Innovation** - Defending your vision! Others challenge your creative approach. Stand firm in your innovation while remaining open to constructive feedback."
+
+PROGRAMMING_TAROT[Eight_of_Innovation]="💨 **Eight of Innovation** - Rapid progress! Your ideas are gaining speed. This fast-paced energy requires careful navigation to avoid burnout or hasty decisions."
+
+PROGRAMMING_TAROT[Nine_of_Innovation]="🛑 **Nine of Innovation** - Pushing boundaries! You're testing the limits of what's possible. Resilience is key - some experiments will fail, but each teaches valuable lessons."
+
+PROGRAMMING_TAROT[Ten_of_Innovation]="🎯 **Ten of Innovation** - Creative burden! The weight of too many innovative projects threatens to overwhelm. Prioritize and delegate to maintain momentum without collapse."
+
+PROGRAMMING_TAROT[Page_of_Innovation]="🎨 **Page of Innovation** - The creative apprentice! Eager to learn and experiment, this card represents the joy of discovery and the beginning of innovative thinking."
+
+PROGRAMMING_TAROT[Knight_of_Innovation]="🏇 **Knight of Innovation** - Charging forward! Bold action and fearless experimentation drive this card. Sometimes reckless, always inspiring - the spark that ignites revolutions."
+
+PROGRAMMING_TAROT[Queen_of_Innovation]="👑 **Queen of Innovation** - Creative mastery! Wise and nurturing, she guides innovation with both vision and practicality. Her creations are both beautiful and functional."
+
+PROGRAMMING_TAROT[King_of_Innovation]="🎭 **King of Innovation** - Visionary leadership! The master innovator who sees possibilities others miss. His rule brings progress, but he must balance ambition with wisdom."
+
+# Cups Suit - Collaboration & Community
+PROGRAMMING_TAROT[Ace_of_Collaboration]="💝 **Ace of Collaboration** - New connections form! A beautiful opportunity for partnership emerges from your heart. This card represents the intuitive spark that draws developers together in meaningful collaboration."
+
+PROGRAMMING_TAROT[Two_of_Collaboration]="💑 **Two of Collaboration** - Perfect partnership! Two developers unite in a powerful alliance. This card symbolizes mutual respect, shared vision, and the magic that happens when complementary skills combine."
+
+PROGRAMMING_TAROT[Three_of_Collaboration]="🎉 **Three of Collaboration** - Community celebration! Friends and colleagues gather to honor shared achievements. This card represents the joy of community, friendship, and collective success in development."
+
+PROGRAMMING_TAROT[Four_of_Collaboration]="🤝 **Four of Collaboration** - Community building! You're fostering connections within your developer community. Strong relationships form the foundation of successful projects."
+
+PROGRAMMING_TAROT[Five_of_Collaboration]="💔 **Five of Collaboration** - Team conflicts! Disagreements arise within your collaborative efforts. Address issues directly but compassionately - healthy debate leads to better solutions."
+
+PROGRAMMING_TAROT[Six_of_Collaboration]="🎊 **Six of Collaboration** - Shared success! Your collaborative efforts have borne fruit. Celebrate together and acknowledge each person's contribution to the victory."
+
+PROGRAMMING_TAROT[Seven_of_Collaboration]="🌈 **Seven of Collaboration** - Dreams and visions! Your team shares a common goal. Keep the dream alive through clear communication and mutual support."
+
+PROGRAMMING_TAROT[Eight_of_Collaboration]="🏃 **Eight of Collaboration** - Moving on! Some collaborations have run their course. Know when to walk away gracefully and seek new partnerships that align with your growth."
+
+PROGRAMMING_TAROT[Nine_of_Collaboration]="🥂 **Nine of Collaboration** - Abundant community! Your collaborative network overflows with support and opportunity. Share your abundance and lift others as you've been lifted."
+
+PROGRAMMING_TAROT[Ten_of_Collaboration]="👨‍👩‍👧‍👦 **Ten of Collaboration** - Perfect harmony! Your collaborative circle is complete and thriving. This card represents the joy of true community and mutual success."
+
+PROGRAMMING_TAROT[Page_of_Collaboration]="📨 **Page of Collaboration** - Community messenger! Bringing people together and facilitating communication. This card represents the bridge-builders who connect developers across distances."
+
+PROGRAMMING_TAROT[Knight_of_Collaboration]="🏇 **Knight of Collaboration** - Devoted ally! Rides forth to support others, offering help and partnership. His loyalty and dedication strengthen the entire community."
+
+PROGRAMMING_TAROT[Queen_of_Collaboration]="👸 **Queen of Collaboration** - Community nurturer! Creates safe spaces for collaboration and ensures everyone feels valued. Her empathy builds stronger, more inclusive teams."
+
+PROGRAMMING_TAROT[King_of_Collaboration]="🤴 **King of Collaboration** - Community leader! Rules with wisdom and fairness, ensuring collaborative efforts serve the greater good. His decisions create lasting positive change."
+
+# Swords Suit - Logic & Debugging
+PROGRAMMING_TAROT[Ace_of_Debugging]="🔍 **Ace of Debugging** - The sharp mind! A new logical challenge presents itself. Your analytical skills are your greatest weapon in unraveling complex problems."
+
+PROGRAMMING_TAROT[Two_of_Debugging]="⚖️ **Two of Debugging** - Difficult choices! Two debugging paths present themselves. Logic must guide your decision - sometimes the harder path yields greater understanding."
+
+PROGRAMMING_TAROT[Three_of_Debugging]="💔 **Three of Debugging** - Heartbreak and betrayal! A bug has caused significant pain. Use this as motivation to strengthen your testing and validation processes."
+
+PROGRAMMING_TAROT[Four_of_Debugging]="🛌 **Four of Debugging** - Rest and recovery! You've been battling bugs relentlessly. Take time to rest - fresh eyes see solutions tired ones miss."
+
+PROGRAMMING_TAROT[Five_of_Debugging]="⚔️ **Five of Debuggings** - Conflict and struggle! Multiple bugs wage war against your code. Stay focused and systematic - victory comes through persistent, logical analysis."
+
+PROGRAMMING_TAROT[Six_of_Debugging]="⛵ **Six of Debugging** - Moving past conflict! You're leaving debugging battles behind. New approaches and clearer thinking lead you toward calmer waters."
+
+PROGRAMMING_TAROT[Seven_of_Debugging]="🕵️ **Seven of Debugging** - Strategic thinking! Deception and misdirection cloud your debugging efforts. Question assumptions and verify each step of your logic."
+
+PROGRAMMING_TAROT[Eight_of_Debugging]="🔗 **Eight of Debugging** - Feeling trapped! Bugs have you confined and restricted. Break free by seeking fresh perspectives or asking for help from colleagues."
+
+PROGRAMMING_TAROT[Nine_of_Debugging]="😱 **Nine of Debugging** - Anxiety and worry! Sleepless nights spent debugging have taken their toll. Address the root cause and implement preventive measures."
+
+PROGRAMMING_TAROT[Ten_of_Debugging]="� **Ten of Debugging** - Complete defeat! A debugging crisis has overwhelmed you. From this rock bottom, you'll rebuild with better practices and stronger foundations."
+
+PROGRAMMING_TAROT[Page_of_Debugging]="🧠 **Page of Debugging** - Curious investigator! Eager to learn debugging techniques and logical problem-solving. This card represents the joy of understanding complex systems."
+
+PROGRAMMING_TAROT[Knight_of_Debugging]="⚔️ **Knight of Debugging** - Fearless debugger! Charges into the most complex problems with courage and determination. His analytical mind never retreats from a challenge."
+
+PROGRAMMING_TAROT[Queen_of_Debugging]="🧙‍♀️ **Queen of Debugging** - Logic mistress! Commands respect through her deep understanding of systems. Her insights cut through confusion to reveal elegant solutions."
+
+PROGRAMMING_TAROT[King_of_Debugging]="👑 **King of Debugging** - Logic master! Rules through intellectual authority and precise thinking. His decisions are guided by data, evidence, and careful analysis."
+
+# Pentacles Suit - Projects & Development
+PROGRAMMING_TAROT[Ace_of_Projects]="🏗️ **Ace of Projects** - New project foundation! A solid base emerges for your development work. This is the moment when potential becomes reality - the start of something meaningful that will grow and evolve."
+
+PROGRAMMING_TAROT[Two_of_Projects]="🤹 **Two of Projects** - Project juggling! You're managing multiple development initiatives simultaneously. Flexibility and adaptability are key to keeping all your projects moving forward successfully."
+
+PROGRAMMING_TAROT[Three_of_Projects]="👷 **Three of Projects** - Collaborative development! Skilled team members help build and improve your projects. Their expertise and craftsmanship ensure lasting quality and success."
+
+PROGRAMMING_TAROT[Four_of_Projects]="💰 **Four of Projects** - Project stability! Your development work provides security and reliability. Prudent resource management ensures long-term success and sustainability."
+
+PROGRAMMING_TAROT[Five_of_Projects]="🏥 **Five of Projects** - Project recovery! Development challenges have caused setbacks. Focus on rebuilding stronger and learning from the experience to create better projects."
+
+PROGRAMMING_TAROT[Six_of_Projects]="🎁 **Six of Projects** - Project sharing! Others recognize your development contributions. Share your knowledge and help others build their own successful projects."
+
+PROGRAMMING_TAROT[Seven_of_Projects]="🌱 **Seven of Projects** - Patient development! Project growth takes time and consistent effort. Nurture your work gradually - lasting success cannot be rushed."
+
+PROGRAMMING_TAROT[Eight_of_Projects]="🔨 **Eight of Projects** - Development mastery! You're honing your project-building skills through dedicated practice. Each project refines your ability to create robust, successful work."
+
+PROGRAMMING_TAROT[Nine_of_Projects]="🏆 **Nine of Projects** - Project independence! Your development skills provide freedom and self-sufficiency. Others seek your expertise in building successful projects."
+
+PROGRAMMING_TAROT[Ten_of_Projects]="👨‍👩‍👧‍👦 **Ten of Projects** - Project legacy! Your development work creates lasting value for your team and community. Build with the future in mind, creating projects that endure."
+
+PROGRAMMING_TAROT[Page_of_Projects]="📚 **Page of Projects** - Project apprentice! Studying development best practices and learning from experienced builders. This card represents the learning phase of becoming a skilled developer."
+
+PROGRAMMING_TAROT[Knight_of_Projects]="🏇 **Knight of Projects** - Dedicated developer! Works tirelessly to create successful projects. His commitment ensures work withstands the test of time and real-world use."
+
+PROGRAMMING_TAROT[Queen_of_Projects]="👸 **Queen of Projects** - Nurturing developer! Creates environments where projects can thrive and grow. Her practical wisdom ensures development work serves its intended purpose effectively."
+
+PROGRAMMING_TAROT[King_of_Projects]="🤴 **King of Projects** - Master developer! Rules through deep understanding of development processes. His decisions create frameworks that support successful project outcomes."
 
 # Subtle hint-cards (rarely drawn) that nudge seekers toward hidden features
 PROGRAMMING_TAROT[Hint_Button_Sequence]="🃏 **The Button Sequence (Subtle Hint)** - Somewhere in the interface, a sequence of directional taps from classic controllers echoes a secret. Pay attention to rhythmic prompts during celebrations."
@@ -129,6 +237,16 @@ draw_single_card() {
     "16_The_Open_Source" "17_The_Moonlighting" "18_The_Code_Quality" "19_The_Code_Review_Response"
     "20_The_Production_Deploy" "21_The_Debug_Serenity" "22_The_Refactor_Ritual" "23_The_AdHoc_Solution"
     "24_The_Monitoring_Oracle" "25_The_Refinement_Circle" "Ace_of_Commits" "Two_of_Commits" "Three_of_Commits"
+    "Ace_of_Debugging" "Two_of_Debugging" "Three_of_Debugging" "Four_of_Debugging" "Five_of_Debugging"
+    "Six_of_Debugging" "Seven_of_Debugging" "Eight_of_Debugging" "Nine_of_Debugging" "Ten_of_Debugging"
+    "Page_of_Debugging" "Knight_of_Debugging" "Queen_of_Debugging" "King_of_Debugging"
+    "Ace_of_Innovation" "Two_of_Innovation" "Three_of_Innovation" "Four_of_Innovation" "Five_of_Innovation" "Six_of_Innovation" "Seven_of_Innovation" "Eight_of_Innovation"
+    "Nine_of_Innovation" "Ten_of_Innovation" "Page_of_Innovation" "Knight_of_Innovation" "Queen_of_Innovation" "King_of_Innovation"
+    "Ace_of_Collaboration" "Two_of_Collaboration" "Three_of_Collaboration" "Four_of_Collaboration" "Five_of_Collaboration" "Six_of_Collaboration" "Seven_of_Collaboration" "Eight_of_Collaboration"
+    "Nine_of_Collaboration" "Ten_of_Collaboration" "Page_of_Collaboration" "Knight_of_Collaboration" "Queen_of_Collaboration" "King_of_Collaboration"
+    "Ace_of_Projects" "Two_of_Projects" "Three_of_Projects" "Four_of_Projects" "Five_of_Projects"
+    "Six_of_Projects" "Seven_of_Projects" "Eight_of_Projects" "Nine_of_Projects" "Ten_of_Projects"
+    "Page_of_Projects" "Knight_of_Projects" "Queen_of_Projects" "King_of_Projects"
     "Ace_of_Bugs" "King_of_Frameworks" "Queen_of_APIs" "Knight_of_DevOps"
     )
     
@@ -146,6 +264,16 @@ draw_daily_card() {
     "16_The_Open_Source" "17_The_Moonlighting" "18_The_Code_Quality" "19_The_Code_Review_Response"
     "20_The_Production_Deploy" "21_The_Debug_Serenity" "22_The_Refactor_Ritual" "23_The_AdHoc_Solution"
     "24_The_Monitoring_Oracle" "25_The_Refinement_Circle" "Ace_of_Commits" "Two_of_Commits" "Three_of_Commits"
+    "Ace_of_Debugging" "Two_of_Debugging" "Three_of_Debugging" "Four_of_Debugging" "Five_of_Debugging"
+    "Six_of_Debugging" "Seven_of_Debugging" "Eight_of_Debugging" "Nine_of_Debugging" "Ten_of_Debugging"
+    "Page_of_Debugging" "Knight_of_Debugging" "Queen_of_Debugging" "King_of_Debugging"
+    "Ace_of_Innovation" "Two_of_Innovation" "Three_of_Innovation" "Four_of_Innovation" "Five_of_Innovation" "Six_of_Innovation" "Seven_of_Innovation" "Eight_of_Innovation"
+    "Nine_of_Innovation" "Ten_of_Innovation" "Page_of_Innovation" "Knight_of_Innovation" "Queen_of_Innovation" "King_of_Innovation"
+    "Ace_of_Collaboration" "Two_of_Collaboration" "Three_of_Collaboration" "Four_of_Collaboration" "Five_of_Collaboration" "Six_of_Collaboration" "Seven_of_Collaboration" "Eight_of_Collaboration"
+    "Nine_of_Collaboration" "Ten_of_Collaboration" "Page_of_Collaboration" "Knight_of_Collaboration" "Queen_of_Collaboration" "King_of_Collaboration"
+    "Ace_of_Projects" "Two_of_Projects" "Three_of_Projects" "Four_of_Projects" "Five_of_Projects"
+    "Six_of_Projects" "Seven_of_Projects" "Eight_of_Projects" "Nine_of_Projects" "Ten_of_Projects"
+    "Page_of_Projects" "Knight_of_Projects" "Queen_of_Projects" "King_of_Projects"
     "Ace_of_Bugs" "King_of_Frameworks" "Queen_of_APIs" "Knight_of_DevOps"
     )
     
@@ -362,7 +490,7 @@ run_tarot_session() {
             5)
                 echo -e "               ${CYAN}${BOLD}🚪 The tarot cards bid you farewell... until next time!${RESET}"
                 echo
-                echo -e "             ${RED}${BOLD}\"The cards whisper: Your future is written in lines of code...\"${RESET}"
+                echo -e "             ${RED}${BOLD}\"The cards whisper: Your future is written in lines of code...\"${RESET}\n"
                 echo -e "              ${CYAN}${BOLD}✨ May your commits be clean and your merges conflict-free! ✨${RESET}"
                 return 0
                 ;;

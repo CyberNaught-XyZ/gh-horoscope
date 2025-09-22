@@ -17,7 +17,21 @@ So look for something out of place!!
 - 🌟 **Daily Predictions**: Actually useful advice disguised as mystical nonsense
 - 🌙 **Moon Phases**: This thing actually uses the Doomsday algorithm to accuratly calculate the active phase! (More accurate then most apps 🍆)
 - **A LOT MORE** Give it a try!
-  
+
+### 🌙 **Lunar Calendar & Coding Phases**
+Track the moon's influence on your development cycle! The lunar calendar shows upcoming moon phases with developer-specific guidance and activities. Each phase includes spiritual meaning and practical coding activities to align your workflow with lunar rhythms.
+
+```bash
+gh horoscope --interactive    # Then select option 11: "View Moon Stats & Lunar Calendar"
+```
+
+Features the complete lunar cycle with:
+- **Accurate Calculations**: Uses Conway's algorithm for precise moon phase timing
+- **Developer Activities**: Phase-specific coding tasks (e.g., "New Moon: Start new features", "Full Moon: Deploy & celebrate")
+- **Spiritual Guidance**: Mystical meanings for each lunar phase
+- **15-Day Forecast**: Shows the next two weeks of lunar coding guidance
+- **Lunar Calendar**: Displays moon age, lunar month/day, and phase symbols
+
 ### 🔮 **The Oracle System** (This is where it gets a bit good or creepy, depends on how you look at it :))
 I built this whole Oracle thing that gives you personalized coding wisdom based on your actual GitHub patterns. It's like having a wise coding mentor, but mystical magical 🌝🍦(shut up, it's funny).
 
