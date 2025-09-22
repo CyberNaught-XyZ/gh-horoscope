@@ -18,7 +18,7 @@ So look for something out of place!!
 - 🌙 **Moon Phases**: This thing actually uses the Doomsday algorithm to accuratly calculate the active phase! (More accurate then most apps 🍆)
 - **A LOT MORE** Give it a try!
   
-### 🔮 **The Oracle System** (This is where it gets a bit good- or creepy, depends how you look at it :))
+### 🔮 **The Oracle System** (This is where it gets a bit good or creepy, depends on how you look at it :))
 I built this whole Oracle thing that gives you personalized coding wisdom based on your actual GitHub patterns. It's like having a wise coding mentor, but mystical magical 🌝🍦(shut up, it's funny).
 
 ```bash
@@ -248,12 +248,12 @@ This thing is surprisingly sophisticated. It analyzes:
 - **Doomsday and Github Algo's** 99% Accuracy when calculating and tracking Moonphases, Moonage, Github Stats, Days and more 
 
 The algorithms are way more complex than they have any right to be for a joke project.
-Actually put some work into learning the Doomsday, do i know or remember ? HA no. I hoped for the best.
+Actually put some work into learning the Doomsday, do I know or remember ? HA no. I hoped for the best.
 
 ## 🎨 Making It Your Own
 
 Want to customize the mystical experience? I built this to be pretty hackable:
-Everything hackable is fun in my opion
+Everything hackable is fun in my opinion
 
 ### Adding Your Own Wisdom
 - **Language horoscopes** - Add new programming languages in `lib/fortune-data.sh`
@@ -269,7 +269,7 @@ The roast system has 20+ patterns that detect things like:
 - Documentation allergies  
 - Copy-paste artistry
 - Perfectionist tendencies
-- Need more and will do more but for the time being? i got 5 assignments due in 3 weeks i'm f****d :)
+- Need more and will do more but for the time being? I got 5 assignments due in 3 weeks I'm f****d :)
 
 Feel free to add your own observational comedy patterns.
 
@@ -350,3 +350,13 @@ Also, if you're reading this far into a README, you might be a "Documentation Co
 
 P.S. - Yes, I know I spent too much time on the ASCII art. No, I don't regret it. Yes, there are probably bugs. No, I won't fix them unless they're really embarrassing.
 P.S.S - Now back to playing the best of Konami! 🎮
+
+```bash
+   ___     __                                                     
+  / __\ /\ \ \      /\  /\___  _ __ ___  ___  ___ ___  _ __   ___ 
+ / /   /  \/ /____ / /_/ / _ \| '__/ _ \/ __|/ __/ _ \| '_ \ / _ \
+/ /___/ /\  /_____/ __  / (_) | | | (_) \__ \ (_| (_) | |_) |  __/
+\____/\_\ \/      \/ /_/ \___/|_|  \___/|___/\___\___/| .__/ \___|
+                                                      |_|         
+```
+- **Project by [CyberNaught-XyZ]**
